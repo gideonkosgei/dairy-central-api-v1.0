@@ -5,14 +5,14 @@ const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
 
-router.get('/country', async (req, res) => {
+router.get('/api/v1.0/country', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;}); 
     const sql = "select * from core_country";    
     const payload = await query(conn, sql).catch(e=>{return e;});   
     res.json({ payload });
   });
 
-  router.get('/country/:id', async (req, res) => {
+  router.get('/api/v1.0/country/:id', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;}); 
     let id = req.params.id;
     const sql = `select * from core_country where id = ${id}`;    
