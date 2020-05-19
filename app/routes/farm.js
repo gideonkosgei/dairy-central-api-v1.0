@@ -7,7 +7,7 @@ const query = require('../helpers/query');
 
 router.get('/api/v1.0/farm', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;}); 
-    const sql = "select * from core_farm limit 10";    
+    const sql = "select * from vw_farm_details_3";    
     const payload = await query(conn, sql).catch(e=>{return e;});   
     res.json({ payload });
   });
@@ -15,9 +15,9 @@ router.get('/api/v1.0/farm', async (req, res) => {
   router.get('/api/v1.0/farm/:id', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;}); 
     let id = req.params.id;
-    const sql = `select * from core_farm where id = ${id}`;    
+    const sql = `select * from vw_farm_details_3 where id = ${id}`;    
     const payload = await query(conn, sql).catch(e=>{return e;});   
-    res.json({ payload });
+    res.send(payload);
   });
 
   router.get('/api/v1.0/farm/country/:id', async (req, res) => {
