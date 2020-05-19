@@ -17,6 +17,10 @@ const animal = require('./app/routes/animal');
 const index = require('./app/routes/index');
 const farm = require('./app/routes/farm');
 const country = require('./app/routes/country');
+const synchronisation = require('./app/routes/synchronisation');
+const user = require('./app/routes/user');
+const insemenation = require('./app/routes/insemenation');
+
 
 passport.use(new Strategy(
   function(username, password, cb) {
@@ -43,13 +47,16 @@ var accessLogStream = rfs.createStream('access.log', {
 
 app.use(morgan('combined', { stream: accessLogStream }));// setup the logger
 
-
-
 // Routes
 app.use('/',passport.authenticate('basic', { session: false }), animal);
 app.use('/', index);
 app.use('/', farm);
 app.use('/', country);
+app.use('/', synchronisation);
+app.use('/', user);
+app.use('/', insemenation);
+
+
 
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
