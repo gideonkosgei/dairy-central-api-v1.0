@@ -4,7 +4,6 @@ var router = express.Router();
 const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
-
 router.get('/api/v1.0/animal', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;}); 
     
@@ -20,8 +19,8 @@ router.get('/api/v1.0/animal', async (req, res) => {
     (select label from core_master_list list where list.list_type_id = 3 and list.value = animal.sex ) as sex,  
     (select label from core_master_list list where list.list_type_id = 8 and list.value = animal.main_breed ) as breed, 
     (select label from core_master_list list where list.list_type_id = 14 and list.value = animal.breed_composition ) as breed_composition     
-    from core_animal  animal order by id limit 100`; 
-
+    from core_animal  animal   order by id limit 100`; 
+    //where animal.country_id=11
     const payload = await query(conn, sql).catch(e=>{return e;});    
     res.send(payload);
   });
