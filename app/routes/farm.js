@@ -7,9 +7,9 @@ const query = require('../helpers/query');
 
 router.get('/api/v1.0/farm', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;}); 
-    const sql = "select * from vw_farm_details_3";    
+    const sql = "select * from vw_farm_details_3 where id = 347778";    
     const payload = await query(conn, sql).catch(e=>{return e;});   
-    res.json({ payload });
+    res.json(payload);
   });
 
   router.get('/api/v1.0/farm/:id', async (req, res) => {
