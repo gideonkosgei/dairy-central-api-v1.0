@@ -20,6 +20,8 @@ const country = require('./app/routes/country');
 const synchronisation = require('./app/routes/synchronisation');
 const user = require('./app/routes/user');
 const insemenation = require('./app/routes/insemenation');
+const dropdown_utility= require('./app/routes/dropdown_utility');
+
 
 
 passport.use(new Strategy(
@@ -55,6 +57,7 @@ app.use('/', country);
 app.use('/', synchronisation);
 app.use('/', user);
 app.use('/', insemenation);
+app.use('/', dropdown_utility);
 
 
 
