@@ -27,7 +27,7 @@ router.get('/api/v1.0/user/auth', async (req, res) => {
 
 router.get('/api/v1.0/user/:id', async (req, res) => {
       const conn = await connection(dbConfig).catch(e => {return e;}); 
-      let id = req.params.id;
+      const id = req.params.id;
       const sql = `select * from v_user_profiles where id = ${id}`;    
       const payload = await query(conn, sql).catch(e=>{return e;});  
       const payLoadLength  = JSON.stringify(payload[0].length); 
