@@ -21,6 +21,7 @@ const synchronisation = require('./app/routes/synchronisation');
 const user = require('./app/routes/user');
 const insemenation = require('./app/routes/insemenation');
 const dropdown_utility= require('./app/routes/dropdown_utility');
+const clients = require('./app/routes/clients');
 
 
 
@@ -58,9 +59,7 @@ app.use('/', synchronisation);
 app.use('/', user);
 app.use('/', insemenation);
 app.use('/', dropdown_utility);
-
-
-
+app.use('/', clients);
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
 app.listen(PORT, () => {
