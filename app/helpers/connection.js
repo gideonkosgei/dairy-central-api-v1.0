@@ -2,7 +2,7 @@
 
 const mysql = require('mysql');
 module.exports = async (params) => new Promise(
-  (resolve, reject) => {
+  (resolve, reject) => {   
     const connection = mysql.createConnection(params);
     connection.connect(error => {
       if (error) {

@@ -29,8 +29,7 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
       const conn = await connection(dbConfig).catch(e => {return e;}); 
       const id = req.params.id;
       const sql = `select * from v_user_profiles where id = ${id}`;    
-      const payload = await query(conn, sql).catch(e=>{return e;});
-      console.log(payload);      
+      const payload = await query(conn, sql).catch(e=>{return e;});     
       const payload_code = payload.code 
       const payLoadLength = (payload_code == 'ER_PARSE_ERROR')? 0: JSON.stringify(payload[0].length);
       if(payload_code == 'ER_PARSE_ERROR'){
