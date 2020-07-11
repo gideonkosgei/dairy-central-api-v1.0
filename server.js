@@ -23,6 +23,7 @@ const insemenation = require('./app/routes/insemenation');
 const dropdown_utility= require('./app/routes/dropdown_utility');
 const clients = require('./app/routes/clients');
 const lookup = require('./app/routes/lookup');
+const herds = require('./app/routes/herds');
 
 
 
@@ -62,6 +63,8 @@ app.use('/', insemenation);
 app.use('/', dropdown_utility);
 app.use('/', lookup);
 app.use('/', clients);
+app.use('/', herds);
+
 
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
