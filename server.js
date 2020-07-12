@@ -65,8 +65,6 @@ app.use('/', lookup);
 app.use('/', clients);
 app.use('/', herds);
 
-
-
 const PORT = process.env.PORT || 8080; // set port, listen for requests
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
