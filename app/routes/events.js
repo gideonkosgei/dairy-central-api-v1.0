@@ -20,8 +20,11 @@ const query = require('../helpers/query');
       ifnull(core_animal_event.field_agent_id,'') AS field_agent_id, 
       JSON_UNQUOTE(JSON_EXTRACT(core_animal_event.additional_attributes, '$."137"')) AS heart_girth, 
       core_animal_event.id AS Event_ID, 
-      JSON_UNQUOTE(JSON_EXTRACT(core_animal_event.additional_attributes, '$."136"')) AS weight_kg 
-     FROM core_animal_event WHERE core_animal_event.event_type = 6
+      JSON_UNQUOTE(JSON_EXTRACT(core_animal_event.additional_attributes, '$."136"')) AS weight_kg,
+      auth_users.name as created_by     
+     FROM core_animal_event 
+     LEFT JOIN auth_users ON core_animal_event.created_by = auth_users.ID 
+     WHERE core_animal_event.event_type = 6
      AND core_animal_event.animal_id = ${id}`;
     const payload = await query(conn, sql).catch(e=>{return e;});     
     const payload_code = payload.code 
