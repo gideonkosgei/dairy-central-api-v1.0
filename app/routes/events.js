@@ -46,5 +46,12 @@ const query = require('../helpers/query');
       
   });
 
+  router.post('/api/v1.0/events/weight/charts', async (req, res) => {      
+      const conn = await connection(dbConfig).catch(e => {return e;});     
+      const {animal_id,year} = req.body;
+      const sql = `CALL sp_weight_event_animal_analytics(${animal_id},${JSON.stringify(year)})`;
+      await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+  });
+
 module.exports = router
  
