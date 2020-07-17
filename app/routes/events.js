@@ -53,5 +53,12 @@ const query = require('../helpers/query');
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
+  router.get('/api/v1.0/events/pd/animal/:id', async (req, res) => {      
+      const conn = await connection(dbConfig).catch(e => {return e;});     
+      const id = req.params.id;
+      const sql = `CALL sp_event_pd_view(${id})`;
+      await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+  });
+
 module.exports = router
  
