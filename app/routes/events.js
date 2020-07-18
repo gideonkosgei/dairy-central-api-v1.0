@@ -60,5 +60,13 @@ const query = require('../helpers/query');
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
+  router.post('/api/v1.0/events/pd', async (req, res) => {      
+      const conn = await connection(dbConfig).catch(e => {return e;});       
+      const {animal_id,service_date,time_examined,pd_results,pd_stage,body_score,cost,pd_method,data_collection_date,field_agent_id,created_by} = req.body;      
+      const isServiceDateKnown = isNaN(Date.parse(service_date))? 0 : 1;      
+      const sql = `CALL sp_create_event_pd(${animal_id},${JSON.stringify(service_date)},${isServiceDateKnown},${JSON.stringify(time_examined)},${pd_results},${pd_stage},${body_score},${cost},${pd_method},${JSON.stringify(data_collection_date)},${field_agent_id},${created_by})`; 
+      await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+  });
+
 module.exports = router
  
