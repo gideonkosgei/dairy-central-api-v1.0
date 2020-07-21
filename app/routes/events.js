@@ -109,11 +109,11 @@ const query = require('../helpers/query');
       const sql = `CALL sp_event_exits_view(${id})`;
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
- //create insemination event
-  router.post('/api/v1.0/events/insemination', async (req, res) => {      
+ //create exit event
+  router.post('/api/v1.0/events/exit', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});       
-      const { animal_id ,ai_date ,straw_semen_type ,type_of_ai ,straw_id ,country_of_origin, body_condition_score ,breed_composition_bull ,ai_cost,cow_weight,semen_batch,semen_source ,semen_source_other,breed_of_bull ,breed_of_bull_other ,field_agent_id ,created_by} = req.body;      
-      const sql = `CALL sp_create_event_insemination(${animal_id},${JSON.stringify(ai_date)},${straw_semen_type}, ${type_of_ai}, ${JSON.stringify(straw_id)}, ${JSON.stringify(country_of_origin)}, ${body_condition_score}, ${breed_composition_bull}, ${ai_cost}, ${cow_weight}, ${JSON.stringify(semen_batch)}, ${semen_source},${semen_source_other},${breed_of_bull} ,${breed_of_bull_other} ,${field_agent_id},${created_by})`; 
+      const {animal_id ,exit_date,disposal_amount,disposal_reason,disposal_reason_other,new_breeder_name ,new_breeder_phone_number,new_country ,new_district ,new_farmer_name,new_farmer_phone_number,new_region,new_village,field_agent_id,created_by} = req.body;                       
+      const sql = `CALL sp_create_event_exits(${animal_id} ,${JSON.stringify(exit_date)},${disposal_amount},${disposal_reason},${JSON.stringify(disposal_reason_other)},${JSON.stringify(new_breeder_name)} ,${JSON.stringify(new_breeder_phone_number)},${JSON.stringify(new_country)} ,${JSON.stringify(new_district)} ,${JSON.stringify(new_farmer_name)},${JSON.stringify(new_farmer_phone_number)},${JSON.stringify(new_region)},${JSON.stringify(new_village)},${JSON.stringify(field_agent_id)},${created_by})`; 
       await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
   });
 
