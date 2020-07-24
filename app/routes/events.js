@@ -133,6 +133,15 @@ router.post('/api/v1.0/events/calving', async (req, res) => {
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
+//Milking events
+//view Calving records
+  router.get('/api/v1.0/events/milking/animal/:id', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const id = req.params.id;
+    const sql = `CALL sp_event_milking_view(${id})`;
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
 module.exports = router
 
 
