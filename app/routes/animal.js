@@ -157,7 +157,19 @@ router.get('/api/v1.0/animal', async (req, res) => {
             res.status(200).json({status:200, payload });
       } 
     });
-  
 
 
+  //New Animal Registration
+  router.post('/api/v1.0/animal', async (req, res) => {      
+      const conn = await connection(dbConfig).catch(e => {return e;});       
+      const {created_by ,animal_type ,birthdate,name ,breed_composition ,hair_sample_id ,main_breed ,reg_date,sex ,tag_id ,
+            breed_combination ,notes ,tag_prefix ,tag_sequence ,breed_composition_details ,color ,color_other ,country_of_origin ,
+            deformities ,entry_date,entry_type ,herd_book_number ,main_breed_other ,purchase_cost ,secondary_breed ,secondary_breed_other ,
+            sire_type ,sire_id ,dam_id,herd_id,org_id,farm_id} = req.body;      
+      const sql = `CALL sp_create_animal(${created_by} ,${animal_type} ,${JSON.stringify(birthdate)},${JSON.stringify(name)} ,${breed_composition} ,${JSON.stringify(hair_sample_id)} ,${main_breed} ,${JSON.stringify(reg_date)},${sex} ,${JSON.stringify(tag_id)} ,
+      ${JSON.stringify(breed_combination)} ,${JSON.stringify(notes)} ,${JSON.stringify(tag_prefix)} ,${JSON.stringify(tag_sequence)} ,${JSON.stringify(breed_composition_details)} ,${color} ,${JSON.stringify(color_other)} ,${JSON.stringify(country_of_origin)} ,
+      ${deformities} ,${JSON.stringify(entry_date)},${entry_type} ,${JSON.stringify(herd_book_number)} ,${JSON.stringify(main_breed_other)} ,${purchase_cost} ,${secondary_breed} ,${JSON.stringify(secondary_breed_other)} ,
+      ${sire_type} ,${sire_id} ,${dam_id},${herd_id},${org_id},${farm_id})`; 
+      await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+  });
   module.exports = router
