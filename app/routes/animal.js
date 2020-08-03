@@ -102,61 +102,14 @@ router.get('/api/v1.0/animal', async (req, res) => {
           res.status(200).json({status:200, payload });
     } 
   });
-
-  router.get('/api/v1.0/animals/:animal_id', async (req, res) => {
-      const conn = await connection(dbConfig).catch(e => {return e;}); 
-      const {animal_id} = req.params;
-      const sql = `SELECT 
-      core_animal.id as animal_id,
-      core_animal.name as animal_name,
-      core_animal.herd_id,
-      herd.name as herd_name,
-      core_animal.org_id,
-      core_animal.sex as sex_id,
-      (SELECT list.label  FROM  core_master_list list WHERE ((list.list_type_id = 3) AND (list.value = core_animal.sex))) AS sex,              
-      core_animal.tag_id,
-      core_animal.farm_id,
-      core_animal.sire_type as sire_type_id,
-      (SELECT list.label  FROM  core_master_list list WHERE ((list.list_type_id = 13) AND (list.value = core_animal.sire_type))) AS sire_type,              
-      core_animal.sire_id,
-      core_animal.sire_tag_id,
-      core_animal.dam_id,
-      core_animal.dam_tag_id,
-      replace(JSON_UNQUOTE(JSON_EXTRACT(core_animal.additional_attributes, '$."91"')),'null','') AS aproximateage, 
-      replace(JSON_UNQUOTE(JSON_EXTRACT(core_animal.additional_attributes, '$."225"')),'null','') AS animalGrade, 
-      replace(JSON_UNQUOTE(JSON_EXTRACT(core_animal.additional_attributes, '$."226"')),'null','') AS notes, 
-      core_animal.animal_photo AS animalPhoto, 
-      replace(JSON_UNQUOTE(JSON_EXTRACT(core_animal.additional_attributes, '$."57"')),'null','') AS tagPrefix, 
-      replace(JSON_UNQUOTE(JSON_EXTRACT(core_animal.additional_attributes, '$."58"')),'null','') AS tagSequence, 
-      ifnull(core_animal.animal_type,0) AS animal_type_id,
-      ifnull((SELECT list.label  FROM  core_master_list list WHERE ((list.list_type_id = 62) AND (list.value = core_animal.animal_type))),'Uncategorized') AS animalType, 
-      DATE_FORMAT(core_animal.reg_date, '%Y-%m-%d') as registration_date, 
-      DATE_FORMAT(core_animal.birthdate, '%Y-%m-%d') as dateofBirth,      
-      core_animal.main_breed AS main_breed_id,
-      (SELECT list.label  FROM  core_master_list list WHERE ((list.list_type_id = 8) AND (list.value = core_animal.main_breed))) AS main_breed, 
-      replace(JSON_UNQUOTE(JSON_EXTRACT(core_animal.additional_attributes, '$."147"')),'null','') AS breedCombination, 
-      core_animal.breed_composition AS breedComposition_id, 
-      (SELECT list.label  FROM  core_master_list list WHERE ((list.list_type_id = 14) AND (list.value = core_animal.breed_composition))) AS breedComposition, 
-      replace(JSON_UNQUOTE(JSON_EXTRACT(core_animal.additional_attributes, '$."223"')),'null','') AS breedCompositiondetails, 
-      replace(JSON_UNQUOTE(JSON_EXTRACT(core_animal.additional_attributes, '$."254"')),'null','') AS color, 
-      JSON_UNQUOTE(JSON_EXTRACT(core_animal.additional_attributes, '$."456"')) AS colorOther, 
-      replace(JSON_UNQUOTE(JSON_EXTRACT(core_animal.additional_attributes, '$."232"')),'null','') AS countryofOrigin 
-      FROM core_animal
-      left join core_animal_herd herd 
-      on core_animal.herd_id = herd.id
-      where core_animal.id = ${animal_id}`;
-      
-      const payload = await query(conn, sql).catch(e=>{return e;});     
-      const payload_code = payload.code 
-      const payLoadLength = (payload_code === 'ER_PARSE_ERROR')? 0: JSON.stringify(payload[0].length);
-      if(payload_code == 'ER_PARSE_ERROR'){
-            res.status(400).json({status:400, payload })
-      } else if (payLoadLength<1) {
-            res.status(200).json({status:204, payload });
-      } else {
-            res.status(200).json({status:200, payload });
-      } 
-    });
+  
+ //view animal details by animal ID
+ router.get('/api/v1.0/animal/:animal_id', async (req, res) => {      
+      const conn = await connection(dbConfig).catch(e => {return e;});     
+      const id = req.params.animal_id;
+      const sql = `CALL sp_animal_view(${id})`;      
+      await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+  });
 
   //New Animal Registration
   router.post('/api/v1.0/animal', async (req, res) => {      
