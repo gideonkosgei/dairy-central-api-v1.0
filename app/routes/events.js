@@ -5,11 +5,19 @@ const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
 
-
+//view weight records for an animal
   router.get('/api/v1.0/events/weight/animal/:id', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});     
     const id = req.params.id;
     const sql = `CALL sp_event_weight_view(${id})`;
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
+//view specific weight record : filter by event id
+router.get('/api/v1.0/events/weight/:id', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const id = req.params.id;
+    const sql = `CALL sp_event_specific_weight_view(${id})`;
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -20,6 +28,15 @@ const query = require('../helpers/query');
       await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
       
   });
+ //update weight event
+  router.put('/api/v1.0/events/weight/:event_id', async (req, res) => {   
+    const id = req.params.event_id;     
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const {body_length,heart_girth,weight,body_score,data_collection_date,field_agent_id,updated_by} = req.body;
+    const sql = `CALL sp_update_event_weight(${id},${body_length},${heart_girth},${weight},${body_score},${JSON.stringify(data_collection_date)},${field_agent_id},${updated_by})`; 
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+    
+});
 
   router.post('/api/v1.0/events/weight/charts', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});     
