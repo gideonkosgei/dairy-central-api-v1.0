@@ -101,6 +101,15 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
       const sql = `CALL sp_event_exits_view(${id})`;
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
+
+  //view specific exit record : filter by event id
+router.get('/api/v1.0/events/exit/:id', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const id = req.params.id;
+    const sql = `CALL sp_event_record_view_exit(${id})`;
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
  //create exit event
   router.post('/api/v1.0/events/exit', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});       
@@ -108,6 +117,15 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
       const sql = `CALL sp_create_event_exits(${animal_id} ,${JSON.stringify(exit_date)},${disposal_amount},${disposal_reason},${JSON.stringify(disposal_reason_other)},${JSON.stringify(new_breeder_name)} ,${JSON.stringify(new_breeder_phone_number)},${JSON.stringify(new_country)} ,${JSON.stringify(new_district)} ,${JSON.stringify(new_farmer_name)},${JSON.stringify(new_farmer_phone_number)},${JSON.stringify(new_region)},${JSON.stringify(new_village)},${JSON.stringify(field_agent_id)},${created_by})`; 
       await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
   });
+
+   //update exit event record
+   router.put('/api/v1.0/events/exit/:event_id', async (req, res) => {   
+    const id = req.params.event_id;     
+    const conn = await connection(dbConfig).catch(e => {return e;});       
+    const {exit_date,disposal_amount,disposal_reason,disposal_reason_other,new_breeder_name ,new_breeder_phone_number,new_country ,new_district ,new_farmer_name,new_farmer_phone_number,new_region,new_village,field_agent_id,updated_by} = req.body;                       
+    const sql = `CALL sp_update_event_exits(${id},${JSON.stringify(exit_date)},${disposal_amount},${disposal_reason},${JSON.stringify(disposal_reason_other)},${JSON.stringify(new_breeder_name)} ,${JSON.stringify(new_breeder_phone_number)},${JSON.stringify(new_country)} ,${JSON.stringify(new_district)} ,${JSON.stringify(new_farmer_name)},${JSON.stringify(new_farmer_phone_number)},${JSON.stringify(new_region)},${JSON.stringify(new_village)},${JSON.stringify(field_agent_id)},${updated_by})`; 
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+});
 
   //Calving events
   //view Calving records
