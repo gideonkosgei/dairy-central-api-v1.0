@@ -178,6 +178,23 @@ router.post('/api/v1.0/events/health', async (req, res) => {
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
+
+  //view specific health record : filter by event id
+  router.get('/api/v1.0/events/health/:id', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const id = req.params.id;
+    const sql = `CALL sp_event_record_view_health(${id})`;
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
+//update Health Record
+router.put('/api/v1.0/events/health/:id', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});
+    const event_id = req.params.id;       
+    const {health_date ,health_category,drug_cost,health_provider,health_type,other_health_type,field_agent_id,updated_by} = req.body;                          
+    const sql = `CALL sp_update_event_health(${event_id},${JSON.stringify(health_date)} ,${JSON.stringify(health_category)},${drug_cost},${health_provider},${health_type},${JSON.stringify(other_health_type)},${JSON.stringify(field_agent_id)},${updated_by} )`; 
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+});
 module.exports = router
 
 
