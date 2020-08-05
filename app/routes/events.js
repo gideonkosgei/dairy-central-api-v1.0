@@ -71,7 +71,7 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
   router.post('/api/v1.0/events/sync', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});       
       const {animal_id, sync_date, sync_number, animal_parity, sync_time, hormone_type, other_hormone_type, hormone_source, other_hormone_source, sync_cost, sync_person, sync_other_person, sync_person_phone, field_agent_id, created_by} = req.body;      
-      const sql = `CALL sp_create_event_sync(${animal_id},${JSON.stringify(sync_date)},${sync_number}, ${animal_parity}, ${JSON.stringify(sync_time)}, ${hormone_type}, ${other_hormone_type}, ${hormone_source}, ${other_hormone_source}, ${sync_cost}, ${sync_person}, ${sync_other_person}, ${JSON.stringify(sync_person_phone)},${field_agent_id},${created_by})`; 
+      const sql = `CALL sp_create_event_sync(${animal_id},${JSON.stringify(sync_date)},${sync_number}, ${animal_parity}, ${JSON.stringify(sync_time)}, ${hormone_type}, ${JSON.stringify(other_hormone_type)}, ${hormone_source}, ${JSON.stringify(other_hormone_source)}, ${sync_cost}, ${sync_person}, ${JSON.stringify(sync_other_person)}, ${JSON.stringify(sync_person_phone)},${field_agent_id},${created_by})`;      
       await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
   });
 
