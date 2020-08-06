@@ -52,6 +52,13 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
+  router.get('/api/v1.0/events/pd/:id', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const id = req.params.id;
+    const sql = `CALL sp_event_specific_pd_view(${id})`;
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
   router.post('/api/v1.0/events/pd', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});       
       const {animal_id,service_date,time_examined,pd_results,pd_stage,body_score,cost,pd_method,data_collection_date,field_agent_id,created_by} = req.body;      
@@ -59,8 +66,6 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
       const sql = `CALL sp_create_event_pd(${animal_id},${JSON.stringify(service_date)},${isServiceDateKnown},${JSON.stringify(time_examined)},${pd_results},${pd_stage},${body_score},${cost},${pd_method},${JSON.stringify(data_collection_date)},${field_agent_id},${created_by})`; 
       await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
   });
-
-
 
   //synchronization
   router.get('/api/v1.0/events/sync/animal/:id', async (req, res) => {      
@@ -103,6 +108,13 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
       const sql = `CALL sp_event_insemination_view(${id})`;
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
+
+  router.get('/api/v1.0/events/insemination/:id', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const id = req.params.id;
+    const sql = `CALL sp_event_record_insemination_view(${id})`;
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
  //create insemination event
   router.post('/api/v1.0/events/insemination', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});       
@@ -154,6 +166,14 @@ router.get('/api/v1.0/events/exit/:id', async (req, res) => {
     const sql = `CALL sp_event_calving_view(${id})`;
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
+
+router.get('/api/v1.0/events/calving/:id', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const id = req.params.id;
+    const sql = `CALL sp_event_specific_calving_view(${id})`;
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
 //create Calving event
 router.post('/api/v1.0/events/calving', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});       
@@ -185,7 +205,6 @@ router.put('/api/v1.0/events/milking/:id', async (req, res) => {
     const event_id = req.params.id;       
     const {milk_date,days_in_milk,lactation_id,lactation_number,milking_notes,milk_quality,milk_sample_type_id,milk_pm_litres,milk_butter_fat,milk_lactose,milk_mid_day,milk_protein,milk_am_litres,milk_somatic_cell_count,milk_urea,testday_no,milk_Weight,field_agent_id,updated_by} = req.body;                          
     const sql = `CALL sp_update_event_milking(${event_id},${JSON.stringify(milk_date)} ,${days_in_milk} ,${lactation_id} ,${JSON.stringify(lactation_number)},${JSON.stringify(milking_notes)} , ${JSON.stringify(milk_quality)} ,${milk_sample_type_id} ,${milk_pm_litres} ,${milk_butter_fat} ,${milk_lactose} ,${milk_mid_day} ,${milk_protein},${milk_am_litres} ,${milk_somatic_cell_count} ,${milk_urea},${testday_no},${milk_Weight},${field_agent_id} ,${updated_by} )`; 
-    console.log(sql);
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
