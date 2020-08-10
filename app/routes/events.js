@@ -67,6 +67,16 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
       await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
   });
 
+     //update PD  record
+     router.put('/api/v1.0/events/pd/:event_id', async (req, res) => {   
+        const event_id = req.params.event_id;     
+        const conn = await connection(dbConfig).catch(e => {return e;});       
+        const {service_date,time_examined,pd_results,pd_stage,body_score,cost,pd_method,data_collection_date,field_agent_id,updated_by} = req.body;      
+        const isServiceDateKnown = isNaN(Date.parse(service_date))? 0 : 1;      
+        const sql = `CALL sp_update_event_pd(${event_id},${JSON.stringify(service_date)},${isServiceDateKnown},${JSON.stringify(time_examined)},${pd_results},${pd_stage},${body_score},${cost},${pd_method},${JSON.stringify(data_collection_date)},${field_agent_id},${updated_by})`; 
+        await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+    });
+
   //synchronization
   router.get('/api/v1.0/events/sync/animal/:id', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});     
