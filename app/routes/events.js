@@ -134,6 +134,17 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
   });
 
 
+  //update insemination event Record
+  router.put('/api/v1.0/events/insemination/:event_id', async (req, res) => {   
+    const event_id = req.params.event_id;   
+    const conn = await connection(dbConfig).catch(e => {return e;});       
+    const {ai_date ,straw_semen_type ,type_of_ai ,straw_id ,country_of_origin, body_condition_score ,breed_composition_bull ,ai_cost,cow_weight,semen_batch,semen_source ,semen_source_other,breed_of_bull ,breed_of_bull_other ,field_agent_id ,updated_by} = req.body;      
+    const sql = `CALL sp_update_event_insemination(${event_id},${JSON.stringify(ai_date)},${straw_semen_type}, ${type_of_ai}, ${JSON.stringify(straw_id)}, ${JSON.stringify(country_of_origin)}, ${body_condition_score}, ${breed_composition_bull}, ${ai_cost}, ${cow_weight}, ${JSON.stringify(semen_batch)}, ${semen_source},${semen_source_other},${breed_of_bull} ,${breed_of_bull_other} ,${field_agent_id},${updated_by})`; 
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+});
+
+
+
   //Exit events
   //view exit records
   router.get('/api/v1.0/events/exit/animal/:id', async (req, res) => {      
@@ -192,8 +203,19 @@ router.post('/api/v1.0/events/calving', async (req, res) => {
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
+//update Calving event record
+router.put('/api/v1.0/events/calving/:event_id', async (req, res) => {  
+    const event_id = req.params.event_id;    
+    const conn = await connection(dbConfig).catch(e => {return e;});       
+    const {calving_date,birth_type ,body_condition_score ,calf_color ,calf_deformities ,other_calf_deformities , heart_girth,calf_name ,calf_sex ,calf_weight, ease_of_calving_other ,calving_method ,calving_type_other ,calving_type ,ease_of_calving ,calving_status ,use_of_calf ,use_of_calf_other ,calf_tag_id , lactation_number ,field_agent_id ,updated_by } = req.body;                       
+    const sql = `CALL sp_update_event_calving(${event_id} ,${JSON.stringify(calving_date)},${birth_type} ,${body_condition_score} ,${calf_color} ,${calf_deformities} ,${JSON.stringify(other_calf_deformities)} , ${heart_girth},${JSON.stringify(calf_name)} ,${calf_sex} ,${calf_weight},${JSON.stringify(ease_of_calving_other)} ,${calving_method} ,${JSON.stringify(calving_type_other)} ,${calving_type} ,${ease_of_calving} ,${calving_status} ,${use_of_calf} ,${JSON.stringify(use_of_calf_other)} ,${JSON.stringify(calf_tag_id)},${lactation_number} ,${JSON.stringify(field_agent_id)} ,${updated_by} )`; 
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+});
+
+   
+
 //Milking events
-//view Calving records
+//view miking records
   router.get('/api/v1.0/events/milking/animal/:id', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});     
     const id = req.params.id;
