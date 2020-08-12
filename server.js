@@ -23,6 +23,7 @@ const clients = require('./app/routes/clients');
 const lookup = require('./app/routes/lookup');
 const herds = require('./app/routes/herds');
 const events = require('./app/routes/events');
+const parameters = require('./app/routes/parameters');
 
 
 
@@ -62,6 +63,7 @@ app.use('/', lookup);
 app.use('/', clients);
 app.use('/', herds);
 app.use('/', events);
+app.use('/', parameters);
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
 app.listen(PORT, () => {
