@@ -25,6 +25,15 @@ const query = require('../helpers/query');
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
+//update limit parameter
+router.put('/api/v1.0/parameters/limit/:id', async (req, res) => { 
+    const limit_id = req.params.id;       
+    const conn = await connection(dbConfig).catch(e => {return e;}); 
+    const {category ,description,is_active,max_value,min_value,updated_by} = req.body;                       
+    const sql = `CALL sp_update_parameter_limit(${limit_id},${JSON.stringify(category)} ,${JSON.stringify(description)},${min_value},${max_value},${is_active},${updated_by})`; 
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+});
+
 
  
   module.exports = router
