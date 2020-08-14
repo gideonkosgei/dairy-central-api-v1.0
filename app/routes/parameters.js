@@ -34,6 +34,37 @@ router.put('/api/v1.0/parameters/limit/:id', async (req, res) => {
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
+// system parameterization - get local settings - filter by org id
+router.get('/api/v1.0/parameters/local-settings/:org_id', async (req, res) => {
+  const org_id = req.params.org_id;    
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_parameter_local_system_settings_view_all(${org_id})`;         
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
 
+// system parameterization - get specific local settings - order by setting/parameter id
+router.get('/api/v1.0/parameters/local-settings/param/:param_id', async (req, res) => {
+  const param_id = req.params.param_id;    
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_parameter_local_system_settings_view_one(${param_id})`;         
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
+// system parameterization - create new local settings
+router.post('/api/v1.0/parameters/local-settings', async (req, res) => {        
+  const conn = await connection(dbConfig).catch(e => {return e;}); 
+  const {name ,description,is_active,value,created_by,org_id} = req.body;                       
+  const sql = `CALL sp_create_parameter_local_settings(${JSON.stringify(name)},${JSON.stringify(value)},${is_active} ,${JSON.stringify(description)},${org_id},null,${created_by})`; 
+  await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+});
+
+// system parameterization - update  local settings
+router.put('/api/v1.0/parameters/local-settings/param/:param_id', async (req, res) => {  
+  const param_id = req.params.param_id;      
+  const conn = await connection(dbConfig).catch(e => {return e;}); 
+  const {description,is_active,value,updated_by,farm_id} = req.body;                     
+  const sql = `CALL sp_update_parameter_local_settings(${param_id},${JSON.stringify(value)},${is_active} ,${JSON.stringify(description)},null,${updated_by})`; 
+  await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+});
  
-  module.exports = router
+module.exports = router
