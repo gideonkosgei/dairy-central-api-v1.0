@@ -53,8 +53,8 @@ router.get('/api/v1.0/parameters/local-settings/param/:param_id', async (req, re
 // system parameterization - create new local settings
 router.post('/api/v1.0/parameters/local-settings', async (req, res) => {        
   const conn = await connection(dbConfig).catch(e => {return e;}); 
-  const {name ,description,is_active,value,created_by,org_id} = req.body;                       
-  const sql = `CALL sp_create_parameter_local_settings(${JSON.stringify(name)},${JSON.stringify(value)},${is_active} ,${JSON.stringify(description)},${org_id},null,${created_by})`; 
+  const {name ,description,is_active,key,value,created_by,org_id} = req.body;                       
+  const sql = `CALL sp_create_parameter_local_settings(${JSON.stringify(name)},${JSON.stringify(key)},${JSON.stringify(value)},${is_active} ,${JSON.stringify(description)},${org_id},null,${created_by})`; 
   await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
@@ -62,8 +62,8 @@ router.post('/api/v1.0/parameters/local-settings', async (req, res) => {
 router.put('/api/v1.0/parameters/local-settings/param/:param_id', async (req, res) => {  
   const param_id = req.params.param_id;      
   const conn = await connection(dbConfig).catch(e => {return e;}); 
-  const {description,is_active,value,updated_by,farm_id} = req.body;                     
-  const sql = `CALL sp_update_parameter_local_settings(${param_id},${JSON.stringify(value)},${is_active} ,${JSON.stringify(description)},null,${updated_by})`; 
+  const {description,is_active,key,value,updated_by,farm_id} = req.body;                     
+  const sql = `CALL sp_update_parameter_local_settings(${param_id},${JSON.stringify(key)},${JSON.stringify(value)},${is_active} ,${JSON.stringify(description)},${farm_id},${updated_by})`; 
   await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
  
