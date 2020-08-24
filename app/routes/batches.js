@@ -1,0 +1,36 @@
+const express = require("express");
+var router = express.Router();
+const dbConfig = require('../config/dbConfig.js');
+const connection = require('../helpers/connection');
+const query = require('../helpers/query');
+
+   //create new limit parameter
+   router.post('/api/v1.0/batches/milking/upload', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;}); 
+    const {rows ,cols,created_by,org_id,uuid} = req.body; 
+    const batch_type = 1;                        
+    const sql = `CALL sp_create_batch_upload_milk( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)})`;
+    query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})})
+    .catch(e=>{res.status(400).json({status:400, message:e })});      
+});
+
+
+// view milking batched on validation queue
+router.get('/api/v1.0/batches/milking/validation/:uuid', async (req, res) => {
+  const uuid = req.params.uuid;    
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_view_batch_upoad_milk_validate_step('${uuid}')`;         
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
+// view batch records based on organization and step. Filters -> org_id, step
+router.get('/api/v1.0/batches/milking/:org/:step/:user', async (req, res) => {
+  const org = req.params.org;  
+  const step = req.params.step;  
+  const user = req.params.user;
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_batch_process_milking_view_records(${org},${step},${user})`;        
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+ 
+module.exports = router
