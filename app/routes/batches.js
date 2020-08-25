@@ -8,8 +8,22 @@ const query = require('../helpers/query');
    router.post('/api/v1.0/batches/milking/upload', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;}); 
     const {rows ,cols,created_by,org_id,uuid} = req.body; 
-    const batch_type = 1;                        
-    const sql = `CALL sp_create_batch_upload_milk( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)})`;
+    const batch_type = 1;
+    
+    const rows_clone = rows.slice(1)   
+    let i = 0;
+
+    for (i; i<rows_clone.length; i++){
+      rows_clone[i].push(uuid);
+    }  
+
+    var jString = JSON.stringify(rows_clone);
+    jString = jString.substr(1);
+    jString = jString.substring(0,jString.length-1);
+    jString = jString.replace(/\[/g, "(");
+    jString = jString.replace(/\]/g, ")");                  
+    const sql = `CALL sp_create_batch_upload_milk( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
+    
     query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})})
     .catch(e=>{res.status(400).json({status:400, message:e })});      
 });
