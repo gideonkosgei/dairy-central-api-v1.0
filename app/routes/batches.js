@@ -37,6 +37,16 @@ router.get('/api/v1.0/batches/milking/validation/:uuid', async (req, res) => {
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
+// actions on milk batch i.e validation or discard
+router.post('/api/v1.0/batches/milking/action', async (req, res) => { 
+  const {action,uuid,user} = req.body; 
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_batch_process_milking_action(${JSON.stringify(uuid)},${action},${user})`; 
+  console.log(sql);        
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
+
 // view batch records based on organization and step. Filters -> org_id, step
 router.get('/api/v1.0/batches/milking/:org/:step/:user', async (req, res) => {
   const org = req.params.org;  
