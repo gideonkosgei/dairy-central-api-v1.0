@@ -55,6 +55,16 @@ router.get('/api/v1.0/batches/milking/:org/:step/:user', async (req, res) => {
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
+
+// view deleted batches based on organization and step. 
+router.get('/api/v1.0/batches/deleted/milking/:org/:user', async (req, res) => {
+  const org = req.params.org;
+  const user = req.params.user;
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_batch_process_milking_view_deleted_records(${org},${user})`;        
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
 // view error details of a batch milk record
 router.get('/api/v1.0/batches/milking/errors/:record_id', async (req, res) => {
   const record_id = req.params.record_id;   
