@@ -11,6 +11,7 @@ const rfs = require('rotating-file-stream') ;
 const passport = require('passport');
 const Strategy = require('passport-http').BasicStrategy;
 const key_secret = require('./app/helpers/db-get-api-keys');
+const compression = require('compression');
 
 // import Routes
 const animal = require('./app/routes/animal');
@@ -25,6 +26,8 @@ const herds = require('./app/routes/herds');
 const events = require('./app/routes/events');
 const parameters = require('./app/routes/parameters');
 const batches = require('./app/routes/batches');
+const calender = require('./app/routes/calender');
+
 
 
 
@@ -39,7 +42,7 @@ passport.use(new Strategy(
   }));
 
 
-
+app.use(compression()); //Compress all routes
 app.use(helmet()); // Helmet helps you secure your Express apps by setting various HTTP headers
 app.use(cors()); // Enable Cross-origin resource sharing (CORS)
 app.use(bodyParser.json()); // parse requests of content-type - application/json
@@ -66,7 +69,7 @@ app.use('/', herds);
 app.use('/', events);
 app.use('/', parameters);
 app.use('/', batches);
-
+app.use('/', calender);
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
 app.listen(PORT, () => {

@@ -6,7 +6,7 @@
 
 # misc
 /log
-/app/config/dbConfig.js
+#/app/config/dbConfig.js
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
