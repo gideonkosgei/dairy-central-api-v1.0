@@ -1,9 +1,10 @@
 // Get the DB Connection Params from Environment Variables 
-/*const host = process.env.DB_HOST_AWS;
+
+/*
+const host = process.env.DB_HOST_AWS;
 const user = process.env.DB_USER_AWS;
 const password = process.env.DB_PASS_AWS;
 const database = process.env.DB_DATABASE_AWS;
-
 module.exports = {user, password, host, database};*/
 
 //module.exports = {user, password, host, database,port}; // this is for local db connections

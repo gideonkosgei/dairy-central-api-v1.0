@@ -72,6 +72,7 @@ app.use('/', batches);
 app.use('/', calender);
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
-app.listen(PORT, () => {
+const IP = '127.0.0.1'
+app.listen(PORT,IP, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
