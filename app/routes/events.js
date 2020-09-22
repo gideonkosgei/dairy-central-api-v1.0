@@ -289,9 +289,24 @@ router.put('/api/v1.0/events/health/:id', async (req, res) => {
 router.get('/api/v1.0/events/setup/:id', async (req, res) => {
     const animal_id = req.params.id;       
     const conn = await connection(dbConfig).catch(e => {return e;});
-    const sql = `CALL sp_event_menu_setup_view(${animal_id})`;
+    const sql = `CALL sp_event_menu_setup_view(${animal_id})`;    
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
+
+router.get('/api/v1.0/events/setup', async (req, res) => {          
+    const conn = await connection(dbConfig).catch(e => {return e;});
+    const sql = `CALL sp_event_menu_setup_all_view()`;
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
+router.put('/api/v1.0/events/setup/:id', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});
+    const animal_type_id = req.params.id; 
+    const {calving,milking,health,bio_data,insemination,sync,exit,weight,pd,updated_by} = req.body; 
+    const sql = `CALL sp_update_event_menu_setup(${calving},${milking},${health},${bio_data},${insemination},${sync},${exit},${weight},${pd},${updated_by},${animal_type_id})`; 
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+});
+
 module.exports = router
 
 
