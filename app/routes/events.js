@@ -284,6 +284,14 @@ router.put('/api/v1.0/events/health/:id', async (req, res) => {
     const sql = `CALL sp_update_event_health(${event_id},${JSON.stringify(health_date)} ,${JSON.stringify(health_category)},${drug_cost},${health_provider},${health_type},${JSON.stringify(other_health_type)},${JSON.stringify(field_agent_id)},${updated_by} )`; 
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
+
+//events menu setup
+router.get('/api/v1.0/events/setup/:id', async (req, res) => {
+    const animal_id = req.params.id;       
+    const conn = await connection(dbConfig).catch(e => {return e;});
+    const sql = `CALL sp_event_menu_setup_view(${animal_id})`;
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
 module.exports = router
 
 
