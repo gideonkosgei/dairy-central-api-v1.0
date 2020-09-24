@@ -200,7 +200,6 @@ router.post('/api/v1.0/events/calving', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;});       
     const {animal_id ,calving_date,birth_type ,body_condition_score ,calf_color ,calf_deformities ,other_calf_deformities , heart_girth,calf_name ,calf_sex ,calf_weight, ease_of_calving_other ,calving_method ,calving_type_other ,calving_type ,ease_of_calving ,calving_status ,use_of_calf ,use_of_calf_other ,calf_tag_id , lactation_number ,field_agent_id ,created_by } = req.body;                       
     const sql = `CALL sp_create_event_calving(${animal_id} ,${JSON.stringify(calving_date)},${birth_type} ,${body_condition_score} ,${calf_color} ,${calf_deformities} ,${JSON.stringify(other_calf_deformities)} , ${heart_girth},${JSON.stringify(calf_name)} ,${calf_sex} ,${calf_weight},${JSON.stringify(ease_of_calving_other)} ,${calving_method} ,${JSON.stringify(calving_type_other)} ,${calving_type} ,${ease_of_calving} ,${calving_status} ,${use_of_calf} ,${JSON.stringify(use_of_calf_other)} ,${JSON.stringify(calf_tag_id)},${lactation_number} ,${JSON.stringify(field_agent_id)} ,${created_by} )`; 
-    console.log(sql);
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
