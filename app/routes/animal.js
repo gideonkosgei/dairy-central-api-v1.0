@@ -4,11 +4,7 @@ const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
 
-  router.get('/api/v1.0/animalDetails', async (req, res) => {
-    const conn = await connection(dbConfig).catch(e => {return e;});     
-    const payload = await query(conn, 'select  name,tag_id,farm_id from core_animal limit 10').catch(e=>{return e;});   
-    res.json({ payload });
-  });
+  
 
   router.get('/api/v1.0/animalStats/:id', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});     
@@ -19,10 +15,10 @@ const query = require('../helpers/query');
 
 
 
-  router.get('/api/v1.0/animals/org/:org_id', async (req, res) => {      
+  router.get('/api/v1.0/animals/org/:org_id/:status', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});     
-      const {org_id} = req.params;
-      const sql = `CALL sp_animal_organization_view(${org_id})`;         
+      const {org_id,status} = req.params;
+      const sql = `CALL sp_animal_organization_view(${org_id},${status})`;         
       await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
   
