@@ -19,6 +19,7 @@
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "node-uuid": "^1.4.8",
+    "nodemon": "^2.0.4",
     "passport": "^0.4.1",
     "passport-http": "^0.3.0",
     "path": "^0.12.7",
