@@ -27,8 +27,7 @@ const events = require('./app/routes/events');
 const parameters = require('./app/routes/parameters');
 const batches = require('./app/routes/batches');
 const calender = require('./app/routes/calender');
-
-
+const partners = require('./app/routes/partners');
 
 
 passport.use(new Strategy(
@@ -70,6 +69,7 @@ app.use('/', events);
 app.use('/', parameters);
 app.use('/', batches);
 app.use('/', calender);
+app.use('/', partners);
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
 const IP = '127.0.0.1'
