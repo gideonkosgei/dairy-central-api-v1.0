@@ -13,7 +13,27 @@ router.get('/api/v1.0/orgs', async (req, res) => {
 router.get('/api/v1.0/orgs/access/:id', async (req, res) => {   
   const user_id = req.params.id;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_org_access_view(${user_id})`;         
+  const sql = `CALL sp_org_access_view(${user_id})`;   
+  console.log(sql);      
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+router.put('/api/v1.0/orgs/access/:id', async (req, res) => {   
+  const user = req.params.id;   
+  const {orgs,created_by} = req.body;  
+  let org_access = '';
+  if (orgs.length>0){
+    for (var i = 0; i<orgs.length;i++){
+      org_access += `,${orgs[i]}`
+    }
+  } else {
+    org_access = null;
+  }
+
+  if(org_access) {
+    org_access = org_access.replace(',', '');     
+  }
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_org_access_create(${JSON.stringify(org_access)},${user},${created_by})`;       
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
