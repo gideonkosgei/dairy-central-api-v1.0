@@ -19,6 +19,13 @@ router.get('/api/v1.0/background-process/:id', async (req, res) => {
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
-
+//PROCESS GRADUATION
+router.put('/api/v1.0/background-process/:id', async (req, res) => {
+  const{id}  = req.params;    
+  const {process_id,org_id,status_id,user} = req.body; 
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_background_process_record_update(${id},${status_id},${process_id},${org_id},${user})`;      
+  await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+});
 
 module.exports = router
