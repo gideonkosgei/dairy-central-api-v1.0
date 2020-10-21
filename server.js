@@ -32,6 +32,8 @@ const straws = require('./app/routes/straws');
 const orgs = require('./app/routes/orgs');
 const stats = require('./app/routes/stats');
 const graduation = require('./app/routes/graduation');
+const background_processes = require('./app/routes/background_processes');
+
 
 passport.use(new Strategy(
   function(username, password, cb) {
@@ -77,6 +79,8 @@ app.use('/', straws);
 app.use('/', orgs);
 app.use('/', stats);
 app.use('/', graduation);
+app.use('/', background_processes);
+
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
 const IP = '127.0.0.1'
