@@ -41,9 +41,9 @@ router.get('/api/v1.0/batches/milking/validation/:uuid', async (req, res) => {
 router.post('/api/v1.0/batches/milking/action', async (req, res) => { 
   const {action,uuid,user} = req.body; 
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_milking_action(${JSON.stringify(uuid)},${action},${user})`;         
+  const sql = `CALL sp_batch_process_milking_action(${JSON.stringify(uuid)},${action},${user})`; 
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
-});
+ });
 
 // view batch records based on organization and step. Filters -> org_id, step
 router.get('/api/v1.0/batches/milking/:org/:step/:user', async (req, res) => {
@@ -51,7 +51,7 @@ router.get('/api/v1.0/batches/milking/:org/:step/:user', async (req, res) => {
   const step = req.params.step;  
   const user = req.params.user;
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_milking_view_records(${org},${step},${user})`;        
+  const sql = `CALL sp_batch_process_milking_view_records(${org},${step},${user})`; 
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -62,6 +62,15 @@ router.get('/api/v1.0/batches/deleted/milking/:org/:user', async (req, res) => {
   const user = req.params.user;
   const conn = await connection(dbConfig).catch(e => {return e;});     
   const sql = `CALL sp_batch_process_milking_view_deleted_records(${org},${user})`;        
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
+// view POSTED batches based on organization and step. 
+router.get('/api/v1.0/batches/posted/milking/:org/:user', async (req, res) => {
+  const org = req.params.org;
+  const user = req.params.user;
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_batch_process_milking_view_posted_records(${org},${user})`;        
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 

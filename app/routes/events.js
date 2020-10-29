@@ -235,7 +235,7 @@ router.put('/api/v1.0/events/calving/:event_id', async (req, res) => {
 router.post('/api/v1.0/events/milking', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});       
     const {animal_id,milk_date,days_in_milk,lactation_id,lactation_number,milking_notes,milk_sample_type_id,milk_pm_litres,milk_butter_fat,milk_lactose,milk_mid_day,milk_protein,milk_am_litres,milk_somatic_cell_count,milk_urea,testday_no,milk_Weight,field_agent_id,created_by} = req.body;                          
-    const sql = `CALL sp_create_event_milking(${animal_id},${JSON.stringify(milk_date)} ,${days_in_milk} ,${lactation_id} ,${lactation_number},${JSON.stringify(milking_notes)} ,${milk_sample_type_id} ,${milk_pm_litres} ,${milk_butter_fat} ,${milk_lactose} ,${milk_mid_day} ,${milk_protein},${milk_am_litres} ,${milk_somatic_cell_count} ,${milk_urea},${testday_no},${milk_Weight},${field_agent_id} ,${created_by} )`; 
+    const sql = `CALL sp_create_event_milking(${animal_id},${JSON.stringify(milk_date)} ,${days_in_milk} ,${lactation_id} ,${lactation_number},${JSON.stringify(milking_notes)} ,${milk_sample_type_id} ,${milk_pm_litres} ,${milk_butter_fat} ,${milk_lactose} ,${milk_mid_day} ,${milk_protein},${milk_am_litres} ,${milk_somatic_cell_count} ,${milk_urea},${testday_no},${milk_Weight},${field_agent_id} ,${created_by},null )`; 
     console.log(sql);
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
