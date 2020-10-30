@@ -70,7 +70,7 @@ router.get('/api/v1.0/batches/posted/milking/:org/:user', async (req, res) => {
   const org = req.params.org;
   const user = req.params.user;
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_milking_view_posted_records(${org},${user})`;        
+  const sql = `CALL sp_batch_process_milking_view_posted_batches(${org},${user})`;        
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -79,6 +79,13 @@ router.get('/api/v1.0/batches/milking/errors/:record_id', async (req, res) => {
   const record_id = req.params.record_id;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
   const sql = `CALL sp_batch_process_milking_view_record_error(${record_id})`;       
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
+router.get('/api/v1.0/batches/milking/list/:org', async (req, res) => {
+  const {org} = req.params;   
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_batch_process_milking_list(${org})`;       
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
  
