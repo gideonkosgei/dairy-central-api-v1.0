@@ -138,8 +138,8 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
   router.put('/api/v1.0/events/insemination/:event_id', async (req, res) => {   
     const event_id = req.params.event_id;   
     const conn = await connection(dbConfig).catch(e => {return e;});       
-    const {ai_date ,straw_semen_type ,type_of_ai ,straw_id ,country_of_origin, body_condition_score ,breed_composition_bull ,ai_cost,cow_weight,semen_batch,semen_source ,semen_source_other,breed_of_bull ,breed_of_bull_other ,field_agent_id ,updated_by} = req.body;      
-    const sql = `CALL sp_update_event_insemination(${event_id},${JSON.stringify(ai_date)},${straw_semen_type}, ${type_of_ai}, ${JSON.stringify(straw_id)}, ${JSON.stringify(country_of_origin)}, ${body_condition_score}, ${breed_composition_bull}, ${ai_cost}, ${cow_weight}, ${JSON.stringify(semen_batch)}, ${semen_source},${JSON.stringify(semen_source_other)},${breed_of_bull} ,${JSON.stringify(breed_of_bull_other)} ,${field_agent_id},${updated_by})`; 
+    const {ai_date  ,type_of_ai ,straw_id , body_condition_score ,ai_cost ,field_agent_id ,updated_by} = req.body;      
+    const sql = `CALL sp_update_event_insemination(${event_id},${JSON.stringify(ai_date)}, ${type_of_ai}, ${straw_id}, ${body_condition_score}, ${ai_cost},${field_agent_id},${updated_by})`; 
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
