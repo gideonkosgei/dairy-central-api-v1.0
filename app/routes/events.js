@@ -165,8 +165,8 @@ router.get('/api/v1.0/events/exit/:id', async (req, res) => {
  //create exit event
   router.post('/api/v1.0/events/exit', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});       
-      const {animal_id ,exit_date,disposal_amount,disposal_reason,disposal_reason_other,new_breeder_name ,new_breeder_phone_number,new_country ,new_district ,new_farmer_name,new_farmer_phone_number,new_region,new_village,field_agent_id,created_by} = req.body;                       
-      const sql = `CALL sp_create_event_exits(${animal_id} ,${JSON.stringify(exit_date)},${disposal_amount},${disposal_reason},${JSON.stringify(disposal_reason_other)},${JSON.stringify(new_breeder_name)} ,${JSON.stringify(new_breeder_phone_number)},${JSON.stringify(new_country)} ,${JSON.stringify(new_district)} ,${JSON.stringify(new_farmer_name)},${JSON.stringify(new_farmer_phone_number)},${JSON.stringify(new_region)},${JSON.stringify(new_village)},${JSON.stringify(field_agent_id)},${created_by})`; 
+      const {animal_id ,exit_date,disposal_amount,disposal_reason,disposal_reason_other,new_breeder_name ,new_breeder_phone_number,new_country ,new_district ,new_farmer_name,new_farmer_phone_number,new_region,new_ward,new_village,field_agent_id,created_by} = req.body;                       
+      const sql = `CALL sp_create_event_exits(${animal_id} ,${JSON.stringify(exit_date)},${disposal_amount},${disposal_reason},${JSON.stringify(disposal_reason_other)},${JSON.stringify(new_breeder_name)} ,${JSON.stringify(new_breeder_phone_number)},${JSON.stringify(new_country)} ,${JSON.stringify(new_district)} ,${JSON.stringify(new_farmer_name)},${JSON.stringify(new_farmer_phone_number)},${JSON.stringify(new_region)},${JSON.stringify(new_ward)},${JSON.stringify(new_village)},${JSON.stringify(field_agent_id)},${created_by})`; 
       await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
   });
 
