@@ -40,8 +40,7 @@ router.put('/api/v1.0/orgs/access/:id', async (req, res) => {
 router.put('/api/v1.0/orgs/switch/access', async (req, res) => {   
   const conn = await connection(dbConfig).catch(e => {return e;});  
   const {org,user} = req.body;    
-  const sql = `CALL sp_org_switch(${org},${user})`;  
-  console.log(sql);      
+  const sql = `CALL sp_org_switch(${org},${user})`;       
   await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});       
 });
 
