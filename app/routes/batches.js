@@ -45,11 +45,12 @@ router.get('/api/v1.0/batches/weight/validation/:uuid', async (req, res) => {
 });
 
 
-// actions on milk batch i.e validation or discard
-router.post('/api/v1.0/batches/milking/action', async (req, res) => { 
+// actions on  batch i.e validation or discard or progress &  post
+router.post('/api/v1.0/batches/action', async (req, res) => { 
   const {action,uuid,user} = req.body; 
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_milking_action(${JSON.stringify(uuid)},${action},${user})`; 
+  const sql = `CALL sp_batch_process_action(${JSON.stringify(uuid)},${action},${user})`; 
+  console.log(sql);
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
  });
 
@@ -71,11 +72,10 @@ router.get('/api/v1.0/batches/deleted/:type/:org/:user', async (req, res) => {
 });
 
 // view POSTED batches based on organization and step. 
-router.get('/api/v1.0/batches/posted/milking/:org/:user', async (req, res) => {
-  const org = req.params.org;
-  const user = req.params.user;
+router.get('/api/v1.0/batches/posted/:type/:org/:user', async (req, res) => {
+  const {org,user,type} = req.params;  
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_milking_view_posted_batches(${org},${user})`;        
+  const sql = `CALL sp_batch_process_view_posted_batches(${type},${org},${user})`;        
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
