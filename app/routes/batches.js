@@ -28,29 +28,19 @@ const query = require('../helpers/query');
 });
 
 
-// view milking batched on validation queue
-router.get('/api/v1.0/batches/milking/validation/:uuid', async (req, res) => {
+// view batched on validation queue
+router.get('/api/v1.0/batches/validation/:uuid', async (req, res) => {
   const uuid = req.params.uuid;    
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_view_batch_upoad_milk_validate_step('${uuid}')`;         
+  const sql = `CALL sp_view_batch_upload_validate_step('${uuid}')`;         
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
-
-// view weight batched on validation queue
-router.get('/api/v1.0/batches/weight/validation/:uuid', async (req, res) => {
-  const uuid = req.params.uuid;    
-  const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_view_batch_upload_weight_validate_step('${uuid}')`;         
-  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
-});
-
 
 // actions on  batch i.e validation or discard or progress &  post
 router.post('/api/v1.0/batches/action', async (req, res) => { 
   const {action,uuid,user} = req.body; 
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_action(${JSON.stringify(uuid)},${action},${user})`; 
-  console.log(sql);
+  const sql = `CALL sp_batch_process_action(${JSON.stringify(uuid)},${action},${user})`;  
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
  });
 
@@ -75,15 +65,15 @@ router.get('/api/v1.0/batches/deleted/:type/:org/:user', async (req, res) => {
 router.get('/api/v1.0/batches/posted/:type/:org/:user', async (req, res) => {
   const {org,user,type} = req.params;  
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_view_posted_batches(${type},${org},${user})`;        
+  const sql = `CALL sp_batch_process_view_posted_batches(${type},${org},${user})`;
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
 // view error details of a batch milk record
-router.get('/api/v1.0/batches/milking/errors/:record_id', async (req, res) => {
-  const record_id = req.params.record_id;   
+router.get('/api/v1.0/batches/errors/:record_id/:batch_type', async (req, res) => {
+  const {record_id,batch_type} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_milking_view_record_error(${record_id})`;       
+  const sql = `CALL sp_batch_process_view_record_error(${record_id},${batch_type})`;       
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
