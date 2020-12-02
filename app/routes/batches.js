@@ -48,7 +48,8 @@ router.post('/api/v1.0/batches/action', async (req, res) => {
 router.get('/api/v1.0/batches/view/:type/:org/:step/:user', async (req, res) => {
   const {org,step,user,type} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_view_records(${type},${org},${step},${user})`;  
+  const sql = `CALL sp_batch_process_view_records(${type},${org},${step},${user})`; 
+   
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
