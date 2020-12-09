@@ -32,8 +32,7 @@ const query = require('../helpers/query');
 router.get('/api/v1.0/batches/validation/:uuid', async (req, res) => {
   const uuid = req.params.uuid;    
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_view_batch_upload_validate_step('${uuid}')`;  
-  console.log(sql);       
+  const sql = `CALL sp_view_batch_upload_validate_step('${uuid}')`;        
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -58,8 +57,8 @@ router.get('/api/v1.0/batches/view/:type/:org/:step/:user', async (req, res) => 
 router.get('/api/v1.0/batches/deleted/:type/:org/:user', async (req, res) => {
   const {org,user,type} = req.params;  
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_view_deleted_records(${type},${org},${user})`; 
-  console.log(sql);       
+  const sql = `CALL sp_batch_process_view_deleted_records(${type},${org},${user})`;  
+  console.log(sql);      
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
