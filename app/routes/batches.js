@@ -32,7 +32,7 @@ const query = require('../helpers/query');
 router.get('/api/v1.0/batches/validation/:uuid', async (req, res) => {
   const uuid = req.params.uuid;    
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_view_batch_upload_validate_step('${uuid}')`; 
+  const sql = `CALL sp_view_batch_upload_validate_step('${uuid}')`;  
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -48,7 +48,7 @@ router.post('/api/v1.0/batches/action', async (req, res) => {
 router.get('/api/v1.0/batches/view/:type/:org/:step/:user', async (req, res) => {
   const {org,step,user,type} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_view_records(${type},${org},${step},${user})`; 
+  const sql = `CALL sp_batch_process_view_records(${type},${org},${step},${user})`;
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -122,6 +122,26 @@ router.post('/api/v1.0/batches/sync/upload', async (req, res) => {
   jString = jString.replace(/\[/g, "(");
   jString = jString.replace(/\]/g, ")");                  
   const sql = `CALL sp_create_batch_upload_sync( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;  
+  query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})})
+  .catch(e=>{res.status(400).json({status:400, message:e })});      
+});
+
+/* Animal Registration Batches*/
+router.post('/api/v1.0/batches/animal/upload', async (req, res) => {      
+  const conn = await connection(dbConfig).catch(e => {return e;}); 
+  const {rows ,cols,created_by,org_id,uuid} = req.body; 
+  const batch_type = 8;  
+  const rows_clone = rows.slice(1)   
+  let i = 0;
+  for (i; i<rows_clone.length; i++){
+    rows_clone[i].push(uuid);
+  }  
+  var jString = JSON.stringify(rows_clone);
+  jString = jString.substr(1);
+  jString = jString.substring(0,jString.length-1);
+  jString = jString.replace(/\[/g, "(");
+  jString = jString.replace(/\]/g, ")");                  
+  const sql = `CALL sp_create_batch_upload_animal( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;  
   query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})})
   .catch(e=>{res.status(400).json({status:400, message:e })});      
 });
