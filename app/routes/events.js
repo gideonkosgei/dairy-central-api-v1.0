@@ -6,10 +6,10 @@ const connection = require('../helpers/connection');
 const query = require('../helpers/query');
 
 //view weight records for an animal
-  router.get('/api/v1.0/events/weight/animal/:id', async (req, res) => {      
+  router.get('/api/v1.0/events/weight/animal/:parameter/:option', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});     
-    const id = req.params.id;
-    const sql = `CALL sp_event_weight_view(${id})`;
+    const {parameter,option} = req.params;
+    const sql = `CALL sp_event_weight_view(${parameter},${option})`;    
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -45,10 +45,10 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
-  router.get('/api/v1.0/events/pd/animal/:id', async (req, res) => {      
+  router.get('/api/v1.0/events/pd/animal/:parameter/:option', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});     
-      const id = req.params.id;
-      const sql = `CALL sp_event_pd_view(${id})`;
+      const {parameter,option} = req.params;
+      const sql = `CALL sp_event_pd_view(${parameter},${option})`;
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
@@ -78,12 +78,13 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
     });
 
   //synchronization
-  router.get('/api/v1.0/events/sync/animal/:id', async (req, res) => {      
-      const conn = await connection(dbConfig).catch(e => {return e;});     
-      const id = req.params.id;
-      const sql = `CALL sp_event_sync_view(${id})`;
-      await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
-  });
+  router.get('/api/v1.0/events/sync/animal/:parameter/:option', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const {parameter,option} = req.params;
+    const sql = `CALL sp_event_sync_view(${parameter},${option})`;    
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+  
  //create sync event
   router.post('/api/v1.0/events/sync', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});       
@@ -112,10 +113,10 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
 
   //insemination
   //view insemination records
-  router.get('/api/v1.0/events/insemination/animal/:id', async (req, res) => {      
+  router.get('/api/v1.0/events/insemination/animal/:parameter/:option', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});     
-      const id = req.params.id;
-      const sql = `CALL sp_event_insemination_view(${id})`;
+      const {parameter,option} = req.params;
+      const sql = `CALL sp_event_insemination_view(${parameter},${option})`;    
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
@@ -147,10 +148,10 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
 
   //Exit events
   //view exit records
-  router.get('/api/v1.0/events/exit/animal/:id', async (req, res) => {      
+  router.get('/api/v1.0/events/exit/animal/:parameter/:option', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});     
-      const id = req.params.id;
-      const sql = `CALL sp_event_exits_view(${id})`;
+      const {parameter,option} = req.params;
+      const sql = `CALL sp_event_exits_view(${parameter},${option})`;
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
@@ -189,10 +190,10 @@ router.get('/api/v1.0/events/exit/list/:id', async (req, res) => {
 
   //Calving events
   //view Calving records
-  router.get('/api/v1.0/events/calving/animal/:id', async (req, res) => {      
+  router.get('/api/v1.0/events/calving/animal/:parameter/:option', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});     
-    const id = req.params.id;
-    const sql = `CALL sp_event_calving_view(${id})`;
+    const {parameter,option} = req.params;
+    const sql = `CALL sp_event_calving_view(${parameter},${option})`;
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -224,10 +225,10 @@ router.put('/api/v1.0/events/calving/:event_id', async (req, res) => {
 
 //Milking events
 //view miking records
-  router.get('/api/v1.0/events/milking/animal/:id', async (req, res) => {      
+  router.get('/api/v1.0/events/milking/animal/:parameter/:option', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});     
-    const id = req.params.id;
-    const sql = `CALL sp_event_milking_view(${id})`;
+    const {parameter,option} = req.params;
+    const sql = `CALL sp_event_milking_view(${parameter},${option})`;    
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
