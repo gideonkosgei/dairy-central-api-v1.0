@@ -38,5 +38,11 @@ router.get('/api/v1.0/stats/lactation-table/:animal_id', async (req, res) => {
   const sql = `CALL sp_analytics_milking_trends(${animal_id})`;     
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
+router.get('/api/v1.0/stats/lactation-curve/:animal_id', async (req, res) => {   
+  const {animal_id} = req.params;   
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_analytics_lactation_curve(${animal_id})`;     
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
 
 module.exports = router
