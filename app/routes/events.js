@@ -322,9 +322,20 @@ router.put('/api/v1.0/events/setup/:id', async (req, res) => {
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
+// create hoof health event
+router.post('/api/v1.0/events/hoof-health', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const { animal_id,exam_date,other_hoof_problems,Swelling_of_coronet,digital_dermatitis,heel_horn_erosion,horizontal_horn_fissure,interdigital_hyperplasia, interdigital_phlegmon,scissor_claws,vertical_horn_fissure,field_agent_id,created_by} = req.body;
+    const sql = `CALL sp_create_event_hoof_health(${animal_id},${JSON.stringify(exam_date)},${digital_dermatitis},${interdigital_hyperplasia},${interdigital_phlegmon},${scissor_claws},${horizontal_horn_fissure},${vertical_horn_fissure},${Swelling_of_coronet},${heel_horn_erosion},${JSON.stringify(other_hoof_problems)},${field_agent_id},${created_by})`;   
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+});
+
 module.exports = router
 
 
+  
+
+  
 
 
 
