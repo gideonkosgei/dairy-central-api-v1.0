@@ -325,9 +325,9 @@ router.put('/api/v1.0/events/setup/:id', async (req, res) => {
 // create hoof health event
 router.post('/api/v1.0/events/hoof-health', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});     
-    const { id,exam_date,other_hoof_problems,Swelling_of_coronet,digital_dermatitis,heel_horn_erosion,horizontal_horn_fissure,interdigital_hyperplasia, interdigital_phlegmon,scissor_claws,vertical_horn_fissure,field_agent_id,user_id} = req.body;
+    const { id,exam_date,other_hoof_problems,swelling_of_coronet,digital_dermatitis,heel_horn_erosion,horizontal_horn_fissure,interdigital_hyperplasia, interdigital_phlegmon,scissor_claws,vertical_horn_fissure,field_agent_id,user_id} = req.body;
     const createOrUpdateFlag = 0;
-    const sql = `CALL sp_CreateOrUpdateHoofHealthEventRecord(${createOrUpdateFlag},${id},${JSON.stringify(exam_date)},${digital_dermatitis},${interdigital_hyperplasia},${interdigital_phlegmon},${scissor_claws},${horizontal_horn_fissure},${vertical_horn_fissure},${Swelling_of_coronet},${heel_horn_erosion},${JSON.stringify(other_hoof_problems)},${field_agent_id},${user_id})`;   
+    const sql = `CALL sp_CreateOrUpdateHoofHealthEventRecord(${createOrUpdateFlag},${id},${JSON.stringify(exam_date)},${digital_dermatitis},${interdigital_hyperplasia},${interdigital_phlegmon},${scissor_claws},${horizontal_horn_fissure},${vertical_horn_fissure},${swelling_of_coronet},${heel_horn_erosion},${JSON.stringify(other_hoof_problems)},${field_agent_id},${user_id})`;   
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
 });
 
@@ -336,8 +336,8 @@ router.put('/api/v1.0/events/hoof-health/:id', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;});
     const record_id = req.params.id;   
     const createOrUpdateFlag = 1;  
-    const { exam_date,other_hoof_problems,Swelling_of_coronet,digital_dermatitis,heel_horn_erosion,horizontal_horn_fissure,interdigital_hyperplasia, interdigital_phlegmon,scissor_claws,vertical_horn_fissure,field_agent_id,user_id} = req.body;
-    const sql = `CALL sp_CreateOrUpdateHoofHealthEventRecord(${createOrUpdateFlag},${record_id},${JSON.stringify(exam_date)},${digital_dermatitis},${interdigital_hyperplasia},${interdigital_phlegmon},${scissor_claws},${horizontal_horn_fissure},${vertical_horn_fissure},${Swelling_of_coronet},${heel_horn_erosion},${JSON.stringify(other_hoof_problems)},${field_agent_id},${user_id})`;   
+    const { exam_date,other_hoof_problems,swelling_of_coronet,digital_dermatitis,heel_horn_erosion,horizontal_horn_fissure,interdigital_hyperplasia, interdigital_phlegmon,scissor_claws,vertical_horn_fissure,field_agent_id,user_id} = req.body;
+    const sql = `CALL sp_CreateOrUpdateHoofHealthEventRecord(${createOrUpdateFlag},${record_id},${JSON.stringify(exam_date)},${digital_dermatitis},${interdigital_hyperplasia},${interdigital_phlegmon},${scissor_claws},${horizontal_horn_fissure},${vertical_horn_fissure},${swelling_of_coronet},${heel_horn_erosion},${JSON.stringify(other_hoof_problems)},${field_agent_id},${user_id})`;   
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
 });
 
@@ -348,6 +348,28 @@ router.get('/api/v1.0/events/hoof-health/:parameter/:option', async (req, res) =
     const sql = `CALL sp_event_hoof_heath_view(${parameter},${option})`;       
     await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
+
+ 
+ 
+// create animal injury event record
+router.post('/api/v1.0/events/injury', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const { id,treatmentDate,injury_type,injury_type_other,injury_service_provider,other_service_provider,injury_service_cost, injury_drug_cost,injury_cow_status,injury_cow_status_other,field_agent_id,user_id} = req.body;
+    const createOrUpdateFlag = 0;
+    const sql = `CALL sp_CreateOrUpdateInjuryEventRecord(${createOrUpdateFlag},${id},${JSON.stringify(treatmentDate)},${injury_type},${JSON.stringify(injury_type_other)},${injury_service_provider},${JSON.stringify(other_service_provider)},${injury_drug_cost},${injury_service_cost},${injury_cow_status},${JSON.stringify(injury_cow_status_other)},${field_agent_id},${user_id})`;   
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+});
+
+// edit animal injury event record
+router.put('/api/v1.0/events/hoof-health/:id', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});
+    const record_id = req.params.id;   
+    const createOrUpdateFlag = 1;  
+    const { exam_date,other_hoof_problems,swelling_of_coronet,digital_dermatitis,heel_horn_erosion,horizontal_horn_fissure,interdigital_hyperplasia, interdigital_phlegmon,scissor_claws,vertical_horn_fissure,field_agent_id,user_id} = req.body;
+    const sql = `CALL sp_CreateOrUpdateHoofHealthEventRecord(${createOrUpdateFlag},${record_id},${JSON.stringify(exam_date)},${digital_dermatitis},${interdigital_hyperplasia},${interdigital_phlegmon},${scissor_claws},${horizontal_horn_fissure},${vertical_horn_fissure},${swelling_of_coronet},${heel_horn_erosion},${JSON.stringify(other_hoof_problems)},${field_agent_id},${user_id})`;   
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+});
+
 module.exports = router
 
 
