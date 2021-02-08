@@ -387,8 +387,8 @@ router.put('/api/v1.0/events/parasite-infection/:id', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;});
     const record_id = req.params.id;   
     const createOrUpdateFlag = 1;
-    const {treatmentDate,injury_type,injury_type_other,injury_service_provider,other_service_provider,injury_service_cost, injury_drug_cost,injury_cow_status,injury_cow_status_other,field_agent_id,user_id} = req.body;   
-    const sql = `CALL sp_CreateOrUpdateParasiteInfectionEventRecord(${createOrUpdateFlag},${record_id},${JSON.stringify(treatmentDate)},${injury_type},${JSON.stringify(injury_type_other)},${injury_service_provider},${JSON.stringify(other_service_provider)},${injury_drug_cost},${injury_service_cost},${injury_cow_status},${JSON.stringify(injury_cow_status_other)},${field_agent_id},${user_id})`;    
+    const {parasite_date,parasite_type,parasite_type_other,parasite_provider,parasite_provider_other,parasite_service_cost, parasite_drug_cost,parasite_cow_status,parasite_cow_status_other,field_agent_id,user_id} = req.body;
+    const sql = `CALL sp_CreateOrUpdateParasiteInfectionEventRecord(${createOrUpdateFlag},${record_id},${JSON.stringify(parasite_date)},${parasite_type},${JSON.stringify(parasite_type_other)},${parasite_provider},${JSON.stringify(parasite_provider_other)},${parasite_drug_cost},${parasite_service_cost},${parasite_cow_status},${JSON.stringify(parasite_cow_status_other)},${field_agent_id},${user_id})`;   
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
 });
 
