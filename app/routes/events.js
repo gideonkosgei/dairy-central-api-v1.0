@@ -400,6 +400,54 @@ router.get('/api/v1.0/events/parasite-infection/:parameter/:option', async (req,
     await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
+     
+// Create Parasite Infection Event Record
+router.post('/api/v1.0/events/hoof-treatment', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;}); 
+        
+    const { id,treatment_date,hoof_problem,hoof_treatment_type,hoof_treatment_type_other,hoof_treatment_provider,hoof_treatment_provider_other,hoof_treatment_drug_cost,hoof_treatment_service_cost,hoof_treatment_cow_status,hoof_treatment_cow_status_other,field_agent_id,user_id} = req.body;
+    const createOrUpdateFlag = 0; 
+    const sql = `CALL sp_CreateOrUpdateHoofTreatmentEventRecord(
+        ${createOrUpdateFlag},
+        ${id},
+        ${JSON.stringify(treatment_date)},
+        ${hoof_problem},
+        ${hoof_treatment_type},
+        ${JSON.stringify(hoof_treatment_type_other)},
+        ${hoof_treatment_provider},
+        ${JSON.stringify(hoof_treatment_provider_other)},
+        ${hoof_treatment_drug_cost},
+        ${hoof_treatment_service_cost},
+        ${hoof_treatment_cow_status},
+        ${JSON.stringify(hoof_treatment_cow_status_other)},
+        ${field_agent_id},
+        ${user_id}
+    )`;     
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+});
+
+// edit Hoof Treatment event record
+router.put('/api/v1.0/events/hoof-treatment/:id', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});
+    const record_id = req.params.id;   
+    const createOrUpdateFlag = 1;
+    const {treatment_date,hoof_problem,hoof_treatment_type,hoof_treatment_type_other,hoof_treatment_provider,hoof_treatment_provider_other,hoof_treatment_drug_cost,hoof_treatment_service_cost,hoof_treatment_cow_status,hoof_treatment_cow_status_other,field_agent_id,user_id} = req.body;    
+    const sql = `CALL sp_CreateOrUpdateHoofTreatmentEventRecord(${createOrUpdateFlag},${record_id},${JSON.stringify(treatment_date)},${hoof_problem},${hoof_treatment_type},${JSON.stringify(hoof_treatment_type_other)},${hoof_treatment_provider},${JSON.stringify(hoof_treatment_provider_other)},${hoof_treatment_drug_cost},${hoof_treatment_service_cost},${hoof_treatment_cow_status},${JSON.stringify(hoof_treatment_cow_status_other)},${field_agent_id},${user_id})`;   
+    
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+});
+
+//get all Hoof Treatment event record
+router.get('/api/v1.0/events/hoof-treatment/:parameter/:option', async (req, res) => {   
+    const {parameter,option} = req.params;   
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const sql = `CALL sp_CreateOrUpdateHoofTreatmentEventRecord(${parameter},${option})`;   
+    await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+  });
+
+
+
+
 
 
 
