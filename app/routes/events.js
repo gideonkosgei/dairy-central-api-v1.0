@@ -401,7 +401,7 @@ router.get('/api/v1.0/events/parasite-infection/:parameter/:option', async (req,
   });
 
      
-// Create Parasite Infection Event Record
+// Create Hoof Treatment Event Record
 router.post('/api/v1.0/events/hoof-treatment', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;}); 
         
@@ -445,6 +445,90 @@ router.get('/api/v1.0/events/hoof-treatment/:parameter/:option', async (req, res
     await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
+  
+
+// Create Vaccination Event Record
+router.post('/api/v1.0/events/vaccination', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});        
+    const { 
+        id,
+        vacc_vaccine_date,
+        vacc_vaccine_type,
+        vacc_vaccine_type_other,
+        vacc_vaccine_provider,
+        vacc_vaccine_provider_other,
+        vacc_vaccine_drug_cost,
+        vacc_vaccine_service_cost,
+        vacc_vaccine_cow_status,
+        vacc_vaccine_cow_status_other,
+        ecf_supervisor,
+        ecf_provider,
+        ecf_provider_mobile,
+        ecf_vial_batch,
+        ecf_dilution_time,
+        ecf_first_immunization,
+        ecf_last_immunization,
+        ecf_vaccination_weight,
+        ecf_vaccination_otc,
+        ecf_vaccination_alb,
+        ecf_vaccination_temp,
+        ecf_vaccination_payment_modes,
+        ecf_vaccination_cost,
+        ecf_vaccination_is_subsidised,
+        ecf_vaccination_voucher,        
+        user_id
+    } = req.body;
+
+    const createOrUpdateFlag = 0; 
+    const sql = `CALL sp_CreateOrUpdateVaccinationEventRecord(
+        ${createOrUpdateFlag},
+        ${id},
+        ${JSON.stringify(vacc_vaccine_date)},
+        ${vacc_vaccine_type},
+        ${JSON.stringify(vacc_vaccine_type_other)},
+        ${vacc_vaccine_provider},
+        ${JSON.stringify(vacc_vaccine_provider_other)},
+        ${vacc_vaccine_drug_cost},
+        ${vacc_vaccine_service_cost},
+        ${vacc_vaccine_cow_status},
+        ${JSON.stringify(vacc_vaccine_cow_status_other)},
+        ${ecf_supervisor},
+        ${ecf_provider},
+        ${JSON.stringify(ecf_provider_mobile)},
+        ${JSON.stringify(ecf_vial_batch)},
+        ${JSON.stringify(ecf_dilution_time)},
+        ${JSON.stringify(ecf_first_immunization)},
+        ${JSON.stringify(ecf_last_immunization)},
+        ${ecf_vaccination_weight},
+        ${ecf_vaccination_otc},
+        ${ecf_vaccination_alb},
+        ${ecf_vaccination_temp},
+        ${ecf_vaccination_payment_modes},
+        ${ecf_vaccination_cost},
+        ${ecf_vaccination_is_subsidised},
+        ${JSON.stringify(ecf_vaccination_voucher)}, 
+        ${user_id}
+    )`;     
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+});
+
+// edit Vaccination event record
+router.put('/api/v1.0/events/vaccination/:id', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});
+    const record_id = req.params.id;   
+    const createOrUpdateFlag = 1;
+    const {treatment_date,hoof_problem,hoof_treatment_type,hoof_treatment_type_other,hoof_treatment_provider,hoof_treatment_provider_other,hoof_treatment_drug_cost,hoof_treatment_service_cost,hoof_treatment_cow_status,hoof_treatment_cow_status_other,field_agent_id,user_id} = req.body;    
+    const sql = `CALL sp_CreateOrUpdateHoofTreatmentEventRecord(${createOrUpdateFlag},${record_id},${JSON.stringify(treatment_date)},${hoof_problem},${hoof_treatment_type},${JSON.stringify(hoof_treatment_type_other)},${hoof_treatment_provider},${JSON.stringify(hoof_treatment_provider_other)},${hoof_treatment_drug_cost},${hoof_treatment_service_cost},${hoof_treatment_cow_status},${JSON.stringify(hoof_treatment_cow_status_other)},${field_agent_id},${user_id})`;   
+    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+});
+
+//get all Vaccination event record
+router.get('/api/v1.0/events/vaccination/:parameter/:option', async (req, res) => {   
+    const {parameter,option} = req.params;   
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const sql = `CALL sp_event_hoof_treatment_view(${parameter},${option})`;   
+    await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+  });
 
 
 
