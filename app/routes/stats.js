@@ -72,4 +72,11 @@ router.get('/api/v1.0/stats/due-dates/:org', async (req, res) => {
   const sql = `CALL sp_animals_due_dates(${org})`;     
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
+
+router.get('/api/v1.0/stats/pd-action-list/:org', async (req, res) => {   
+  const {org} = req.params;   
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_animals_pd_action_list(${org})`;     
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
 module.exports = router
