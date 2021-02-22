@@ -296,11 +296,93 @@ router.post('/api/v1.0/events/calving', async (req, res) => {
 
 
 //update Calving event record
-router.put('/api/v1.0/events/calving/:event_id', async (req, res) => {  
-    const event_id = req.params.event_id;    
-    const conn = await connection(dbConfig).catch(e => {return e;});       
-    const {calving_date,birth_type ,body_condition_score ,calf_color ,calf_deformities ,other_calf_deformities , heart_girth,calf_name ,calf_sex ,calf_weight, ease_of_calving_other ,calving_method ,calving_type_other ,calving_type ,ease_of_calving ,calving_status ,use_of_calf ,use_of_calf_other ,calf_tag_id , lactation_number ,field_agent_id ,updated_by } = req.body;                       
-    const sql = `CALL sp_update_event_calving(${event_id} ,${JSON.stringify(calving_date)},${birth_type} ,${body_condition_score} ,${calf_color} ,${calf_deformities} ,${JSON.stringify(other_calf_deformities)} , ${heart_girth},${JSON.stringify(calf_name)} ,${calf_sex} ,${calf_weight},${JSON.stringify(ease_of_calving_other)} ,${calving_method} ,${JSON.stringify(calving_type_other)} ,${calving_type} ,${ease_of_calving} ,${calving_status} ,${use_of_calf} ,${JSON.stringify(use_of_calf_other)} ,${JSON.stringify(calf_tag_id)},${lactation_number} ,${JSON.stringify(field_agent_id)} ,${updated_by} )`; 
+router.put('/api/v1.0/events/calving/:rec_id', async (req, res) => {  
+    const rec_id = req.params.rec_id;    
+    const conn = await connection(dbConfig).catch(e => {return e;});    
+    const option = 1;      
+    const {  
+        calving_date,
+        birth_type,
+        calving_method,
+        lactation_number,
+        field_agent_id,
+        updated_by,        
+        body_condition_score,
+        calf_color,
+        calf_deformities,
+        other_calf_deformities,
+        heart_girth,
+        calf_name,
+        calf_sex,
+        calf_weight,
+        ease_of_calving_other,      
+        calving_type_other,
+        calving_type,
+        ease_of_calving,
+        calving_status,
+        use_of_calf,
+        use_of_calf_other,
+        calf_tag_id,
+        body_condition_score2,
+        calf_color2,
+        calf_deformities2,
+        other_calf_deformities2,
+        heart_girth2,
+        calf_name2,
+        calf_sex2,
+        calf_weight2,
+        ease_of_calving_other2,      
+        calving_type_other2,
+        calving_type2,
+        ease_of_calving2,
+        calving_status2,
+        use_of_calf2,
+        use_of_calf_other2,
+        calf_tag_id2        
+     } = req.body; 
+     
+     const sql = `CALL sp_CreateOrUpdateCalvingEventRecord(         
+        ${option},
+        ${rec_id},
+        ${JSON.stringify(calving_date)},
+        ${birth_type},
+        ${lactation_number},
+        ${calving_method},
+        ${JSON.stringify(field_agent_id)},
+        ${updated_by},
+        ${body_condition_score},
+        ${calf_color},
+        ${calf_deformities},
+        ${JSON.stringify(other_calf_deformities)}, 
+        ${heart_girth},
+        ${JSON.stringify(calf_name)},
+        ${calf_sex},
+        ${calf_weight},
+        ${JSON.stringify(ease_of_calving_other)},      
+        ${JSON.stringify(calving_type_other)},
+        ${calving_type},
+        ${ease_of_calving},
+        ${calving_status} ,
+        ${use_of_calf},
+        ${JSON.stringify(use_of_calf_other)},
+        ${JSON.stringify(calf_tag_id)},
+        ${body_condition_score2},
+        ${calf_color2},
+        ${calf_deformities2},
+        ${JSON.stringify(other_calf_deformities2)}, 
+        ${heart_girth2},
+        ${JSON.stringify(calf_name2)},
+        ${calf_sex2},
+        ${calf_weight2},
+        ${JSON.stringify(ease_of_calving_other2)},      
+        ${JSON.stringify(calving_type_other2)},
+        ${calving_type2},
+        ${ease_of_calving2},
+        ${calving_status2},
+        ${use_of_calf2},
+        ${JSON.stringify(use_of_calf_other2)},
+        ${JSON.stringify(calf_tag_id2)} 
+    )`;  
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
