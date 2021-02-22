@@ -32,7 +32,7 @@ const query = require('../helpers/query');
 router.get('/api/v1.0/batches/validation/:uuid', async (req, res) => {
   const uuid = req.params.uuid;    
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_view_batch_upload_validate_step('${uuid}')`;  
+  const sql = `CALL sp_view_batch_upload_validate_step('${uuid}')`;
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -40,7 +40,7 @@ router.get('/api/v1.0/batches/validation/:uuid', async (req, res) => {
 router.post('/api/v1.0/batches/action', async (req, res) => { 
   const {action,uuid,user} = req.body; 
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_action(${JSON.stringify(uuid)},${action},${user})`;
+  const sql = `CALL sp_batch_process_action(${JSON.stringify(uuid)},${action},${user})`; 
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
  });
 
@@ -48,7 +48,7 @@ router.post('/api/v1.0/batches/action', async (req, res) => {
 router.get('/api/v1.0/batches/view/:type/:org/:step/:user', async (req, res) => {
   const {org,step,user,type} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_view_records(${type},${org},${step},${user})`; 
+  const sql = `CALL sp_batch_process_view_records(${type},${org},${step},${user})`;   
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 

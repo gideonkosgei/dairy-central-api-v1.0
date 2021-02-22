@@ -710,6 +710,7 @@ router.put('/api/v1.0/events/vaccination/:id', async (req, res) => {
         ecf_vaccination_voucher,        
         user_id
         } = req.body;   
+        
         const sql = `CALL sp_CreateOrUpdateVaccinationEventRecord(
             ${createOrUpdateFlag},
             ${record_id},
