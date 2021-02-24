@@ -710,7 +710,7 @@ router.put('/api/v1.0/events/vaccination/:id', async (req, res) => {
         ecf_vaccination_voucher,        
         user_id
         } = req.body;   
-        
+
         const sql = `CALL sp_CreateOrUpdateVaccinationEventRecord(
             ${createOrUpdateFlag},
             ${record_id},
@@ -749,6 +749,23 @@ router.get('/api/v1.0/events/vaccination/:parameter/:option', async (req, res) =
     const {parameter,option} = req.params;   
     const conn = await connection(dbConfig).catch(e => {return e;});     
     const sql = `CALL sp_event_vaccination_view(${parameter},${option})`;   
+    await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+  });
+
+
+/* 
+  Event Capture validations
+  -> checks if a event capture validation e.g 1) cannot capture milk record without lactation details
+                                              2) Only capture milk records for cows & heifers
+                                              3) Cannot capture calving details when the animal was not pregnant
+                                              4) cannot capture insemination rec for bulls & calfs etc
+
+
+*/
+router.get('/api/v1.0/events/data-capture-validation/:option/:animal_id', async (req, res) => {   
+    const {animal_id,option} = req.params;   
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const sql = `CALL sp_validate_data_capture(${option},${animal_id})`;   
     await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 

@@ -4,8 +4,6 @@ const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
 
-  
-
   router.get('/api/v1.0/animalStats/:id', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});     
       const id = req.params.id;

@@ -25,6 +25,7 @@ const lookup = require('./app/routes/lookup');
 const herds = require('./app/routes/herds');
 const events = require('./app/routes/events');
 const parameters = require('./app/routes/parameters');
+const validations = require('./app/routes/validations');
 const batches = require('./app/routes/batches');
 const calender = require('./app/routes/calender');
 const partners = require('./app/routes/partners');
@@ -80,6 +81,7 @@ app.use('/', orgs);
 app.use('/', stats);
 app.use('/', graduation);
 app.use('/', background_processes);
+app.use('/', validations);
 
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
