@@ -9,7 +9,7 @@ const query = require('../helpers/query');
   router.get('/api/v1.0/events/weight/animal/:parameter/:option', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});     
     const {parameter,option} = req.params;
-    const sql = `CALL sp_event_weight_view(${parameter},${option})`;    
+    const sql = `CALL sp_event_weight_view(${parameter},${option})`;     
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -139,8 +139,6 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
     const sql = `CALL sp_update_event_insemination(${event_id},${JSON.stringify(ai_date)}, ${type_of_ai}, ${straw_id}, ${body_condition_score}, ${ai_cost},${field_agent_id},${updated_by})`; 
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
-
-
 
   //Exit events
   //view exit records
