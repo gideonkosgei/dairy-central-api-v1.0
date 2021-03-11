@@ -288,7 +288,7 @@ router.post('/api/v1.0/events/calving', async (req, res) => {
         ${use_of_calf2},
         ${JSON.stringify(use_of_calf_other2)},
         ${JSON.stringify(calf_tag_id2)} 
-    )`;     
+    )`;   
     await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 

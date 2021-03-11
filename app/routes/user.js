@@ -23,7 +23,7 @@ router.get('/api/v1.0/user/auth', async (req, res) => {
     
     /*const saltRounds = 10;     
     const salt = bcrypt.genSaltSync(saltRounds);
-    const hash = bcrypt.hashSync(req.query.password, salt);*/
+    const hash = bcrypt.hashSync('password@123', salt);*/    
 
   /**
    * Need to handle 3 things
@@ -68,10 +68,53 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
-  router.get('/api/v1.0/users/list', async (req, res) => {      
+  router.get('/api/v1.0/users/list/:option/:org', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});
-    const sql = `CALL sp_user_list_view()`;
+    const {option,org} = req.params;
+    const sql = `CALL sp_user_list_view(${option},${org})`;
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+  });
+
+  router.post('/api/v1.0/users/org/create-user-account', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});      
+    const {
+        country,
+        district,
+        email,
+        name,
+        phone,
+        region,
+        timezone,
+        username,
+        village,
+        ward,
+        option,
+        id,
+        org,
+        user
+    } = req.body; 
+    const level = 1;
+    
+    /**
+     * Generate randon string as password
+     */
+    const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    function generateString(length) {
+        let result = ' ';
+        const charactersLength = characters.length;
+        for ( let i = 0; i < length; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+    let plain_text_password = generateString(10);
+    plain_text_password  = 'password@123'; // use this for now till email functions
+    const saltRounds = 10;     
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const password_hash = bcrypt.hashSync(plain_text_password, salt);
+    const sql = `CALL sp_createOrUpdateUserAccount(${option} ,${id} , ${org} , ${JSON.stringify(name)} ,${JSON.stringify(username)} , ${JSON.stringify(email)} ,${JSON.stringify(password_hash)} , ${JSON.stringify(phone)} ,${country}, ${region} , ${district} , ${village} , ${ward} , ${timezone} ,${user},${level})`;
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+  
   });
 
   router.get('/api/v1.0/org/:id', async (req, res) => {      
@@ -83,7 +126,6 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
 
 
   /** Upload profile Pic */ 
-
   router.post('/api/v1.0/org/upload/profile-logo', async (req, res) => { 
     
       const storage = multer.diskStorage({
