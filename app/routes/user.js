@@ -67,6 +67,8 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
       const sql = `CALL sp_view_user_profiles(${id})`;
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
+  
+  
 
   router.get('/api/v1.0/users/list/:option/:org', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});
@@ -91,9 +93,10 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
         option,
         id,
         org,
-        user
+        user,
+        role
     } = req.body; 
-    const level = 1;
+    
     
     /**
      * Generate randon string as password
@@ -112,7 +115,7 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
     const saltRounds = 10;     
     const salt = bcrypt.genSaltSync(saltRounds);
     const password_hash = bcrypt.hashSync(plain_text_password, salt);
-    const sql = `CALL sp_createOrUpdateUserAccount(${option} ,${id} , ${org} , ${JSON.stringify(name)} ,${JSON.stringify(username)} , ${JSON.stringify(email)} ,${JSON.stringify(password_hash)} , ${JSON.stringify(phone)} ,${country}, ${region} , ${district} , ${village} , ${ward} , ${timezone} ,${user},${level})`;
+    const sql = `CALL sp_createOrUpdateUserAccount(${option} ,${id} , ${org} , ${JSON.stringify(name)} ,${JSON.stringify(username)} , ${JSON.stringify(email)} ,${JSON.stringify(password_hash)} , ${JSON.stringify(phone)} ,${country}, ${region} , ${district} , ${village} , ${ward} , ${timezone} ,${user},${role})`;
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   
   });
