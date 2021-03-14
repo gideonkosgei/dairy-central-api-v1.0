@@ -8,6 +8,20 @@ const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
 
+/**
+ * Generate randon string as password
+ */
+
+function generateString(length) {
+  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = ' ';
+  const charactersLength = characters.length;
+  for ( let i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 router.get('/api/v1.0/user/auth', async (req, res) => {  
   const conn = await connection(dbConfig).catch(e => {return e;}); 
 
@@ -36,18 +50,6 @@ router.get('/api/v1.0/user/auth', async (req, res) => {
   await query(conn, sql)
   .then(
     response => {  
-
-      /**
-       * Authentication status
-       * false -  authentication failed
-       * true - authentication succeeded
-       */
-      
-       /**
-        * Check if user is registred in the system
-        * If empty object is returned, the user does not exist
-        */       
-
       if (response[0].length > 0){ 
         if (bcrypt.compareSync(req.query.password,response[0][0].password)) {
           res.status(200).json({payload:response,auth_status:true,user_exist:true}) //password correct
@@ -64,14 +66,14 @@ router.get('/api/v1.0/user/auth', async (req, res) => {
 router.get('/api/v1.0/user/:id', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});     
       const id = req.params.id;
-      const sql = `CALL sp_view_user_profiles(${id})`;
+      const sql = `CALL sp_view_user_profiles(${id})`;     
       await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
   router.get('/api/v1.0/user/account-info/:id', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});     
     const id = req.params.id;
-    const sql = `CALL sp_view_user_account(${id})`;
+    const sql = `CALL sp_view_user_account(${id})`; 
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -105,18 +107,7 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
     } = req.body; 
     
     if (parseInt(option) ===0){
-        /**
-       * Generate randon string as password
-       */
-      const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      function generateString(length) {
-          let result = ' ';
-          const charactersLength = characters.length;
-          for ( let i = 0; i < length; i++ ) {
-              result += characters.charAt(Math.floor(Math.random() * charactersLength));
-          }
-          return result;
-      }
+       
       let plain_text_password = generateString(10);
       plain_text_password  = 'password@123'; // use this for now till email functions
       const saltRounds = 10;     
@@ -176,6 +167,56 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
     //await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
+  router.put('/api/v1.0/user/account/change-password/self-service', async (req, res) => { 
+    try{
+        const conn = await connection(dbConfig).catch(e => {return e;}); 
+        const {email, current_password, new_password, confirm_password,user,hash } = req.body;              
+        const saltRounds = 10;     
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const new_password_hash = bcrypt.hashSync(new_password, salt);   
+        const sql = `CALL sp_change_account_password(${JSON.stringify(email)},${JSON.stringify(new_password_hash)},${user})`; 
+       
+        if  (new_password === confirm_password){ 
+          if (bcrypt.compareSync(current_password,hash)) { 
+            await query(conn, sql)
+            .then(
+              response => {            
+              res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+            })
+            .catch(e => {res.status(400).json({status:400, message:e })}); 
+          } else {
+            res.send({status:0,message:'Password Change Failed! The current password is Incorrect'})
+          }        
+        } else { 
+          res.send({status:0,message:'Password Change Failed! The confirm password confirmation did not match'})
+        }  
+    }catch (error) {
+      res.send({status:0,message:`system error! ${error.message}`})
+    } 
+  });
 
 
+  
+  router.put('/api/v1.0/user/account/reset-password/self-service', async (req, res) => { 
+    try{
+       
+        const conn = await connection(dbConfig).catch(e => {return e;}); 
+        const {email} = req.body;              
+        const saltRounds = 10; 
+        let plain_text_password = generateString(10);        
+        plain_text_password  = 'password@123'; // use this for now till email functions    
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const hashed_password = bcrypt.hashSync(plain_text_password, salt);   
+        const sql = `CALL sp_reset_forgotten_password(${JSON.stringify(email)},${JSON.stringify(hashed_password)})`; 
+        await query(conn, sql)
+        .then(
+          response => {            
+          res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+        })
+        .catch(e => {res.status(400).json({status:400, message:e })}); 
+      } catch (error) {
+          res.send({status:0,message:`system error! ${error.message}`})
+      } 
+          
+  });
   module.exports = router
