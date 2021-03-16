@@ -767,6 +767,8 @@ router.get('/api/v1.0/events/data-capture-validation/:option/:animal_id', async 
     await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
+  
+
 module.exports = router
 
 

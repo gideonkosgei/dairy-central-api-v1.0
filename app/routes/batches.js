@@ -230,4 +230,30 @@ router.post('/api/v1.0/batches/exit/upload', async (req, res) => {
   query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})})
   .catch(e=>{res.status(400).json({status:400, message:e })});      
 }); 
+
+//get batch record using record id
+router.get('/api/v1.0/batches/record/any/:batch_type/:record_id', async (req, res) => {   
+  const {batch_type,record_id} = req.params;   
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_batch_view_record(${batch_type},${record_id})`;  
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
+router.put('/api/v1.0/batches/milking/modify-and-revalidate', async (req, res) => { 
+  try{     
+      const conn = await connection(dbConfig).catch(e => {return e;});      
+      const {amount_afternoon,amount_morning,amount_noon,animal_id,milk_date,record_id,user_id,batch_type,remove} = req.body; 
+      const sql = `CALL sp_batch_milking_modify_revalidate(${amount_afternoon},${amount_morning},${amount_noon},${animal_id},${JSON.stringify(milk_date)},${record_id},${user_id},${batch_type},${remove})`; 
+      await query(conn, sql)
+      .then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+  } catch (error) {
+      res.send({status:0,message:`system error! ${error.message}`})
+  } 
+        
+});
+
 module.exports = router

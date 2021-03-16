@@ -214,9 +214,9 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
           res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
         })
         .catch(e => {res.status(400).json({status:400, message:e })}); 
-      } catch (error) {
-          res.send({status:0,message:`system error! ${error.message}`})
-      } 
+    } catch (error) {
+        res.send({status:0,message:`system error! ${error.message}`})
+    } 
           
   });
   module.exports = router
