@@ -252,8 +252,26 @@ router.put('/api/v1.0/batches/milking/modify-and-revalidate', async (req, res) =
       .catch(e => {res.status(400).json({status:400, message:e })}); 
   } catch (error) {
       res.send({status:0,message:`system error! ${error.message}`})
-  } 
-        
+  }        
 });
+
+router.put('/api/v1.0/batches/weight/modify-and-revalidate', async (req, res) => { 
+  try{     
+      const conn = await connection(dbConfig).catch(e => {return e;});      
+      const {body_length, body_score, body_weight, heart_girth, weight_date, animal_id,remove,record_id,user_id,batch_type} = req.body; 
+     
+      const sql = `CALL sp_batch_weight_modify_revalidate(${body_length},${body_score},${body_weight},${heart_girth},${JSON.stringify(weight_date)},${animal_id},${remove},${record_id},${user_id},${batch_type})`; 
+      await query(conn, sql)
+      .then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+  } catch (error) {
+      res.send({status:0,message:`system error! ${error.message}`})
+  }         
+});
+
+
 
 module.exports = router
