@@ -273,5 +273,20 @@ router.put('/api/v1.0/batches/weight/modify-and-revalidate', async (req, res) =>
 });
 
 
+router.put('/api/v1.0/batches/ai/modify-and-revalidate', async (req, res) => { 
+  try{     
+      const conn = await connection(dbConfig).catch(e => {return e;});      
+      const {ai_tech,ai_type_id,animal_id,batch_type,body_score,cost,record_id,remove,service_date,straw_id,user_id} = req.body; 
+      const sql = `CALL sp_batch_ai_modify_revalidate(${ai_tech},${straw_id},${body_score},${ai_type_id},${cost},${JSON.stringify(service_date)},${animal_id},${remove},${record_id},${user_id},${batch_type})`; 
+      await query(conn, sql)
+      .then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+  } catch (error) {
+      res.send({status:0,message:`system error! ${error.message}`})
+  }         
+});
 
 module.exports = router
