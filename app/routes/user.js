@@ -46,7 +46,7 @@ router.get('/api/v1.0/user/auth', async (req, res) => {
    * 3. Authenitcated user
    */  
 
-  const sql = `CALL sp_authenticate('${req.query.username}')`;   
+  const sql = `CALL sp_authenticate('${req.query.username}')`;  
   await query(conn, sql)
   .then(
     response => {  

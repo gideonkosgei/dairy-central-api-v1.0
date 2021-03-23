@@ -78,10 +78,10 @@ router.get('/api/v1.0/batches/errors/:record_id/:batch_type', async (req, res) =
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
-router.get('/api/v1.0/batches/milking/list/:org', async (req, res) => {
-  const {org} = req.params;   
+router.get('/api/v1.0/batches/template/:type/:org', async (req, res) => {
+  const {org,type} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_milking_list(${org})`;       
+  const sql = `CALL sp_batch_get_template(${type},${org})`;       
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -272,7 +272,6 @@ router.put('/api/v1.0/batches/weight/modify-and-revalidate', async (req, res) =>
   }         
 });
 
-
 router.put('/api/v1.0/batches/ai/modify-and-revalidate', async (req, res) => { 
   try{     
       const conn = await connection(dbConfig).catch(e => {return e;});      
@@ -288,5 +287,26 @@ router.put('/api/v1.0/batches/ai/modify-and-revalidate', async (req, res) => {
       res.send({status:0,message:`system error! ${error.message}`})
   }         
 });
+
+
+router.put('/api/v1.0/batches/animal/modify-and-revalidate', async (req, res) => { 
+  try{ 
+   
+      const conn = await connection(dbConfig).catch(e => {return e;});      
+      const {record_id,user_id,animal_name,animal_type_id,breed_composition_id,color_id,dam_tag_id,dob,entry_type_id,main_breed_id,remove,sec_breed_id,sex_id,sire_tag_id,sire_type_id,tag_id} = req.body; 
+      const sql = `CALL sp_batch_animal_modify_revalidate(${record_id},${user_id},${JSON.stringify(animal_name)},${animal_type_id},${breed_composition_id},${color_id},${JSON.stringify(dam_tag_id)},${JSON.stringify(dob)},${entry_type_id},${main_breed_id},${remove},${sec_breed_id},${sex_id},${JSON.stringify(sire_tag_id)},${sire_type_id},${JSON.stringify(tag_id)})`; 
+    
+      await query(conn, sql)
+      .then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+  } catch (error) {
+      res.send({status:0,message:`system error! ${error.message}`})
+  }         
+});
+
+
 
 module.exports = router
