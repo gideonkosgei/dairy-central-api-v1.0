@@ -307,6 +307,86 @@ router.put('/api/v1.0/batches/animal/modify-and-revalidate', async (req, res) =>
   }         
 });
 
+// VIEW BATCH TYPES
+router.get('/api/v1.0/batches/types/all', async (req, res) => { 
+  try{     
+      const conn = await connection(dbConfig).catch(e => {return e;});  
+      const sql = "SELECT id,name FROM interface_batch_types";
+      await query(conn, sql)
+      .then(
+        response => {            
+        res.status(200).json({payload:response}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+  } catch (error) {
+      res.send({status:0,message:`system error! ${error.message}`})
+  }         
+});
 
+// VIEW BATCH STAGES
+router.get('/api/v1.0/batches/stages/all', async (req, res) => { 
+  try{     
+      const conn = await connection(dbConfig).catch(e => {return e;});  
+      const sql = "SELECT step id,name FROM interface_batch_stages";
+      await query(conn, sql)
+      .then(
+        response => {            
+        res.status(200).json({payload:response}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+  } catch (error) {
+      res.send({status:0,message:`system error! ${error.message}`})
+  }         
+});
+
+// VIEW BATCH STATUS
+router.get('/api/v1.0/batches/status/all', async (req, res) => { 
+  try{     
+      const conn = await connection(dbConfig).catch(e => {return e;});  
+      const sql = "SELECT id,name FROM interface_batch_status";
+      await query(conn, sql)
+      .then(
+        response => {            
+        res.status(200).json({payload:response}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+  } catch (error) {
+      res.send({status:0,message:`system error! ${error.message}`})
+  }         
+});
+
+// VIEW BATCH VALIDATION STATUS
+router.get('/api/v1.0/batches/validation-status/all', async (req, res) => { 
+  try{     
+      const conn = await connection(dbConfig).catch(e => {return e;});  
+      const sql = "SELECT id,name from interface_batch_records_status";
+      await query(conn, sql)
+      .then(
+        response => {            
+        res.status(200).json({payload:response}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+  } catch (error) {
+      res.send({status:0,message:`system error! ${error.message}`})
+  }         
+});
+
+
+// VIEW BATCH REPORT ALL
+router.get('/api/v1.0/batches/report/all/:org/:type/:stage/:status/:user', async (req, res) => { 
+  try{ 
+      const {org,type,stage,status,user} = req.params;      
+      const conn = await connection(dbConfig).catch(e => {return e;});      
+      const sql = `CALL sp_rpt_batch_all(${org},${type},${stage},${status},${user})`;    
+      await query(conn, sql)
+      .then(
+        response => {            
+        res.status(200).json({payload:response}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      } catch (error) {
+        res.send({status:0,message:`system error! ${error.message}`})
+      }         
+});
 
 module.exports = router
