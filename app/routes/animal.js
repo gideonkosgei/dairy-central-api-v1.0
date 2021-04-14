@@ -51,7 +51,7 @@ const query = require('../helpers/query');
       ${JSON.stringify(deformities)} ,${JSON.stringify(entry_date)},${JSON.stringify(entry_type)} ,${JSON.stringify(herd_book_number)} ,${JSON.stringify(main_breed_other)} ,${JSON.stringify(purchase_cost)} ,${JSON.stringify(secondary_breed)} ,${JSON.stringify(secondary_breed_other)} ,
       ${JSON.stringify(sire_type)} ,${JSON.stringify(sire_id)} ,${JSON.stringify(dam_id)},${JSON.stringify(herd_id)},${JSON.stringify(org_id)},${JSON.stringify(farm_id)})`; 
       
-      
+
       await query(conn, sql)
       .then(response => {       
         res.status(200).json({status:response[0][0].status,message:response[0][0].message}) })
@@ -71,7 +71,7 @@ const query = require('../helpers/query');
       ${JSON.stringify(breed_combination)} ,${JSON.stringify(notes)} ,${JSON.stringify(breed_composition_details)} ,${JSON.stringify(color)} ,${JSON.stringify(color_other)} ,${JSON.stringify(country_of_origin)} ,
       ${JSON.stringify(deformities)} ,${JSON.stringify(entry_type)} ,${JSON.stringify(herd_book_number)} ,${JSON.stringify(main_breed_other)} ,${JSON.stringify(purchase_cost)} ,${JSON.stringify(secondary_breed)} ,${JSON.stringify(secondary_breed_other)} ,
       ${JSON.stringify(sire_type)} ,${JSON.stringify(sire_id)} ,${JSON.stringify(dam_id)},${JSON.stringify(herd_id)},${JSON.stringify(org_id)},${JSON.stringify(farm_id)},null)`;        
-       
+            
       await query(conn, sql).then(
         response => {            
         res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
