@@ -75,12 +75,21 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
-  router.post('/api/v1.0/events/pd', async (req, res) => {      
+  router.post('/api/v1.0/events/pd', async (req, res) => {   
+      try{   
       const conn = await connection(dbConfig).catch(e => {return e;});       
       const {animal_id,service_date,time_examined,pd_results,pd_stage,body_score,cost,pd_method,data_collection_date,field_agent_id,created_by} = req.body;      
       const isServiceDateKnown = isNaN(Date.parse(service_date))? 0 : 1;      
       const sql = `CALL sp_create_event_pd(${animal_id},${JSON.stringify(service_date)},${isServiceDateKnown},${JSON.stringify(time_examined)},${pd_results},${pd_stage},${body_score},${cost},${pd_method},${JSON.stringify(data_collection_date)},${field_agent_id},${created_by})`; 
-      await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+      await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    }       
   });
 
      //update PD  record
@@ -102,11 +111,20 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
 });
   
  //create sync event
-  router.post('/api/v1.0/events/sync', async (req, res) => {      
+  router.post('/api/v1.0/events/sync', async (req, res) => { 
+      try{     
       const conn = await connection(dbConfig).catch(e => {return e;});       
       const {animal_id, sync_date, sync_number, animal_parity, sync_time, hormone_type, other_hormone_type, hormone_source, other_hormone_source, sync_cost, sync_person, sync_other_person, sync_person_phone, field_agent_id, created_by} = req.body;      
       const sql = `CALL sp_create_event_sync(${animal_id},${JSON.stringify(sync_date)},${sync_number}, ${animal_parity}, ${JSON.stringify(sync_time)}, ${hormone_type}, ${JSON.stringify(other_hormone_type)}, ${hormone_source}, ${JSON.stringify(other_hormone_source)}, ${sync_cost}, ${sync_person}, ${JSON.stringify(sync_other_person)}, ${JSON.stringify(sync_person_phone)},${field_agent_id},${created_by})`;      
-      await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+      await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
   });
 
   //update synchronization event record
@@ -139,11 +157,20 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
  //create insemination event
-  router.post('/api/v1.0/events/insemination', async (req, res) => {      
+  router.post('/api/v1.0/events/insemination', async (req, res) => {   
+      try{   
       const conn = await connection(dbConfig).catch(e => {return e;});       
       const { animal_id ,ai_date  ,type_of_ai ,straw_id , body_condition_score  ,ai_cost   ,field_agent_id ,created_by} = req.body;      
       const sql = `CALL sp_create_event_insemination(${animal_id},${JSON.stringify(ai_date)}, ${type_of_ai}, ${straw_id}, ${body_condition_score},  ${ai_cost} ,${field_agent_id},${created_by})`; 
-      await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+      await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    }       
   });
 
 
@@ -174,11 +201,20 @@ router.get('/api/v1.0/events/exit/:id', async (req, res) => {
 });
 
  //create exit event
-  router.post('/api/v1.0/events/exit', async (req, res) => {      
+  router.post('/api/v1.0/events/exit', async (req, res) => {   
+      try{   
       const conn = await connection(dbConfig).catch(e => {return e;});       
       const {animal_id ,exit_date,disposal_amount,disposal_reason,disposal_reason_other,new_breeder_name ,new_breeder_phone_number,new_country ,new_district ,new_farmer_name,new_farmer_phone_number,new_region,new_ward,new_village,field_agent_id,created_by} = req.body;                       
       const sql = `CALL sp_create_event_exits(${animal_id} ,${JSON.stringify(exit_date)},${disposal_amount},${disposal_reason},${JSON.stringify(disposal_reason_other)},${JSON.stringify(new_breeder_name)} ,${JSON.stringify(new_breeder_phone_number)},${JSON.stringify(new_country)} ,${JSON.stringify(new_district)} ,${JSON.stringify(new_farmer_name)},${JSON.stringify(new_farmer_phone_number)},${JSON.stringify(new_region)},${JSON.stringify(new_ward)},${JSON.stringify(new_village)},${JSON.stringify(field_agent_id)},${created_by})`; 
-      await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+      await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    }       
   });
 
    //update exit event record
@@ -218,7 +254,8 @@ router.get('/api/v1.0/events/calving/animal/:parameter/:option', async (req, res
 });
 
 //create Calving event
-router.post('/api/v1.0/events/calving', async (req, res) => {      
+router.post('/api/v1.0/events/calving', async (req, res) => { 
+    try{     
     const conn = await connection(dbConfig).catch(e => {return e;}); 
     const option = 0;      
     const {        
@@ -305,7 +342,15 @@ router.post('/api/v1.0/events/calving', async (req, res) => {
         ${JSON.stringify(use_of_calf_other2)},
         ${JSON.stringify(calf_tag_id2)} 
     )`;   
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+    await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
 
 
@@ -516,22 +561,40 @@ router.put('/api/v1.0/events/setup/:id', async (req, res) => {
 });
 
 // create hoof health event
-router.post('/api/v1.0/events/hoof-health', async (req, res) => {      
+router.post('/api/v1.0/events/hoof-health', async (req, res) => {    
+    try{  
     const conn = await connection(dbConfig).catch(e => {return e;});     
     const { id,exam_date,other_hoof_problems,swelling_of_coronet,digital_dermatitis,heel_horn_erosion,horizontal_horn_fissure,interdigital_hyperplasia, interdigital_phlegmon,scissor_claws,vertical_horn_fissure,field_agent_id,user_id} = req.body;
     const createOrUpdateFlag = 0;
     const sql = `CALL sp_CreateOrUpdateHoofHealthEventRecord(${createOrUpdateFlag},${id},${JSON.stringify(exam_date)},${digital_dermatitis},${interdigital_hyperplasia},${interdigital_phlegmon},${scissor_claws},${horizontal_horn_fissure},${vertical_horn_fissure},${swelling_of_coronet},${heel_horn_erosion},${JSON.stringify(other_hoof_problems)},${field_agent_id},${user_id})`;   
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+    await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
 
 // edit hoof health event record
-router.put('/api/v1.0/events/hoof-health/:id', async (req, res) => {      
+router.put('/api/v1.0/events/hoof-health/:id', async (req, res) => {   
+    try{   
     const conn = await connection(dbConfig).catch(e => {return e;});
     const record_id = req.params.id;   
     const createOrUpdateFlag = 1;  
     const { exam_date,other_hoof_problems,swelling_of_coronet,digital_dermatitis,heel_horn_erosion,horizontal_horn_fissure,interdigital_hyperplasia, interdigital_phlegmon,scissor_claws,vertical_horn_fissure,field_agent_id,user_id} = req.body;
     const sql = `CALL sp_CreateOrUpdateHoofHealthEventRecord(${createOrUpdateFlag},${record_id},${JSON.stringify(exam_date)},${digital_dermatitis},${interdigital_hyperplasia},${interdigital_phlegmon},${scissor_claws},${horizontal_horn_fissure},${vertical_horn_fissure},${swelling_of_coronet},${heel_horn_erosion},${JSON.stringify(other_hoof_problems)},${field_agent_id},${user_id})`;   
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+    await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
 
 //get all hoof health records
@@ -543,22 +606,40 @@ router.get('/api/v1.0/events/hoof-health/:parameter/:option', async (req, res) =
   });
  
 // create animal injury event record
-router.post('/api/v1.0/events/injury', async (req, res) => {      
+router.post('/api/v1.0/events/injury', async (req, res) => {  
+    try{    
     const conn = await connection(dbConfig).catch(e => {return e;});     
     const { id,treatmentDate,injury_type,injury_type_other,injury_service_provider,other_service_provider,injury_service_cost, injury_drug_cost,injury_cow_status,injury_cow_status_other,field_agent_id,user_id} = req.body;
     const createOrUpdateFlag = 0;
     const sql = `CALL sp_CreateOrUpdateInjuryEventRecord(${createOrUpdateFlag},${id},${JSON.stringify(treatmentDate)},${injury_type},${JSON.stringify(injury_type_other)},${injury_service_provider},${JSON.stringify(other_service_provider)},${injury_drug_cost},${injury_service_cost},${injury_cow_status},${JSON.stringify(injury_cow_status_other)},${field_agent_id},${user_id})`;   
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+    await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
 
 // edit animal injury event record
-router.put('/api/v1.0/events/injury/:id', async (req, res) => {      
+router.put('/api/v1.0/events/injury/:id', async (req, res) => {   
+     try{  
     const conn = await connection(dbConfig).catch(e => {return e;});
     const record_id = req.params.id;   
     const createOrUpdateFlag = 1;
     const {treatmentDate,injury_type,injury_type_other,injury_service_provider,other_service_provider,injury_service_cost, injury_drug_cost,injury_cow_status,injury_cow_status_other,field_agent_id,user_id} = req.body;   
     const sql = `CALL sp_CreateOrUpdateInjuryEventRecord(${createOrUpdateFlag},${record_id},${JSON.stringify(treatmentDate)},${injury_type},${JSON.stringify(injury_type_other)},${injury_service_provider},${JSON.stringify(other_service_provider)},${injury_drug_cost},${injury_service_cost},${injury_cow_status},${JSON.stringify(injury_cow_status_other)},${field_agent_id},${user_id})`;    
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+    await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
 
 //get all animal injury event record
@@ -571,22 +652,40 @@ router.get('/api/v1.0/events/injury/:parameter/:option', async (req, res) => {
 
   
 // Create Parasite Infection Event Record
-router.post('/api/v1.0/events/parasite-infection', async (req, res) => {      
+router.post('/api/v1.0/events/parasite-infection', async (req, res) => {  
+    try{    
     const conn = await connection(dbConfig).catch(e => {return e;});     
     const { id,parasite_date,parasite_type,parasite_type_other,parasite_provider,parasite_provider_other,parasite_service_cost, parasite_drug_cost,parasite_cow_status,parasite_cow_status_other,field_agent_id,user_id} = req.body;
     const createOrUpdateFlag = 0;
     const sql = `CALL sp_CreateOrUpdateParasiteInfectionEventRecord(${createOrUpdateFlag},${id},${JSON.stringify(parasite_date)},${parasite_type},${JSON.stringify(parasite_type_other)},${parasite_provider},${JSON.stringify(parasite_provider_other)},${parasite_drug_cost},${parasite_service_cost},${parasite_cow_status},${JSON.stringify(parasite_cow_status_other)},${field_agent_id},${user_id})`;   
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+    await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
 
 // edit Parasite Infection event record
-router.put('/api/v1.0/events/parasite-infection/:id', async (req, res) => {      
+router.put('/api/v1.0/events/parasite-infection/:id', async (req, res) => { 
+    try{     
     const conn = await connection(dbConfig).catch(e => {return e;});
     const record_id = req.params.id;   
     const createOrUpdateFlag = 1;
     const {parasite_date,parasite_type,parasite_type_other,parasite_provider,parasite_provider_other,parasite_service_cost, parasite_drug_cost,parasite_cow_status,parasite_cow_status_other,field_agent_id,user_id} = req.body;
     const sql = `CALL sp_CreateOrUpdateParasiteInfectionEventRecord(${createOrUpdateFlag},${record_id},${JSON.stringify(parasite_date)},${parasite_type},${JSON.stringify(parasite_type_other)},${parasite_provider},${JSON.stringify(parasite_provider_other)},${parasite_drug_cost},${parasite_service_cost},${parasite_cow_status},${JSON.stringify(parasite_cow_status_other)},${field_agent_id},${user_id})`;   
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+    await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
 
 //get all Parasite Infection event record
@@ -599,7 +698,8 @@ router.get('/api/v1.0/events/parasite-infection/:parameter/:option', async (req,
 
      
 // Create Hoof Treatment Event Record
-router.post('/api/v1.0/events/hoof-treatment', async (req, res) => {      
+router.post('/api/v1.0/events/hoof-treatment', async (req, res) => { 
+    try{     
     const conn = await connection(dbConfig).catch(e => {return e;}); 
         
     const { id,treatment_date,hoof_problem,hoof_treatment_type,hoof_treatment_type_other,hoof_treatment_provider,hoof_treatment_provider_other,hoof_treatment_drug_cost,hoof_treatment_service_cost,hoof_treatment_cow_status,hoof_treatment_cow_status_other,field_agent_id,user_id} = req.body;
@@ -620,18 +720,35 @@ router.post('/api/v1.0/events/hoof-treatment', async (req, res) => {
         ${field_agent_id},
         ${user_id}
     )`;     
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+    await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
 
 // edit Hoof Treatment event record
-router.put('/api/v1.0/events/hoof-treatment/:id', async (req, res) => {      
+router.put('/api/v1.0/events/hoof-treatment/:id', async (req, res) => {     
+    try{ 
     const conn = await connection(dbConfig).catch(e => {return e;});
     const record_id = req.params.id;   
     const createOrUpdateFlag = 1;
     const {treatment_date,hoof_problem,hoof_treatment_type,hoof_treatment_type_other,hoof_treatment_provider,hoof_treatment_provider_other,hoof_treatment_drug_cost,hoof_treatment_service_cost,hoof_treatment_cow_status,hoof_treatment_cow_status_other,field_agent_id,user_id} = req.body;    
     const sql = `CALL sp_CreateOrUpdateHoofTreatmentEventRecord(${createOrUpdateFlag},${record_id},${JSON.stringify(treatment_date)},${hoof_problem},${hoof_treatment_type},${JSON.stringify(hoof_treatment_type_other)},${hoof_treatment_provider},${JSON.stringify(hoof_treatment_provider_other)},${hoof_treatment_drug_cost},${hoof_treatment_service_cost},${hoof_treatment_cow_status},${JSON.stringify(hoof_treatment_cow_status_other)},${field_agent_id},${user_id})`;   
     
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+    await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
 
 //get all Hoof Treatment event record
@@ -645,7 +762,8 @@ router.get('/api/v1.0/events/hoof-treatment/:parameter/:option', async (req, res
   
 
 // Create Vaccination Event Record
-router.post('/api/v1.0/events/vaccination', async (req, res) => {      
+router.post('/api/v1.0/events/vaccination', async (req, res) => {  
+    try{    
     const conn = await connection(dbConfig).catch(e => {return e;});        
     const { 
         id,
@@ -707,11 +825,20 @@ router.post('/api/v1.0/events/vaccination', async (req, res) => {
         ${user_id}
     )`; 
    
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+    await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
 
 // edit Vaccination event record
-router.put('/api/v1.0/events/vaccination/:id', async (req, res) => {      
+router.put('/api/v1.0/events/vaccination/:id', async (req, res) => {   
+    try{   
     const conn = await connection(dbConfig).catch(e => {return e;});
     const record_id = req.params.id;   
     const createOrUpdateFlag = 1;
@@ -773,7 +900,15 @@ router.put('/api/v1.0/events/vaccination/:id', async (req, res) => {
             ${user_id}
         )`; 
        
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});     
+        await query(conn, sql).then(
+            response => {            
+            res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+          })
+          .catch(e => {res.status(400).json({status:400, message:e })}); 
+          
+        } catch(error) {
+            res.send({status:0,message:`system error! ${error.message}`});
+        } 
 });
 
 //get all Vaccination event record
