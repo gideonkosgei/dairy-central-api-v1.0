@@ -93,13 +93,21 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
   });
 
      //update PD  record
-     router.put('/api/v1.0/events/pd/:event_id', async (req, res) => {   
+     router.put('/api/v1.0/events/pd/:event_id', async (req, res) => {  
+       try{ 
         const event_id = req.params.event_id;     
         const conn = await connection(dbConfig).catch(e => {return e;});       
         const {service_date,time_examined,pd_results,pd_stage,body_score,cost,pd_method,data_collection_date,field_agent_id,updated_by} = req.body;      
         const isServiceDateKnown = isNaN(Date.parse(service_date))? 0 : 1;      
         const sql = `CALL sp_update_event_pd(${event_id},${JSON.stringify(service_date)},${isServiceDateKnown},${JSON.stringify(time_examined)},${pd_results},${pd_stage},${body_score},${cost},${pd_method},${JSON.stringify(data_collection_date)},${field_agent_id},${updated_by})`; 
-        await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+        await query(conn, sql).then(
+          response => {            
+          res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+        })
+        .catch(e => {res.status(400).json({status:400, message:e })});
+        } catch(error) {
+          res.send({status:0,message:`system error! ${error.message}`});
+        }       
     });
 
   //synchronization
@@ -128,13 +136,21 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
   });
 
   //update synchronization event record
-  router.put('/api/v1.0/events/sync/:id', async (req, res) => {      
+  router.put('/api/v1.0/events/sync/:id', async (req, res) => { 
+    try{     
     const conn = await connection(dbConfig).catch(e => {return e;});  
     const event_id = req.params.id;     
     const {sync_date, sync_number, animal_parity, sync_time, hormone_type, other_hormone_type, hormone_source, other_hormone_source, sync_cost, sync_person, sync_other_person, sync_person_phone, field_agent_id, updated_by} = req.body;      
     const sql = `CALL sp_update_event_sync(${event_id},${JSON.stringify(sync_date)},${sync_number}, ${animal_parity}, ${JSON.stringify(sync_time)}, ${hormone_type}, ${JSON.stringify(other_hormone_type)}, ${hormone_source}, ${JSON.stringify(other_hormone_source)}, ${sync_cost}, ${sync_person}, ${JSON.stringify(sync_other_person)}, ${JSON.stringify(sync_person_phone)},${field_agent_id},${updated_by})`;    
     
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+    await query(conn, sql).then(
+      response => {            
+      res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+    })
+    .catch(e => {res.status(400).json({status:400, message:e })});
+  } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
   router.get('/api/v1.0/events/sync/:id', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});     
@@ -175,12 +191,20 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
 
 
   //update insemination event Record
-  router.put('/api/v1.0/events/insemination/:event_id', async (req, res) => {   
+  router.put('/api/v1.0/events/insemination/:event_id', async (req, res) => {  
+    try{ 
     const event_id = req.params.event_id;   
     const conn = await connection(dbConfig).catch(e => {return e;});       
     const {ai_date  ,type_of_ai ,straw_id , body_condition_score ,ai_cost ,field_agent_id ,updated_by} = req.body;      
     const sql = `CALL sp_update_event_insemination(${event_id},${JSON.stringify(ai_date)}, ${type_of_ai}, ${straw_id}, ${body_condition_score}, ${ai_cost},${field_agent_id},${updated_by})`; 
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+    await query(conn, sql).then(
+      response => {                   
+      res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+    })
+    .catch(e => {res.status(400).json({status:400, message:e })});
+    } catch(error) {
+      res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
 
   //Exit events
@@ -355,7 +379,8 @@ router.post('/api/v1.0/events/calving', async (req, res) => {
 
 
 //update Calving event record
-router.put('/api/v1.0/events/calving/:rec_id', async (req, res) => {  
+router.put('/api/v1.0/events/calving/:rec_id', async (req, res) => { 
+  try{ 
     const rec_id = req.params.rec_id;    
     const conn = await connection(dbConfig).catch(e => {return e;});    
     const option = 1;      
@@ -442,7 +467,14 @@ router.put('/api/v1.0/events/calving/:rec_id', async (req, res) => {
         ${JSON.stringify(use_of_calf_other2)},
         ${JSON.stringify(calf_tag_id2)} 
     )`;  
-    await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
+    await query(conn, sql).then(
+      response => {            
+      res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+    })
+    .catch(e => {res.status(400).json({status:400, message:e })});
+  } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
 });
 
 //Milking events
@@ -479,14 +511,14 @@ router.put('/api/v1.0/events/milking/:id', async (req, res) => {
     const event_id = req.params.id;       
     const {milk_date,days_in_milk,lactation_id,lactation_number,milking_notes,milk_sample_type_id,milk_pm_litres,milk_butter_fat,milk_lactose,milk_mid_day,milk_protein,milk_am_litres,milk_somatic_cell_count,milk_urea,testday_no,milk_Weight,field_agent_id,updated_by} = req.body;                          
     const sql = `CALL sp_update_event_milking(${event_id},${JSON.stringify(milk_date)} ,${days_in_milk} ,${lactation_id} ,${JSON.stringify(lactation_number)},${JSON.stringify(milking_notes)} ,${milk_sample_type_id} ,${milk_pm_litres} ,${milk_butter_fat} ,${milk_lactose} ,${milk_mid_day} ,${milk_protein},${milk_am_litres} ,${milk_somatic_cell_count} ,${milk_urea},${testday_no},${milk_Weight},${field_agent_id} ,${updated_by} )`;     
-    await query(conn, sql).then(
-        response => {            
+    await query(conn, sql).then(     
+        response => {                   
         res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
       })
       .catch(e => {res.status(400).json({status:400, message:e })});
-} catch(error) {
-        res.send({status:0,message:`system error! ${error.message}`});
-    } 
+  } catch(error) {
+          res.send({status:0,message:`system error! ${error.message}`});
+      } 
 });
 
 router.get('/api/v1.0/events/milking/:id', async (req, res) => {      
