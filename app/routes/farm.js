@@ -5,20 +5,11 @@ const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
 
-  router.get('/api/v1.0/farm/:id', async (req, res) => {
-    const conn = await connection(dbConfig).catch(e => {return e;});     
-    const {id} = req.params;   
-    const sql = `select * from v_farm_details where farm_id = ${id}`;    
-    const payload = await query(conn, sql).catch(e=>{return e;});
-    const payload_code = payload.code 
-    const payLoadLength = (payload_code == 'ER_PARSE_ERROR')? 0: JSON.stringify(payload[0].length);
-    if(payload_code == 'ER_PARSE_ERROR'){
-          res.status(400).json({status:400, payload })
-    } else if (payLoadLength<1) {
-          res.status(200).json({status:204, payload });
-    } else {
-          res.status(200).json({status:200, payload });
-    } 
+  router.get('/api/v1.0/farms/:option/:id', async (req, res) => {
+    const conn = await connection(dbConfig).catch(e => {return e;}); 
+    const {id,option} = req.params;
+    const sql = `CALL sp_ViewFarmOrFarms(${option},${id})`;       
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });  
 
   module.exports = router

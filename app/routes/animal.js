@@ -37,6 +37,14 @@ const query = require('../helpers/query');
   await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
+//view animals by herd
+router.get('/api/v1.0/animal/herd/:org/:herd', async (req, res) => {      
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const {org,herd} = req.params;
+  const sql = `CALL sp_view_animals_by_herd(${org},${herd})`;         
+  await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
   // Update animal details
   router.put('/api/v1.0/animal/:animal_id', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});   
