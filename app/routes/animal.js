@@ -4,11 +4,11 @@ const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
 
-  router.get('/api/v1.0/animalStats/:id', async (req, res) => {      
-      const conn = await connection(dbConfig).catch(e => {return e;});     
-      const id = req.params.id;
-      const sql = `CALL sp_animal_overview_statistics_view(${id})`;         
-      await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+  router.get('/api/v1.0/animalStats/:org/:level/:herd', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const {org,level,herd} = req.params;
+    const sql = `CALL sp_animal_overview_statistics_view(${org},${level},${herd})`;         
+    await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
 

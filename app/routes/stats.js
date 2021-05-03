@@ -18,10 +18,10 @@ router.get('/api/v1.0/stats/milk-performance-comparator/:org', async (req, res) 
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
-router.get('/api/v1.0/stats/breed-distribution/:org', async (req, res) => {   
-  const {org} = req.params;   
+router.get('/api/v1.0/stats/breed-distribution/:org/:level/:herd', async (req, res) => {   
+  const {org,level,herd} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_stats_breed_distribution(${org})`;        
+  const sql = `CALL sp_stats_breed_distribution(${org},${level},${herd})`;        
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
