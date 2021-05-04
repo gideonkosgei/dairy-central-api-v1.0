@@ -49,7 +49,6 @@ router.put('/api/v1.0/herds', async (req, res) => {
   const {country, district,farm_id, herd_name, region , village, ward, org, user, reg_date,herd_id,org_id} = req.body; 
   const option = 1;    
   const sql = `CALL sp_CreateOrUpdateHerdRecord(${option},${herd_id},${JSON.stringify(reg_date)},${farm_id},${JSON.stringify(herd_name)},${country},${region},${district},${ward},${village},${user},${org_id})`;        
-  console.log(sql);
   await query(conn, sql).then(
     response => {            
     res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
@@ -59,6 +58,5 @@ router.put('/api/v1.0/herds', async (req, res) => {
     res.send({status:0,message:`system error! ${error.message}`});
   }   
 });
-
 
 module.exports = router
