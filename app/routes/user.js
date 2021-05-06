@@ -174,26 +174,32 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
       const {org,user,type} = req.params;
       const conn = await connection(dbConfig).catch(e => {return e;}); 
       const account = (parseInt(type) === 0) ? org : user;
-     
       
       if (!req.file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) { 
         res.send({status:0,message:'Only image files (jpg, jpeg, png) are allowed!'})
       } else {             
      
       const sql = `CALL sp_createOrUpdateUserAccountAvatar(${type},${account},${JSON.stringify(req.file.originalname)},${JSON.stringify(req.file.filename)},${JSON.stringify(req.file.path)},${req.file.size},${user})`;  
-    
+     
       await query(conn, sql).then(
           response => {            
           res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
         })
         .catch(e => {res.status(400).json({status:400, message:e })});
       }
-
       } catch(error) {
         res.send({status:0,message:`system error! ${error.message}`});
     }  
      
    });
+
+
+  router.get('/api/v1.0/org/profile-logo/:id/:type', async (req, res) => {      
+    const conn = await connection(dbConfig).catch(e => {return e;});
+    const {id,type} = req.params;
+    const sql = `CALL sp_ViewAccountAvatar(${type},${id})`;     
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+  });
 
   router.put('/api/v1.0/user/account/change-password/self-service', async (req, res) => { 
     try{

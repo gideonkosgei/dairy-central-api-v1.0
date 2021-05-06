@@ -62,6 +62,7 @@ var accessLogStream = rfs.createStream('access.log', {
 app.use(morgan('combined', { stream: accessLogStream }));// setup the logger
 
 // Routes
+app.use('/', express.static(path.join(__dirname, '/')));
 app.use('/',passport.authenticate('basic', { session: false }), animal);
 app.use('/', index);
 app.use('/', farm);
@@ -82,6 +83,7 @@ app.use('/', stats);
 app.use('/', graduation);
 app.use('/', background_processes);
 app.use('/', validations);
+app.use('/', express.static(path.join(__dirname, '/')));
 
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
