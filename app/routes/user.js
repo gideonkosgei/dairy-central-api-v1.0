@@ -10,6 +10,7 @@ const nodemailer = require("nodemailer");
 const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
+const configs = require('../config/configs.js');
 
 /** configs for image uploads */
 /*const storage = multer.diskStorage({
@@ -25,7 +26,8 @@ const storage = multer.diskStorage({
   },
   filename: function(req,file,cb){
     const ext = file.mimetype.split("/")[1];
-    cb(null,`public/uploads/${file.originalname}-${Date.now()}.${ext}`);
+    cb(null,`../${configs.image_dir}/${file.originalname}-${Date.now()}.${ext}`);
+    //cb(null,`D:/ADGG-LSF-MSF-v1.0/public/images/uploads/${file.originalname}-${Date.now()}.${ext}`);
   }
 }); 
 
@@ -179,7 +181,7 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
         res.send({status:0,message:'Only image files (jpg, jpeg, png) are allowed!'})
       } else {             
      
-      const sql = `CALL sp_createOrUpdateUserAccountAvatar(${type},${account},${JSON.stringify(req.file.originalname)},${JSON.stringify(req.file.filename)},${JSON.stringify(req.file.path)},${req.file.size},${user})`;  
+      const sql = `CALL sp_createOrUpdateUserAccountAvatar(${type},${account},${JSON.stringify(req.file.originalname)},${JSON.stringify(req.file.path)},${req.file.size},${user})`;  
      
       await query(conn, sql).then(
           response => {            
@@ -198,7 +200,7 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;});
     const {id,type} = req.params;
     const sql = `CALL sp_ViewAccountAvatar(${type},${id})`;     
-    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+    await query(conn, sql).then(response => {res.status(200).json({payload:response,dir:__dirname})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
   router.put('/api/v1.0/user/account/change-password/self-service', async (req, res) => { 

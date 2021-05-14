@@ -83,8 +83,6 @@ app.use('/', stats);
 app.use('/', graduation);
 app.use('/', background_processes);
 app.use('/', validations);
-app.use('/', express.static(path.join(__dirname, '/')));
-
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
 const IP = '127.0.0.1'
