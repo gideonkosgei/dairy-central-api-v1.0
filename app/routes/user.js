@@ -182,7 +182,7 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
       } else {             
      
       const sql = `CALL sp_createOrUpdateUserAccountAvatar(${type},${account},${JSON.stringify(req.file.originalname)},${JSON.stringify(req.file.path)},${req.file.size},${user})`;  
-     
+     console.log(sql);
       await query(conn, sql).then(
           response => {            
           res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
