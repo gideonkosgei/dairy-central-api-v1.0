@@ -66,24 +66,24 @@ router.get('/api/v1.0/stats/health-management-trends/:option/:id/:date_start/:da
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
-router.get('/api/v1.0/stats/due-dates/:org', async (req, res) => {   
-  const {org} = req.params;   
+router.get('/api/v1.0/stats/due-dates/:org/:option', async (req, res) => {   
+  const {org,option} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_animals_due_dates(${org})`;     
+  const sql = `CALL sp_animals_due_dates(${org},${option})`; 
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
-router.get('/api/v1.0/stats/pd-action-list/:org', async (req, res) => {   
-  const {org} = req.params;   
+router.get('/api/v1.0/stats/pd-action-list/:org/:option', async (req, res) => {   
+  const {org,option} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_animals_pd_action_list(${org})`;     
+  const sql = `CALL sp_animals_pd_action_list(${org},${option})`;     
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
-router.get('/api/v1.0/stats/service-action-list/:org', async (req, res) => {   
-  const {org} = req.params;   
+router.get('/api/v1.0/stats/service-action-list/:org/:option', async (req, res) => {   
+  const {org,option} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_analytics_service_action_list(${org})`;     
+  const sql = `CALL sp_analytics_service_action_list(${org},${option})`;
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
