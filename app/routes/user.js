@@ -157,7 +157,8 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
      * SP is failing. 
      * Need to handle the strings > convert them to null
      */ 
-    const timezone_1 = Number.isInteger(timezone) ? timezone : null;
+    
+    const timezone_1 = Number.isInteger(parseInt(timezone)) ? parseInt(timezone) : null; 
     const sql = `CALL sp_createOrUpdateUserAccount(${option} ,${id} , ${org} , ${JSON.stringify(name)} ,${JSON.stringify(username)} , ${JSON.stringify(email)} ,${JSON.stringify(password_hash)} , ${JSON.stringify(phone)} ,${country}, ${region} , ${district} , ${village} , ${ward} , ${timezone_1} ,${user},${role},${status})`;
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
     });
@@ -304,15 +305,17 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
         */
        
         const transporter = nodemailer.createTransport({
-          host: 'smtp.office365.com',
-          port: 587,
-          secure: false,
+          host: "smtp.outlook365.com",
+          service: "outlook",
+          port: '587',  
+          secure: false,                  
           auth: {
             user: 'g.kipkosgei@cgiar.org', 
-            pass: 'Trump2024', 
-          }
+            pass: 'G1d30nk0sg31', 
+          },
+          debug: true                              
         });
-       
+               
         const mailOptions = {
           from: 'g.kipkosgei@cgiar.org',
           to: 'mr.gkosgei@gmail.com',
@@ -328,14 +331,12 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
           }
         });
                
-        /*await query(conn, sql2)
+        await query(conn, sql2)
         .then(
           response => {            
           res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
         })
-        .catch(e => {res.status(400).json({status:400, message:e })});   
-        */     
-
+        .catch(e => {res.status(400).json({status:400, message:e })});  
 
     } catch (error) {
         res.send({status:0,message:`system error! ${error.message}`})

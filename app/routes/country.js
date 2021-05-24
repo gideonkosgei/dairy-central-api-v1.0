@@ -28,6 +28,5 @@ router.get('/api/v1.0/countries', async (req, res) => {
     const payload = await query(conn, sql).catch(e=>{return e;});   
     res.json({ payload });
   });
-   
 
  module.exports = router
