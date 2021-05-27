@@ -10,6 +10,69 @@ router.get('/api/v1.0/orgs', async (req, res) => {
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
+router.get('/api/v1.0/orgs/:option/:id', async (req, res) => {  
+  const {id,option} = req.params;   
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_ViewOrgOrOrgs(${option},${id})`;     
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
+
+router.post('/api/v1.0/org', async (req, res) => { 
+  try {    
+  const conn = await connection(dbConfig).catch(e => {return e;}); 
+  const { user,org_name,country} = req.body; 
+  const option = 0;
+  const id = null;
+
+  const sql = `CALL sp_CreateOrUpdateOrgRecord(
+    ${option},
+    ${id},    
+    ${JSON.stringify(org_name)},   
+    ${country},   
+    ${user}   
+    )`;        
+
+  await query(conn, sql).then(
+    response => {            
+    res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+  })
+  .catch(e => {res.status(400).json({status:400, message:e })}); 
+  } catch(error) {
+    res.send({status:0,message:`system error! ${error.message}`});
+  }   
+});
+
+
+
+router.put('/api/v1.0/org', async (req, res) => { 
+  try {    
+  const conn = await connection(dbConfig).catch(e => {return e;});  
+  const { user,org_name,country,org_id} = req.body; 
+  const option = 1;
+
+  const sql = `CALL sp_CreateOrUpdateOrgRecord(
+    ${option},
+    ${org_id},    
+    ${JSON.stringify(org_name)},   
+    ${country},   
+    ${user}   
+    )`;        
+
+  await query(conn, sql).then(
+    response => {            
+    res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+  })
+  .catch(e => {res.status(400).json({status:400, message:e })}); 
+  } catch(error) {
+    res.send({status:0,message:`system error! ${error.message}`});
+  }   
+});
+
+
+
+
+
 router.get('/api/v1.0/orgs/access/:id', async (req, res) => {   
   const user_id = req.params.id;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
