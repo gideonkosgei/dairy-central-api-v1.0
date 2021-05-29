@@ -115,4 +115,20 @@ router.put('/api/v1.0/orgs/switch/access', async (req, res) => {
     } 
 });
 
+
+router.put('/api/v1.0/org/farm-allocation', async (req, res) => { 
+  try{  
+  const conn = await connection(dbConfig).catch(e => {return e;});  
+  const {org,farm,user} = req.body;    
+  const sql = `CALL sp_org_farm_allocation(${org},${farm},${user})`; 
+  await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })});       
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
+});
+
 module.exports = router
