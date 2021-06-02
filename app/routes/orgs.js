@@ -64,6 +64,7 @@ router.put('/api/v1.0/org', async (req, res) => {
     res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
   })
   .catch(e => {res.status(400).json({status:400, message:e })}); 
+
   } catch(error) {
     res.send({status:0,message:`system error! ${error.message}`});
   }   
@@ -75,8 +76,14 @@ router.get('/api/v1.0/org/access/:id', async (req, res) => {
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
-router.put('/api/v1.0/orgs/access/:id', async (req, res) => {   
-  const user = req.params.id;   
+router.get('/api/v1.0/org/unit-access/:user/:unit_type/:display_option', async (req, res) => {   
+  const {user,unit_type,display_option} = req.params;   
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_view_unit_access(${user},${unit_type},${display_option})`; 
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
+
+router.put('/api/v1.0/orgs/access/:id', async (req, res) => {  
   const {orgs,created_by} = req.body;  
   let org_access = '';
   if (orgs.length>0){
@@ -94,6 +101,48 @@ router.put('/api/v1.0/orgs/access/:id', async (req, res) => {
   const sql = `CALL sp_org_access_create(${JSON.stringify(org_access)},${user},${created_by})`;       
   await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
+
+
+router.put('/api/v1.0/unit-remove-access', async (req, res) => {   
+  try { 
+    const {account_id,user_id,unit_type,units,action} = req.body;
+
+    let units_str = '';
+    /**
+     * Do not do any trasformations if action is add
+     * for remove , the units is an array that needs to be exploded
+     * for add, the units is an integer value
+     */
+    if (action === 0) { 
+      if (units.length>0){
+        for (var i = 0; i<units.length;i++){
+          units_str += `,${units[i]}`
+        }
+      } else {
+        units_str = null;
+      }
+  
+      if(units_str) {
+        units_str = units_str.replace(',', '');     
+      } 
+    } else {
+     units_str = units;
+    }
+    
+
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const sql = `CALL sp_UnitAddOrRemoveAccess(${JSON.stringify(units_str)},${unit_type},${account_id},${user_id},${action})`;
+    await query(conn, sql).then(
+      response => {            
+      res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+    })
+    .catch(e => {res.status(400).json({status:400, message:e })});
+
+} catch(error) {
+  res.send({status:0,message:`system error! ${error.message}`});
+}  
+});
+
 
 router.put('/api/v1.0/orgs/switch/access', async (req, res) => { 
   try{  
