@@ -70,11 +70,10 @@ router.put('/api/v1.0/org', async (req, res) => {
   }   
 });
 
-
-router.get('/api/v1.0/org/unit-access/:user/:unit_type/:display_option', async (req, res) => {   
-  const {user,unit_type,display_option} = req.params;   
+router.get('/api/v1.0/org/unit-access/:account/:unit_type/:display_option/:user', async (req, res) => {   
+  const {account,unit_type,display_option,user} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_view_unit_access(${user},${unit_type},${display_option})`; 
+  const sql = `CALL sp_view_unit_access(${account},${unit_type},${display_option},${user})`;   
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
