@@ -6,14 +6,14 @@ const query = require('../helpers/query');
 
 router.get('/api/v1.0/orgs', async (req, res) => {     
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_org_all_view()`;         
+  const sql = `CALL sp_org_all_view()`;     
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
 router.get('/api/v1.0/orgs/:option/:id', async (req, res) => {  
   const {id,option} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_ViewOrgOrOrgs(${option},${id})`;  
+  const sql = `CALL sp_ViewOrgOrOrgs(${option},${id})`;    
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
