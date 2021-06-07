@@ -87,13 +87,18 @@ router.get('/api/v1.0/user/auth', async (req, res) => {
   const sql = `CALL sp_authenticate('${req.query.username}')`;  
   await query(conn, sql)
   .then(
-    response => {  
-      if (response[0].length > 0){ 
-        if (bcrypt.compareSync(req.query.password,response[0][0].password)) {
-          res.status(200).json({payload:response,auth_status:true,user_exist:true}) //password correct
-        }  else {          
-          res.status(200).json({payload:response,auth_status:false,user_exist:true}) // password incorrect
-        }     
+    response => { 
+      
+      if (response[0].length > 0){       
+        if (response[0][0].password !==  null){            
+          if (bcrypt.compareSync(req.query.password,response[0][0].password)) {
+            res.status(200).json({payload:response,auth_status:true,user_exist:true}) //password correct
+          }  else {          
+            res.status(200).json({payload:response,auth_status:false,user_exist:true}) // password incorrect
+          }
+        } else {
+          res.status(200).json({payload:response,auth_status:false,user_exist:true}) // password not set -> password incorrect
+        }             
       } else {
         res.status(200).json({payload:response,auth_status:false,user_exist:false}) // account does not exist
       }    
