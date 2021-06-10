@@ -169,4 +169,22 @@ router.put('/api/v1.0/org/farm-allocation', async (req, res) => {
     } 
 });
 
+
+// Delink farm unit from org unit
+router.put('/api/v1.0/org/delink-farm-unit', async (req, res) => { 
+  try{ 
+  const conn = await connection(dbConfig).catch(e => {return e;});  
+  const {farm_id,user_id,org_id} = req.body;    
+  const sql = `CALL sp_delink_farm_from_org(${org_id},${farm_id},${user_id})`;  
+  await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })});       
+    } catch(error) {
+        res.send({status:0,message:`system error! ${error.message}`});
+    } 
+});
+
+
 module.exports = router
