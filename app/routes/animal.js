@@ -11,21 +11,13 @@ const query = require('../helpers/query');
     await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
 
-  router.get('/api/v1.0/animals/org/:id/:status', async (req, res) => {      
+  router.get('/api/v1.0/animal/:option/:id', async (req, res) => {      
       const conn = await connection(dbConfig).catch(e => {return e;});     
-      const {id,status} = req.params;
-      const sql = `CALL sp_animal_organization_view(${id},${status})`;       
+      const {id,option} = req.params;
+      const sql = `CALL sp_animal_view(${id},${option})`;       
       await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
-  
- //view animal details by animal ID
- router.get('/api/v1.0/animal/:animal_id', async (req, res) => {      
-      const conn = await connection(dbConfig).catch(e => {return e;});     
-      const id = req.params.animal_id;
-      const sql = `CALL sp_animal_view(${id})`;         
-      await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
-  });
-    
+      
  //view animals by animal_type
  router.get('/api/v1.0/animal/type/:org/:type', async (req, res) => {      
   const conn = await connection(dbConfig).catch(e => {return e;});     
