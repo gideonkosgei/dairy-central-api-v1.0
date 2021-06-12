@@ -5,22 +5,12 @@ const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
 
-
-  router.get('/api/v1.0/herds/org/:id', async (req, res) => {
+  router.get('/api/v1.0/herds/:option/:id/:user', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;}); 
-    const id = req.params.id;
-    const sql = `select * from core_animal_herd where org_id = ${id}`;       
+    const {id,option,user} = req.params;
+    const sql =  `CALL sp_ViewHerdOrHerds(${option},${id},${user})`;    
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
-
-  router.get('/api/v1.0/herds/:option/:id/:farm_id', async (req, res) => {
-    const conn = await connection(dbConfig).catch(e => {return e;}); 
-    const {id,option,farm_id} = req.params;  
-    let farm = (farm_id === "undefined") ? null : farm_id;
-    const sql =  `CALL sp_ViewHerdOrHerds(${option},${id},${farm})`;         
-    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
-  });
-
   
   router.post('/api/v1.0/herds', async (req, res) => { 
     try {    
