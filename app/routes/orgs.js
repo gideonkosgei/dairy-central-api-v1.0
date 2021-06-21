@@ -92,12 +92,12 @@ router.put('/api/v1.0/orgs/access/:id', async (req, res) => {
     org_access = org_access.replace(',', '');     
   }
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_org_access_create(${JSON.stringify(org_access)},${user},${created_by})`;       
+  const sql = `CALL sp_org_access_create(${JSON.stringify(org_access)},${user},${created_by})`;
   await query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})}).catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
 
-router.put('/api/v1.0/unit-remove-access', async (req, res) => {   
+router.put('/api/v1.0/unit-add-remove-access', async (req, res) => {   
   try { 
     const {account_id,user_id,unit_type,units,action} = req.body;
 
@@ -123,9 +123,9 @@ router.put('/api/v1.0/unit-remove-access', async (req, res) => {
      units_str = units;
     }
     
-
+    const output  = 1; 
     const conn = await connection(dbConfig).catch(e => {return e;});     
-    const sql = `CALL sp_UnitAddOrRemoveAccess(${JSON.stringify(units_str)},${unit_type},${account_id},${user_id},${action})`;
+    const sql = `CALL sp_UnitAddOrRemoveAccess(${JSON.stringify(units_str)},${unit_type},${account_id},${user_id},${action},${output})`;
     await query(conn, sql).then(
       response => {            
       res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 

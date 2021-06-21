@@ -116,7 +116,7 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
   router.get('/api/v1.0/user/account-info/:id', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});     
     const id = req.params.id;
-    const sql = `CALL sp_view_user_account(${id})`; 
+    const sql = `CALL sp_view_user_account(${id})`;  
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
