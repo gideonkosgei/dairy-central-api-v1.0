@@ -32,7 +32,7 @@ const query = require('../helpers/query');
 router.get('/api/v1.0/batches/validation/:uuid', async (req, res) => {
   const uuid = req.params.uuid;    
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_view_batch_upload_validate_step('${uuid}')`;
+  const sql = `CALL sp_view_batch_upload_validate_step('${uuid}')`;  
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -40,15 +40,15 @@ router.get('/api/v1.0/batches/validation/:uuid', async (req, res) => {
 router.post('/api/v1.0/batches/action', async (req, res) => { 
   const {action,uuid,user} = req.body; 
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_action(${JSON.stringify(uuid)},${action},${user})`; 
+  const sql = `CALL sp_batch_process_action(${JSON.stringify(uuid)},${action},${user})`;   
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
  });
 
-// view batch records based on organization and step. Filters -> org_id, step
-router.get('/api/v1.0/batches/view/:type/:org/:step/:user', async (req, res) => {
-  const {org,step,user,type} = req.params;   
+// view unfinalized batch records based on organization and batch. Filters -> org_id, batch
+router.get('/api/v1.0/batches/view/:type/:org/:user', async (req, res) => {
+  const {org,user,type} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_view_records(${type},${org},${step},${user})`;   
+  const sql = `CALL sp_batch_process_view_records(${type},${org},${user})`;   
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
@@ -61,6 +61,7 @@ router.get('/api/v1.0/batches/deleted/:type/:org/:user', async (req, res) => {
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
+
 // view POSTED batches based on organization and step. 
 router.get('/api/v1.0/batches/posted/:type/:org/:user', async (req, res) => {
   const {org,user,type} = req.params;  
@@ -69,14 +70,16 @@ router.get('/api/v1.0/batches/posted/:type/:org/:user', async (req, res) => {
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
-// view error details of a batch milk record
-router.get('/api/v1.0/batches/errors/:record_id/:batch_type', async (req, res) => {
-  const {record_id,batch_type} = req.params;   
+// view  details of a batch record
+router.get('/api/v1.0/batches/details/:record_id/:batch_type/:option', async (req, res) => {
+  const {record_id,batch_type,option} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_batch_process_view_record_error(${record_id},${batch_type})`;    
+  const sql = `CALL sp_batch_process_view_record(${record_id},${batch_type},${option})`;    
  
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
+
+
 
 router.get('/api/v1.0/batches/template/:type/:org', async (req, res) => {
   const {org,type} = req.params;   
@@ -127,23 +130,31 @@ router.post('/api/v1.0/batches/sync/upload', async (req, res) => {
 });
 
 /* Animal Registration Batches*/
-router.post('/api/v1.0/batches/animal/upload', async (req, res) => {      
-  const conn = await connection(dbConfig).catch(e => {return e;}); 
-  const {rows ,cols,created_by,org_id,uuid} = req.body; 
-  const batch_type = 8;  
-  const rows_clone = rows.slice(1)   
-  let i = 0;
-  for (i; i<rows_clone.length; i++){
-    rows_clone[i].push(uuid);
+router.post('/api/v1.0/batches/animal/upload', async (req, res) => {  
+  try {    
+    const conn = await connection(dbConfig).catch(e => {return e;}); 
+    const {rows ,cols,created_by,org_id,batch_type,uuid} = req.body;         
+    
+    for (let i = 0; i<rows.length; i++){
+      rows[i].push(null); // hack-> the library is displaying one more column thatn the rows
+      rows[i].push(uuid);
+    }  
+    var jString = JSON.stringify(rows);
+    jString = jString.substr(1);
+    jString = jString.substring(0,jString.length-1);
+    jString = jString.replace(/\[/g, "(");
+    jString = jString.replace(/\]/g, ")");  
+
+    const sql = `CALL sp_create_batch_upload(${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;  
+    
+    await query(conn, sql).then(
+      response => {            
+      res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+    })
+    .catch(e => {res.status(400).json({status:400, message:e })}); 
+  } catch(error) {
+    res.send({status:0,message:`system error! ${error.message}`});
   }  
-  var jString = JSON.stringify(rows_clone);
-  jString = jString.substr(1);
-  jString = jString.substring(0,jString.length-1);
-  jString = jString.replace(/\[/g, "(");
-  jString = jString.replace(/\]/g, ")");                  
-  const sql = `CALL sp_create_batch_upload_animal( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;  
-  query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})})
-  .catch(e=>{res.status(400).json({status:400, message:e })});      
 });
 
 /* Calving Batches*/
@@ -160,13 +171,13 @@ router.post('/api/v1.0/batches/calving/upload', async (req, res) => {
   jString = jString.substr(1);
   jString = jString.substring(0,jString.length-1);
   jString = jString.replace(/\[/g, "(");
-  jString = jString.replace(/\]/g, ")");                  
+  jString = jString.replace(/\]/g, ")");  
+  
+ 
   const sql = `CALL sp_create_batch_upload_calving( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;  
   query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})})
   .catch(e=>{res.status(400).json({status:400, message:e })});      
 });
-
-
 
 /* pd Batches*/
 router.post('/api/v1.0/batches/pd/upload', async (req, res) => {      
@@ -188,7 +199,6 @@ router.post('/api/v1.0/batches/pd/upload', async (req, res) => {
   .catch(e=>{res.status(400).json({status:400, message:e })});      
 }); 
 
-
 /* AI Batches*/
 router.post('/api/v1.0/batches/ai/upload', async (req, res) => {      
   const conn = await connection(dbConfig).catch(e => {return e;}); 
@@ -208,8 +218,6 @@ router.post('/api/v1.0/batches/ai/upload', async (req, res) => {
   query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})})
   .catch(e=>{res.status(400).json({status:400, message:e })});      
 }); 
-module.exports = router
-
 
 /* Exit Batches*/
 router.post('/api/v1.0/batches/exit/upload', async (req, res) => {      
@@ -218,14 +226,16 @@ router.post('/api/v1.0/batches/exit/upload', async (req, res) => {
   const batch_type = 4;  
   const rows_clone = rows.slice(1)   
   let i = 0;
-  for (i; i<rows_clone.length; i++){
+  for (let i; i<rows_clone.length; i++){
     rows_clone[i].push(uuid);
   }  
+
   var jString = JSON.stringify(rows_clone);
   jString = jString.substr(1);
   jString = jString.substring(0,jString.length-1);
   jString = jString.replace(/\[/g, "(");
-  jString = jString.replace(/\]/g, ")");                  
+  jString = jString.replace(/\]/g, ")"); 
+
   const sql = `CALL sp_create_batch_upload_exit( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;   
   query(conn, sql).then(e => {res.status(200).json({status:200, message:"success"})})
   .catch(e=>{res.status(400).json({status:400, message:e })});      
@@ -377,7 +387,7 @@ router.get('/api/v1.0/batches/report/all/:org/:type/:stage/:status/:user', async
   try{ 
       const {org,type,stage,status,user} = req.params;      
       const conn = await connection(dbConfig).catch(e => {return e;});      
-      const sql = `CALL sp_rpt_batch_all(${org},${type},${stage},${status},${user})`;    
+      const sql = `CALL sp_rpt_batch_all(${org},${type},${stage},${status},${user})`;  
       await query(conn, sql)
       .then(
         response => {            
