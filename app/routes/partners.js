@@ -7,7 +7,8 @@ const query = require('../helpers/query');
 router.get('/api/v1.0/partners/service-provider/:id/:option', async (req, res) => {
   const{id,option}  = req.params;    
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_service_provider_view(${id},${option})`;        
+  const sql = `CALL sp_service_provider_view(${id},${option})`;  
+  console.log(sql);      
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
