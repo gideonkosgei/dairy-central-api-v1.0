@@ -34,6 +34,7 @@ router.get('/api/v1.0/batches/validation/:uuid', async (req, res) => {
   const conn = await connection(dbConfig).catch(e => { return e; });
   const sql = `CALL sp_view_batch_upload_validate_step('${uuid}')`;
   await query(conn, sql).then(response => { res.status(200).json({ payload: response[0] }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 // actions on  batch i.e validation or discard or progress &  post
@@ -48,18 +49,20 @@ router.post('/api/v1.0/batches/action', async (req, res) => {
           res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
         })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
   } catch (error) {
+
     res.send({ status: 0, message: `system error! ${error.message}` })
   }
-
 });
 
 // view unfinalized batch records based on organization and batch. Filters -> org_id, batch,stage,status,action
 router.get('/api/v1.0/batches/view/:type/:stage/:status/:org/:user/:action', async (req, res) => {
-  const { org,user,type,stage,status,action} = req.params;
+  const { org, user, type, stage, status, action } = req.params;
   const conn = await connection(dbConfig).catch(e => { return e; });
-  const sql = `CALL sp_batch_process_view_records(${isNaN(type) ? null : type },${ isNaN(stage) ? null : stage},${ isNaN(status) ? null : status},${org},${user},${action})`;
+  const sql = `CALL sp_batch_process_view_records(${isNaN(type) ? null : type},${isNaN(stage) ? null : stage},${isNaN(status) ? null : status},${org},${user},${action})`;
   await query(conn, sql).then(response => { res.status(200).json({ payload: response[0] }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 
@@ -69,6 +72,7 @@ router.get('/api/v1.0/batches/deleted/:type/:org/:user', async (req, res) => {
   const conn = await connection(dbConfig).catch(e => { return e; });
   const sql = `CALL sp_batch_process_view_deleted_records(${type},${org},${user})`;
   await query(conn, sql).then(response => { res.status(200).json({ payload: response[0] }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 
@@ -78,6 +82,7 @@ router.get('/api/v1.0/batches/posted/:type/:org/:user', async (req, res) => {
   const conn = await connection(dbConfig).catch(e => { return e; });
   const sql = `CALL sp_batch_process_view_posted_batches(${type},${org},${user})`;
   await query(conn, sql).then(response => { res.status(200).json({ payload: response[0] }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 // view  details of a batch record
@@ -87,6 +92,7 @@ router.get('/api/v1.0/batches/details/:record_id/:batch_type/:option', async (re
   const sql = `CALL sp_batch_process_view_record(${record_id},${batch_type},${option})`;
 
   await query(conn, sql).then(response => { res.status(200).json({ payload: response[0] }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 
@@ -96,6 +102,7 @@ router.get('/api/v1.0/batches/template/:type/:org', async (req, res) => {
   const conn = await connection(dbConfig).catch(e => { return e; });
   const sql = `CALL sp_batch_get_template(${type},${org})`;
   await query(conn, sql).then(response => { res.status(200).json({ payload: response[0] }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 /* Weight & Growth Batches*/
@@ -116,6 +123,7 @@ router.post('/api/v1.0/batches/weight/upload', async (req, res) => {
   const sql = `CALL sp_create_batch_upload_weight( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
   query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
     .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 
@@ -137,6 +145,7 @@ router.post('/api/v1.0/batches/sync/upload', async (req, res) => {
   const sql = `CALL sp_create_batch_upload_sync( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
   query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
     .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 /* Animal Registration Batches*/
@@ -162,9 +171,12 @@ router.post('/api/v1.0/batches/animal/upload', async (req, res) => {
         res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
       })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
   } catch (error) {
     res.send({ status: 0, message: `system error! ${error.message}` });
+
   }
+
 });
 
 /* Calving Batches*/
@@ -187,6 +199,7 @@ router.post('/api/v1.0/batches/calving/upload', async (req, res) => {
   const sql = `CALL sp_create_batch_upload_calving( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
   query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
     .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 /* pd Batches*/
@@ -207,6 +220,7 @@ router.post('/api/v1.0/batches/pd/upload', async (req, res) => {
   const sql = `CALL sp_create_batch_upload_pd( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
   query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
     .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 /* AI Batches*/
@@ -227,6 +241,7 @@ router.post('/api/v1.0/batches/ai/upload', async (req, res) => {
   const sql = `CALL sp_create_batch_upload_ai( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
   query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
     .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 /* Exit Batches*/
@@ -249,6 +264,7 @@ router.post('/api/v1.0/batches/exit/upload', async (req, res) => {
   const sql = `CALL sp_create_batch_upload_exit( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
   query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
     .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 //get batch record using record id
@@ -257,6 +273,7 @@ router.get('/api/v1.0/batches/record/any/:batch_type/:record_id', async (req, re
   const conn = await connection(dbConfig).catch(e => { return e; });
   const sql = `CALL sp_batch_view_record(${batch_type},${record_id})`;
   await query(conn, sql).then(response => { res.status(200).json({ payload: response[0] }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
+
 });
 
 router.put('/api/v1.0/batches/milking/modify-and-revalidate', async (req, res) => {
@@ -270,9 +287,11 @@ router.put('/api/v1.0/batches/milking/modify-and-revalidate', async (req, res) =
           res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
         })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
   } catch (error) {
     res.send({ status: 0, message: `system error! ${error.message}` })
   }
+
 });
 
 router.put('/api/v1.0/batches/weight/modify-and-revalidate', async (req, res) => {
@@ -287,8 +306,10 @@ router.put('/api/v1.0/batches/weight/modify-and-revalidate', async (req, res) =>
           res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
         })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
   } catch (error) {
     res.send({ status: 0, message: `system error! ${error.message}` })
+
   }
 });
 
@@ -303,8 +324,10 @@ router.put('/api/v1.0/batches/ai/modify-and-revalidate', async (req, res) => {
           res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
         })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
   } catch (error) {
-    res.send({ status: 0, message: `system error! ${error.message}` })
+    res.send({ status: 0, message: `system error! ${error.message}` });
+
   }
 });
 
@@ -389,8 +412,10 @@ router.put('/api/v1.0/batches/animal/modify-and-revalidate', async (req, res) =>
           res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
         })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
   } catch (error) {
     res.send({ status: 0, message: `system error! ${error.message}` })
+
   }
 });
 
@@ -405,8 +430,10 @@ router.get('/api/v1.0/batches/types/all', async (req, res) => {
           res.status(200).json({ payload: response })
         })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
   } catch (error) {
-    res.send({ status: 0, message: `system error! ${error.message}` })
+    res.send({ status: 0, message: `system error! ${error.message}` });
+
   }
 });
 
@@ -421,8 +448,10 @@ router.get('/api/v1.0/batches/stages/all', async (req, res) => {
           res.status(200).json({ payload: response })
         })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
   } catch (error) {
-    res.send({ status: 0, message: `system error! ${error.message}` })
+    res.send({ status: 0, message: `system error! ${error.message}` });
+
   }
 });
 
@@ -437,8 +466,10 @@ router.get('/api/v1.0/batches/status/all', async (req, res) => {
           res.status(200).json({ payload: response })
         })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
   } catch (error) {
-    res.send({ status: 0, message: `system error! ${error.message}` })
+    res.send({ status: 0, message: `system error! ${error.message}` });
+
   }
 });
 
@@ -453,11 +484,12 @@ router.get('/api/v1.0/batches/validation-status/all', async (req, res) => {
           res.status(200).json({ payload: response })
         })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
   } catch (error) {
-    res.send({ status: 0, message: `system error! ${error.message}` })
+    res.send({ status: 0, message: `system error! ${error.message}` });
+
   }
 });
-
 // VIEW BATCH REPORT ALL
 router.get('/api/v1.0/batches/report/all/:org/:type/:stage/:status/:user', async (req, res) => {
   try {
@@ -470,9 +502,10 @@ router.get('/api/v1.0/batches/report/all/:org/:type/:stage/:status/:user', async
           res.status(200).json({ payload: response })
         })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
   } catch (error) {
-    res.send({ status: 0, message: `system error! ${error.message}` })
+    res.send({ status: 0, message: `system error! ${error.message}` });
+
   }
 });
-
 module.exports = router
