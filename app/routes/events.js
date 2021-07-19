@@ -527,10 +527,10 @@ router.get('/api/v1.0/events/milking/:id', async (req, res) => {
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
-router.get('/api/v1.0/events/milking/parameters/:animal_id/:milk_date', async (req, res) => {      
+router.get('/api/v1.0/events/milking/parameters/:option/:animal_id/:milk_date/:lactation_number', async (req, res) => {      
     const conn = await connection(dbConfig).catch(e => {return e;});     
-    const {animal_id,milk_date} = req.params;
-    const sql = `CALL sp_set_milking_parameters(${animal_id},${JSON.stringify(milk_date)})`; 
+    const {animal_id,milk_date,option,lactation_number} = req.params;
+    const sql = `CALL sp_set_milking_parameters(${option},${animal_id},${JSON.stringify(milk_date)},${lactation_number})`; 
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
