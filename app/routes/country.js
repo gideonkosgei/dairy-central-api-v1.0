@@ -29,4 +29,11 @@ router.get('/api/v1.0/countries', async (req, res) => {
     
   });
 
+  router.get('/api/v1.0/countries-all', async (req, res) => {
+    const conn = await connection(dbConfig).catch(e => {return e;});     
+    const sql = "SELECT id, iso2, name  FROM core_master_country WHERE is_active =1 order by name";    
+    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+       
+  });
+
  module.exports = router
