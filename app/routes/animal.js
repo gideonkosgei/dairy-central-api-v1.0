@@ -15,7 +15,6 @@ const query = require('../helpers/query');
       const conn = await connection(dbConfig).catch(e => {return e;});     
       const {id,option} = req.params;
       const sql = `CALL sp_animal_view(${id},${option})`; 
-      console.log()       
       await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
       
