@@ -39,7 +39,7 @@ router.get('/api/v1.0/animal/herd/:org/:herd', async (req, res) => {
       const conn = await connection(dbConfig).catch(e => {return e;});   
       const id = req.params.animal_id;         
       const {
-            updated_by ,animal_type ,birthdate,name ,breed_composition ,hair_sample_id ,main_breed ,reg_date,sex ,tag_id ,
+            updated_by ,animal_type ,birthdate,name ,breed_composition ,hair_sample_id ,main_breed ,reg_date ,tag_id ,
             breed_combination ,notes ,breed_composition_details ,color ,color_other ,country_of_origin ,
             deformities ,entry_date,entry_type ,herd_book_number ,main_breed_other ,purchase_cost ,secondary_breed ,secondary_breed_other ,
             sire_type ,sire_id ,dam_id,herd_id,org_id,farm_id
