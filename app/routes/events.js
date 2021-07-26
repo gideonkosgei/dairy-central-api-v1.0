@@ -175,9 +175,40 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
  //create insemination event
   router.post('/api/v1.0/events/insemination', async (req, res) => {   
       try{   
-      const conn = await connection(dbConfig).catch(e => {return e;});       
-      const { animal_id ,ai_date  ,type_of_ai ,straw_id , body_condition_score  ,ai_cost   ,field_agent_id ,created_by} = req.body;      
-      const sql = `CALL sp_create_event_insemination(${animal_id},${JSON.stringify(ai_date)}, ${type_of_ai}, ${straw_id}, ${body_condition_score},  ${ai_cost} ,${field_agent_id},${created_by})`; 
+      const conn = await connection(dbConfig).catch(e => {return e;});
+      
+      const { 
+        breeding_type,
+        semen_batch,
+        source_of_semen,
+        straw_semen_type,
+        sire_id,
+        animal_id,
+        ai_date,
+        type_of_ai,        
+         body_condition_score ,
+         ai_cost,
+         field_agent_id,
+         created_by
+        } = req.body; 
+
+    const sql = `CALL sp_create_event_insemination(
+      ${animal_id},
+      ${JSON.stringify(ai_date)}, 
+      ${type_of_ai}, 
+      ${sire_id}, 
+      ${body_condition_score},  
+      ${ai_cost} ,
+      ${field_agent_id},
+      ${created_by},
+      ${breeding_type},
+      ${JSON.stringify(semen_batch)},
+      ${source_of_semen},
+      ${straw_semen_type}  
+      )`;
+      
+      console.log(sql);
+
       await query(conn, sql).then(
         response => {            
         res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
