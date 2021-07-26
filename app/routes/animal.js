@@ -19,10 +19,10 @@ const query = require('../helpers/query');
   });
       
  //view animals by animal_type
- router.get('/api/v1.0/animal/type/:org/:type', async (req, res) => {      
+ router.get('/api/v1.0/animal/type/:id/:type/:option', async (req, res) => {      
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const {org,type} = req.params;
-  const sql = `CALL sp_view_animals_by_animal_type(${org},${type})`;         
+  const {id,type,option} = req.params;
+  const sql = `CALL sp_view_animals_by_animal_type(${option},${id},${type})`;         
   await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 

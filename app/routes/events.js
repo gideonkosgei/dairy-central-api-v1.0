@@ -206,8 +206,6 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
       ${source_of_semen},
       ${straw_semen_type}  
       )`;
-      
-      console.log(sql);
 
       await query(conn, sql).then(
         response => {            
