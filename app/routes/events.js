@@ -176,31 +176,32 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
   router.post('/api/v1.0/events/insemination', async (req, res) => {   
       try{   
       const conn = await connection(dbConfig).catch(e => {return e;});
-      
+      const option = 0;      
       const { 
         breeding_type,
         semen_batch,
         source_of_semen,
         straw_semen_type,
         sire_id,
-        animal_id,
+        id,
         ai_date,
         type_of_ai,        
-         body_condition_score ,
-         ai_cost,
-         field_agent_id,
-         created_by
-        } = req.body; 
+        body_condition_score ,
+        ai_cost,
+        field_agent_id,
+        user
+      } = req.body; 
 
-    const sql = `CALL sp_create_event_insemination(
-      ${animal_id},
+    const sql = `CALL sp_CreateOrUpdateInseminationRecord(
+      ${option},
+      ${id},
       ${JSON.stringify(ai_date)}, 
       ${type_of_ai}, 
       ${sire_id}, 
       ${body_condition_score},  
       ${ai_cost} ,
       ${field_agent_id},
-      ${created_by},
+      ${user},
       ${breeding_type},
       ${JSON.stringify(semen_batch)},
       ${source_of_semen},
@@ -220,19 +221,49 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
 
 
   //update insemination event Record
-  router.put('/api/v1.0/events/insemination/:event_id', async (req, res) => {  
-    try{ 
-    const event_id = req.params.event_id;   
-    const conn = await connection(dbConfig).catch(e => {return e;});       
-    const {ai_date  ,type_of_ai ,straw_id , body_condition_score ,ai_cost ,field_agent_id ,updated_by} = req.body;      
-    const sql = `CALL sp_update_event_insemination(${event_id},${JSON.stringify(ai_date)}, ${type_of_ai}, ${straw_id}, ${body_condition_score}, ${ai_cost},${field_agent_id},${updated_by})`; 
-    await query(conn, sql).then(
-      response => {                   
-      res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
-    })
-    .catch(e => {res.status(400).json({status:400, message:e })});
+  router.put('/api/v1.0/events/insemination', async (req, res) => {  
+    try{   
+      const conn = await connection(dbConfig).catch(e => {return e;});
+      const option = 1;      
+      const { 
+        breeding_type,
+        semen_batch,
+        source_of_semen,
+        straw_semen_type,
+        sire_id,
+        id,
+        ai_date,
+        type_of_ai,        
+        body_condition_score ,
+        ai_cost,
+        field_agent_id,
+        user
+      } = req.body; 
+
+    const sql = `CALL sp_CreateOrUpdateInseminationRecord(
+      ${option},
+      ${id},
+      ${JSON.stringify(ai_date)}, 
+      ${type_of_ai}, 
+      ${sire_id}, 
+      ${body_condition_score},  
+      ${ai_cost} ,
+      ${field_agent_id},
+      ${user},
+      ${breeding_type},
+      ${JSON.stringify(semen_batch)},
+      ${source_of_semen},
+      ${straw_semen_type}  
+      )`;
+
+      await query(conn, sql).then(
+        response => {            
+        res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+      })
+      .catch(e => {res.status(400).json({status:400, message:e })}); 
+      
     } catch(error) {
-      res.send({status:0,message:`system error! ${error.message}`});
+        res.send({status:0,message:`system error! ${error.message}`});
     } 
 });
 
