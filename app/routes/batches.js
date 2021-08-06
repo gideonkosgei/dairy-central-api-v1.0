@@ -4,30 +4,6 @@ const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
 
-//create new limit parameter
-router.post('/api/v1.0/batches/milking/upload', async (req, res) => {
-  const conn = await connection(dbConfig).catch(e => { return e; });
-  const { rows, cols, created_by, org_id, uuid } = req.body;
-  const batch_type = 1;
-
-  const rows_clone = rows.slice(1)
-  let i = 0;
-
-  for (i; i < rows_clone.length; i++) {
-    rows_clone[i].push(uuid);
-  }
-
-  var jString = JSON.stringify(rows_clone);
-  jString = jString.substr(1);
-  jString = jString.substring(0, jString.length - 1);
-  jString = jString.replace(/\[/g, "(");
-  jString = jString.replace(/\]/g, ")");
-  const sql = `CALL sp_create_batch_upload_milk( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
-  query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
-    .catch(e => { res.status(400).json({ status: 400, message: e }) });
-});
-
-
 // view batched on validation queue
 router.get('/api/v1.0/batches/validation/:uuid', async (req, res) => {
   const uuid = req.params.uuid;
@@ -105,59 +81,17 @@ router.get('/api/v1.0/batches/template/:type/:org', async (req, res) => {
 
 });
 
-/* Weight & Growth Batches*/
-router.post('/api/v1.0/batches/weight/upload', async (req, res) => {
-  const conn = await connection(dbConfig).catch(e => { return e; });
-  const { rows, cols, created_by, org_id, uuid } = req.body;
-  const batch_type = 2;
-  const rows_clone = rows.slice(1)
-  let i = 0;
-  for (i; i < rows_clone.length; i++) {
-    rows_clone[i].push(uuid);
-  }
-  var jString = JSON.stringify(rows_clone);
-  jString = jString.substr(1);
-  jString = jString.substring(0, jString.length - 1);
-  jString = jString.replace(/\[/g, "(");
-  jString = jString.replace(/\]/g, ")");
-  const sql = `CALL sp_create_batch_upload_weight( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
-  query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
-    .catch(e => { res.status(400).json({ status: 400, message: e }) });
 
-});
-
-
-/* Synchronization Batches*/
-router.post('/api/v1.0/batches/sync/upload', async (req, res) => {
-  const conn = await connection(dbConfig).catch(e => { return e; });
-  const { rows, cols, created_by, org_id, uuid } = req.body;
-  const batch_type = 6;
-  const rows_clone = rows.slice(1)
-  let i = 0;
-  for (i; i < rows_clone.length; i++) {
-    rows_clone[i].push(uuid);
-  }
-  var jString = JSON.stringify(rows_clone);
-  jString = jString.substr(1);
-  jString = jString.substring(0, jString.length - 1);
-  jString = jString.replace(/\[/g, "(");
-  jString = jString.replace(/\]/g, ")");
-  const sql = `CALL sp_create_batch_upload_sync( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
-  query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
-    .catch(e => { res.status(400).json({ status: 400, message: e }) });
-
-});
-
-/* Animal Registration Batches*/
-router.post('/api/v1.0/batches/animal/upload', async (req, res) => {
+/* upload batch records*/
+router.post('/api/v1.0/batches/upload', async (req, res) => {
   try {
     const conn = await connection(dbConfig).catch(e => { return e; });
     const { rows, cols, created_by, org_id, batch_type, uuid } = req.body;
 
     for (let i = 0; i < rows.length; i++) {
-      rows[i].push(null); // hack-> the library is displaying one more column thatn the rows
       rows[i].push(uuid);
     }
+
     var jString = JSON.stringify(rows);
     jString = jString.substr(1);
     jString = jString.substring(0, jString.length - 1);
@@ -167,105 +101,16 @@ router.post('/api/v1.0/batches/animal/upload', async (req, res) => {
     const sql = `CALL sp_create_batch_upload(${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
 
     await query(conn, sql).then(
-      response => {
+      response => {       
         res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
       })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
-
   } catch (error) {
     res.send({ status: 0, message: `system error! ${error.message}` });
-
   }
 
 });
 
-/* Calving Batches*/
-router.post('/api/v1.0/batches/calving/upload', async (req, res) => {
-  const conn = await connection(dbConfig).catch(e => { return e; });
-  const { rows, cols, created_by, org_id, uuid } = req.body;
-  const batch_type = 7;
-  const rows_clone = rows.slice(1)
-  let i = 0;
-  for (i; i < rows_clone.length; i++) {
-    rows_clone[i].push(uuid);
-  }
-  var jString = JSON.stringify(rows_clone);
-  jString = jString.substr(1);
-  jString = jString.substring(0, jString.length - 1);
-  jString = jString.replace(/\[/g, "(");
-  jString = jString.replace(/\]/g, ")");
-
-
-  const sql = `CALL sp_create_batch_upload_calving( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
-  query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
-    .catch(e => { res.status(400).json({ status: 400, message: e }) });
-
-});
-
-/* pd Batches*/
-router.post('/api/v1.0/batches/pd/upload', async (req, res) => {
-  const conn = await connection(dbConfig).catch(e => { return e; });
-  const { rows, cols, created_by, org_id, uuid } = req.body;
-  const batch_type = 3;
-  const rows_clone = rows.slice(1)
-  let i = 0;
-  for (i; i < rows_clone.length; i++) {
-    rows_clone[i].push(uuid);
-  }
-  var jString = JSON.stringify(rows_clone);
-  jString = jString.substr(1);
-  jString = jString.substring(0, jString.length - 1);
-  jString = jString.replace(/\[/g, "(");
-  jString = jString.replace(/\]/g, ")");
-  const sql = `CALL sp_create_batch_upload_pd( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
-  query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
-    .catch(e => { res.status(400).json({ status: 400, message: e }) });
-
-});
-
-/* AI Batches*/
-router.post('/api/v1.0/batches/ai/upload', async (req, res) => {
-  const conn = await connection(dbConfig).catch(e => { return e; });
-  const { rows, cols, created_by, org_id, uuid } = req.body;
-  const batch_type = 5;
-  const rows_clone = rows.slice(1)
-  let i = 0;
-  for (i; i < rows_clone.length; i++) {
-    rows_clone[i].push(uuid);
-  }
-  var jString = JSON.stringify(rows_clone);
-  jString = jString.substr(1);
-  jString = jString.substring(0, jString.length - 1);
-  jString = jString.replace(/\[/g, "(");
-  jString = jString.replace(/\]/g, ")");
-  const sql = `CALL sp_create_batch_upload_ai( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
-  query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
-    .catch(e => { res.status(400).json({ status: 400, message: e }) });
-
-});
-
-/* Exit Batches*/
-router.post('/api/v1.0/batches/exit/upload', async (req, res) => {
-  const conn = await connection(dbConfig).catch(e => { return e; });
-  const { rows, cols, created_by, org_id, uuid } = req.body;
-  const batch_type = 4;
-  const rows_clone = rows.slice(1)
-  let i = 0;
-  for (let i; i < rows_clone.length; i++) {
-    rows_clone[i].push(uuid);
-  }
-
-  var jString = JSON.stringify(rows_clone);
-  jString = jString.substr(1);
-  jString = jString.substring(0, jString.length - 1);
-  jString = jString.replace(/\[/g, "(");
-  jString = jString.replace(/\]/g, ")");
-
-  const sql = `CALL sp_create_batch_upload_exit( ${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
-  query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) })
-    .catch(e => { res.status(400).json({ status: 400, message: e }) });
-
-});
 
 //get batch record using record id
 router.get('/api/v1.0/batches/record/any/:batch_type/:record_id', async (req, res) => {
