@@ -66,12 +66,8 @@ router.get('/api/v1.0/batches/details/:record_id/:batch_type/:option', async (re
   const { record_id, batch_type, option } = req.params;
   const conn = await connection(dbConfig).catch(e => { return e; });
   const sql = `CALL sp_batch_process_view_record(${record_id},${batch_type},${option})`;
-
   await query(conn, sql).then(response => { res.status(200).json({ payload: response[0] }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
-
 });
-
-
 
 router.get('/api/v1.0/batches/template/:type/:org', async (req, res) => {
   const { org, type } = req.params;
