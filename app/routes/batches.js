@@ -77,7 +77,6 @@ router.get('/api/v1.0/batches/template/:type/:org', async (req, res) => {
 
 });
 
-
 /* upload batch records*/
 router.post('/api/v1.0/batches/upload', async (req, res) => {
   try {
@@ -95,7 +94,6 @@ router.post('/api/v1.0/batches/upload', async (req, res) => {
     jString = jString.replace(/\]/g, ")");
 
     const sql = `CALL sp_create_batch_upload(${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
-
     await query(conn, sql).then(
       response => {       
         res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
@@ -104,7 +102,6 @@ router.post('/api/v1.0/batches/upload', async (req, res) => {
   } catch (error) {
     res.send({ status: 0, message: `system error! ${error.message}` });
   }
-
 });
 
 
@@ -114,7 +111,6 @@ router.get('/api/v1.0/batches/record/any/:batch_type/:record_id', async (req, re
   const conn = await connection(dbConfig).catch(e => { return e; });
   const sql = `CALL sp_batch_view_record(${batch_type},${record_id})`;
   await query(conn, sql).then(response => { res.status(200).json({ payload: response[0] }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
-
 });
 
 router.put('/api/v1.0/batches/milking/modify-and-revalidate', async (req, res) => {
