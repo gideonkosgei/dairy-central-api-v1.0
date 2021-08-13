@@ -253,11 +253,11 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashed_password = bcrypt.hashSync(plain_text_password, salt);  
 
-        const sql = `CALL sp_view_mail_settings()`;     
+       // const sql = `CALL sp_view_mail_settings()`;     
         const sql2 = `CALL sp_reset_forgotten_password(${JSON.stringify(email)},${JSON.stringify(hashed_password)})`;    
-        const sql3 = `CALL sp_get_mail_template("user_login_details")`; 
+        //const sql3 = `CALL sp_get_mail_template("user_login_details")`; 
 
-        await query(conn, sql)
+       /* await query(conn, sql)
         .then(response => {   
           email_settings = {
             email_host:response[0][0].email_host,    
@@ -287,7 +287,7 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
           res.status(400).json({
             status:400, message:e 
           })
-        }); 
+        }); */
 
         /*
         
@@ -307,7 +307,7 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
           subject: email_template.subject,         
           html: `<b>Hey ${email}! </b><br/> Your new password is ${plain_text_password} <br/>`
         };  
-        */
+        
        
         const transporter = nodemailer.createTransport({
           host: "smtp.outlook365.com",
@@ -335,6 +335,7 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
             console.log('Email sent: ' + info.response);
           }
         });
+        */
                
         await query(conn, sql2)
         .then(
