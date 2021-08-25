@@ -19,6 +19,7 @@ router.post('/api/v1.0/batches/action', async (req, res) => {
     const { action, uuid, user } = req.body;
     const conn = await connection(dbConfig).catch(e => { return e; });
     const sql = `CALL sp_batch_process_action(${JSON.stringify(uuid)},${action},${user})`;
+    console.log(sql);
     await query(conn, sql)
       .then(
         response => {
@@ -116,8 +117,8 @@ router.get('/api/v1.0/batches/record/any/:batch_type/:record_id', async (req, re
 router.put('/api/v1.0/batches/milking/modify-and-revalidate', async (req, res) => {
   try {
     const conn = await connection(dbConfig).catch(e => { return e; });
-    const { amount_afternoon, amount_morning, amount_noon, animal_id, milk_date, record_id, user_id, batch_type, remove } = req.body;
-    const sql = `CALL sp_batch_milking_modify_revalidate(${amount_afternoon},${amount_morning},${amount_noon},${animal_id},${JSON.stringify(milk_date)},${record_id},${user_id},${batch_type},${remove})`;
+    const { amount_afternoon, amount_morning, amount_noon, animal_tag_id, milk_date, record_id, user_id, batch_type, remove } = req.body;
+    const sql = `CALL sp_batch_milking_modify_revalidate(${amount_afternoon},${amount_morning},${amount_noon},${JSON.stringify(animal_tag_id)},${JSON.stringify(milk_date)},${record_id},${user_id},${batch_type},${remove})`;
     await query(conn, sql)
       .then(
         response => {
