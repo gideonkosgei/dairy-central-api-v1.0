@@ -19,7 +19,6 @@ router.post('/api/v1.0/batches/action', async (req, res) => {
     const { action, uuid, user } = req.body;
     const conn = await connection(dbConfig).catch(e => { return e; });
     const sql = `CALL sp_batch_process_action(${JSON.stringify(uuid)},${action},${user})`;
-    console.log(sql);
     await query(conn, sql)
       .then(
         response => {
@@ -135,9 +134,8 @@ router.put('/api/v1.0/batches/milking/modify-and-revalidate', async (req, res) =
 router.put('/api/v1.0/batches/weight/modify-and-revalidate', async (req, res) => {
   try {
     const conn = await connection(dbConfig).catch(e => { return e; });
-    const { body_length, body_score, body_weight, heart_girth, weight_date, animal_id, remove, record_id, user_id, batch_type } = req.body;
-
-    const sql = `CALL sp_batch_weight_modify_revalidate(${body_length},${body_score},${body_weight},${heart_girth},${JSON.stringify(weight_date)},${animal_id},${remove},${record_id},${user_id},${batch_type})`;
+    const { body_length, body_score, body_weight, heart_girth, weight_date, animal_tag_id, remove, record_id, user_id, batch_type } = req.body;
+    const sql = `CALL sp_batch_weight_modify_revalidate(${body_length},${body_score},${body_weight},${heart_girth},${JSON.stringify(weight_date)},${JSON.stringify(animal_tag_id)},${remove},${record_id},${user_id},${batch_type})`;
     await query(conn, sql)
       .then(
         response => {
