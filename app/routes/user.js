@@ -251,7 +251,13 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
         let plain_text_password = generateString(10);        
         plain_text_password  = 'password@123'; // use this for now till email functions    
         const salt = bcrypt.genSaltSync(saltRounds);
-        const hashed_password = bcrypt.hashSync(plain_text_password, salt);  
+        const hashed_password = bcrypt.hashSync(plain_text_password, salt); 
+        
+        /*
+            user: 'ADGGILRIsupport@cgiar.orgs', 
+            pass: 'Summer@123!', 
+
+        */
 
        // const sql = `CALL sp_view_mail_settings()`;     
         const sql2 = `CALL sp_reset_forgotten_password(${JSON.stringify(email)},${JSON.stringify(hashed_password)})`;    
