@@ -93,7 +93,7 @@ router.post('/api/v1.0/batches/upload', async (req, res) => {
     jString = jString.replace(/\[/g, "(");
     jString = jString.replace(/\]/g, ")");
 
-    const sql = `CALL sp_create_batch_upload(${batch_type},'${JSON.stringify(rows)}','${JSON.stringify(cols)}',${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
+    const sql = `CALL sp_create_batch_upload(${batch_type},${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
     await query(conn, sql).then(
       response => {       
         res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
