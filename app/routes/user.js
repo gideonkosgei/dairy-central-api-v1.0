@@ -295,8 +295,8 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
           })
         }); */
 
-        /*
         
+        /*
         const transporter = nodemailer.createTransport({
           host: email_settings.email_host,
           port: email_settings.email_host,
@@ -313,22 +313,24 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
           subject: email_template.subject,         
           html: `<b>Hey ${email}! </b><br/> Your new password is ${plain_text_password} <br/>`
         };  
-        
+        */      
        
+
+        /*
         const transporter = nodemailer.createTransport({
-          host: "smtp.outlook365.com",
+          host: "cluster5.us.messagelabs.com",
           service: "outlook",
-          port: '587',  
+          port: '25',  
           secure: false,                  
           auth: {
-            user: 'g.kipkosgei@cgiar.org', 
-            pass: 'G1d30nk0sg31', 
+            user: 'ADGGILRIsupport@cgiar.orgs', 
+            pass: 'Summer@123!', 
           },
           debug: true                              
         });
                
         const mailOptions = {
-          from: 'g.kipkosgei@cgiar.org',
+          from: 'ADGGILRIsupport@cgiar.org',
           to: 'mr.gkosgei@gmail.com',
           subject: "password change",         
           html: `<b>Hey ${email}! </b><br/> Your new password is ${plain_text_password} <br/>`
@@ -342,6 +344,7 @@ router.get('/api/v1.0/user/:id', async (req, res) => {
           }
         });
         */
+        
                
         await query(conn, sql2)
         .then(

@@ -341,7 +341,8 @@ router.get('/api/v1.0/events/calving/animal/:parameter/:option', async (req, res
 router.post('/api/v1.0/events/calving', async (req, res) => { 
     try{     
     const conn = await connection(dbConfig).catch(e => {return e;}); 
-    const option = 0;      
+    const option = 0;    
+    const output = 1;   
     const {        
         animal_id,
         calving_date,
@@ -384,7 +385,8 @@ router.post('/api/v1.0/events/calving', async (req, res) => {
         calf_tag_id2        
      } = req.body; 
 
-    const sql = `CALL sp_CreateOrUpdateCalvingEventRecord(         
+    const sql = `CALL sp_CreateOrUpdateCalvingEventRecord(        
+        ${output},
         ${option},
         ${animal_id},
         ${JSON.stringify(calving_date)},
