@@ -81,5 +81,14 @@ router.get('/api/v1.0/image-upload-dir', async (req, res) => {
   await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
  
 });
+
+
+// Generate Temp Tag ID
+router.get('/api/v1.0/parameters/tag-id/:org_id', async (req, res) => {
+  const {org_id} = req.params;    
+  const conn = await connection(dbConfig).catch(e => {return e;});     
+  const sql = `CALL sp_generate_temp_tag_id(${org_id})`;         
+  await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+});
  
 module.exports = router
