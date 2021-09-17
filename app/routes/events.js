@@ -25,7 +25,8 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
     try {      
       const conn = await connection(dbConfig).catch(e => {return e;});     
       const {animal_id,body_length,heart_girth,weight,body_score,data_collection_date,field_agent_id,created_by} = req.body;
-      const sql = `CALL sp_create_event_weight(${animal_id},${body_length},${heart_girth},${weight},${body_score},${JSON.stringify(data_collection_date)},${field_agent_id},${created_by})`; 
+      const output  = 1; // show message
+      const sql = `CALL sp_create_event_weight(${output},${animal_id},${body_length},${heart_girth},${weight},${body_score},${JSON.stringify(data_collection_date)},${field_agent_id},${created_by})`; 
       await query(conn, sql).then(
         response => {            
         res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
@@ -48,7 +49,6 @@ router.get('/api/v1.0/events/weight/:id', async (req, res) => {
         res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
       })
       .catch(e => {res.status(400).json({status:400, message:e })});
-
     } catch(error) {
         res.send({status:0,message:`system error! ${error.message}`});
     } 
@@ -427,7 +427,8 @@ router.post('/api/v1.0/events/calving', async (req, res) => {
         ${use_of_calf2},
         ${JSON.stringify(use_of_calf_other2)},
         ${JSON.stringify(calf_tag_id2)} 
-    )`;   
+    )`; 
+    
     await query(conn, sql).then(
         response => {            
         res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
@@ -528,7 +529,7 @@ router.put('/api/v1.0/events/calving/:rec_id', async (req, res) => {
         ${use_of_calf2},
         ${JSON.stringify(use_of_calf_other2)},
         ${JSON.stringify(calf_tag_id2)} 
-    )`;     
+    )`;
     await query(conn, sql).then(
       response => {            
       res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
