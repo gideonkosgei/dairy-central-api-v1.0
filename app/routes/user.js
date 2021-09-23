@@ -11,6 +11,7 @@ const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
 const configs = require('../config/configs.js');
+const mailer = require('../helpers/mailer');
 
 /** configs for image uploads */
 /*const storage = multer.diskStorage({
@@ -18,21 +19,21 @@ const configs = require('../config/configs.js');
   filename: function(req, file, cb){
      cb(null,"IMAGE-" + Date.now() + path.extname(file.originalname));
   }
-}); */   
+}); */
 
 const storage = multer.diskStorage({
-  destination: (req,file,cb)=> {
-    cb(null,"./");
+  destination: (req, file, cb) => {
+    cb(null, "./");
   },
-  filename: function(req,file,cb){
+  filename: function (req, file, cb) {
     const ext = file.mimetype.split("/")[1];
-    cb(null,`../${configs.image_dir}/${file.originalname}-${Date.now()}.${ext}`);
+    cb(null, `../${configs.image_dir}/${file.originalname}-${Date.now()}.${ext}`);
     //cb(null,`D:/ADGG-LSF-MSF-v1.0/public/images/uploads/${file.originalname}-${Date.now()}.${ext}`);
   }
-}); 
+});
 
 const upload = multer({
-  storage: storage 
+  storage: storage
 });
 
 
@@ -41,321 +42,256 @@ const upload = multer({
  */
 
 function generateString(length) {
-  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = ' ';
   const charactersLength = characters.length;
-  for ( let i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 }
 
 function generateString(length) {
-  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = ' ';
   const charactersLength = characters.length;
-  for ( let i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 }
 
-router.get('/api/v1.0/user/auth', async (req, res) => {  
-  const conn = await connection(dbConfig).catch(e => {return e;}); 
+router.get('/api/v1.0/user/auth', async (req, res) => {
+  const conn = await connection(dbConfig).catch(e => { return e; });
 
   /**
    * The salt value specifies how much time it’s gonna take to hash the password. 
    * The higher the salt value, more secure the password is and more time it will take for calculation. 
    * https://www.npmjs.com/package/bcrypt
-   **/ 
-  
-    /** 
-     * The code below is used to encrypt a password
-    */
-    
-    /*const saltRounds = 10;     
-    const salt = bcrypt.genSaltSync(saltRounds);
-    const hash = bcrypt.hashSync('password@123', salt);*/    
+   **/
+
+  /** 
+   * The code below is used to encrypt a password
+  */
+
+  /*const saltRounds = 10;     
+  const salt = bcrypt.genSaltSync(saltRounds);
+  const hash = bcrypt.hashSync('password@123', salt);*/
 
   /**
    * Need to handle 3 things
    * 1. Wrong password
    * 2. No user found
    * 3. Authenitcated user
-   */  
+   */
 
-  const sql = `CALL sp_authenticate('${req.query.username}')`;  
+  const sql = `CALL sp_authenticate('${req.query.username}')`;
   await query(conn, sql)
-  .then(
-    response => { 
-      
-      if (response[0].length > 0){       
-        if (response[0][0].password !==  null){            
-          if (bcrypt.compareSync(req.query.password,response[0][0].password)) {
-            res.status(200).json({payload:response,auth_status:true,user_exist:true}) //password correct
-          }  else {          
-            res.status(200).json({payload:response,auth_status:false,user_exist:true}) // password incorrect
+    .then(
+      response => {
+
+        if (response[0].length > 0) {
+          if (response[0][0].password !== null) {
+            if (bcrypt.compareSync(req.query.password, response[0][0].password)) {
+              res.status(200).json({ payload: response, auth_status: true, user_exist: true }) //password correct
+            } else {
+              res.status(200).json({ payload: response, auth_status: false, user_exist: true }) // password incorrect
+            }
+          } else {
+            res.status(200).json({ payload: response, auth_status: false, user_exist: true }) // password not set -> password incorrect
           }
         } else {
-          res.status(200).json({payload:response,auth_status:false,user_exist:true}) // password not set -> password incorrect
-        }             
-      } else {
-        res.status(200).json({payload:response,auth_status:false,user_exist:false}) // account does not exist
-      }    
-})
-  .catch(e => {res.status(400).json({status:400, message:e })}); 
+          res.status(200).json({ payload: response, auth_status: false, user_exist: false }) // account does not exist
+        }
+      })
+    .catch(e => { res.status(400).json({ status: 400, message: e }) });
 });
 
-router.get('/api/v1.0/user/:id', async (req, res) => {      
-      const conn = await connection(dbConfig).catch(e => {return e;});     
-      const id = req.params.id;
-      const sql = `CALL sp_view_user_profiles(${id})`;     
-      await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
-  });
-
-  router.get('/api/v1.0/user/account-info/:id', async (req, res) => {      
-    const conn = await connection(dbConfig).catch(e => {return e;});     
-    const id = req.params.id;
-    const sql = `CALL sp_view_user_account(${id})`;  
-    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
+router.get('/api/v1.0/user/:id', async (req, res) => {
+  const conn = await connection(dbConfig).catch(e => { return e; });
+  const id = req.params.id;
+  const sql = `CALL sp_view_user_profiles(${id})`;
+  await query(conn, sql).then(response => { res.status(200).json({ payload: response }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
 });
 
-  router.get('/api/v1.0/users/list/:option/:user', async (req, res) => {      
-    const conn = await connection(dbConfig).catch(e => {return e;});
-    const {option,user} = req.params;
-    const sql = `CALL sp_user_list_view(${option},${user})`;    
-    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
-  });
+router.get('/api/v1.0/user/account-info/:id', async (req, res) => {
+  const conn = await connection(dbConfig).catch(e => { return e; });
+  const id = req.params.id;
+  const sql = `CALL sp_view_user_account(${id})`;
+  await query(conn, sql).then(response => { res.status(200).json({ payload: response }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
+});
 
-  router.post('/api/v1.0/users/org/create-user-account', async (req, res) => {      
-    const conn = await connection(dbConfig).catch(e => {return e;});   
-    let password_hash = null;   
-    const {
-        country,
-        district,
-        email,
-        name,
-        phone,
-        region,
-        timezone,
-        username,
-        village,
-        ward,
-        option,
-        id,
-        org,
-        user,
-        role,
-        status
-    } = req.body; 
-    
-    if (parseInt(option) ===0){
-       
-      let plain_text_password = generateString(10);
-      plain_text_password  = 'password@123'; // use this for now till email functions
-      const saltRounds = 10;     
-      const salt = bcrypt.genSaltSync(saltRounds);
-      password_hash = bcrypt.hashSync(plain_text_password, salt);
-    } 
-    /**
-     * some timezone are coming as string values not key values.
-     * SP is failing. 
-     * Need to handle the strings > convert them to null
-     */ 
-    
-    const timezone_1 = Number.isInteger(parseInt(timezone)) ? parseInt(timezone) : null; 
-    const sql = `CALL sp_createOrUpdateUserAccount(${option} ,${id} , ${org} , ${JSON.stringify(name)} ,${JSON.stringify(username)} , ${JSON.stringify(email)} ,${JSON.stringify(password_hash)} , ${JSON.stringify(phone)} ,${country}, ${region} , ${district} , ${village} , ${ward} , ${timezone_1} ,${user},${role},${status})`;
-    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
-    });
+router.get('/api/v1.0/users/list/:option/:user', async (req, res) => {
+  const conn = await connection(dbConfig).catch(e => { return e; });
+  const { option, user } = req.params;
+  const sql = `CALL sp_user_list_view(${option},${user})`;
+  await query(conn, sql).then(response => { res.status(200).json({ payload: response }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
+});
 
-  router.get('/api/v1.0/org/:id', async (req, res) => {      
-    const conn = await connection(dbConfig).catch(e => {return e;});
-    const {id} = req.params;
-    const sql = `CALL sp_view_org_details(${id})`;
-    await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
-  });
+router.post('/api/v1.0/users/org/create-user-account', async (req, res) => {
+  try {
 
-
-  /** Upload profile Pic */ 
-  router.post('/api/v1.0/org/upload/profile-logo/:org/:user/:type', upload.single('image'), async (req, res) => {  
-    try{  
-      const {org,user,type} = req.params;
-      const conn = await connection(dbConfig).catch(e => {return e;}); 
-      const account = (parseInt(type) === 0) ? org : user;
-      
-      if (!req.file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) { 
-        res.send({status:0,message:'Only image files (jpg, jpeg, png) are allowed!'})
-      } else {             
-     
-      const sql = `CALL sp_createOrUpdateUserAccountAvatar(${type},${account},${JSON.stringify(req.file.originalname)},${JSON.stringify(req.file.path)},${req.file.size},${user})`;  
-        await query(conn, sql).then(
-          response => {            
-          res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
-        })
-        .catch(e => {res.status(400).json({status:400, message:e })});
-      }
-      } catch(error) {
-        res.send({status:0,message:`system error! ${error.message}`});
-    }  
-     
-   });
-
-
-  router.get('/api/v1.0/org/profile-logo/:id/:type', async (req, res) => {      
-    const conn = await connection(dbConfig).catch(e => {return e;});
-    const {id,type} = req.params;
-    const sql = `CALL sp_ViewAccountAvatar(${type},${id})`;     
-    await query(conn, sql).then(response => {res.status(200).json({payload:response,dir:__dirname})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
-  });
-
-  router.put('/api/v1.0/user/account/change-password/self-service', async (req, res) => { 
-    try{
-        const conn = await connection(dbConfig).catch(e => {return e;}); 
-        const {email, current_password, new_password, confirm_password,user,hash } = req.body;              
-        const saltRounds = 10;     
-        const salt = bcrypt.genSaltSync(saltRounds);
-        const new_password_hash = bcrypt.hashSync(new_password, salt);   
-        const sql = `CALL sp_change_account_password(${JSON.stringify(email)},${JSON.stringify(new_password_hash)},${user})`; 
-       
-        if  (new_password === confirm_password){ 
-          if (bcrypt.compareSync(current_password,hash)) { 
-            await query(conn, sql)
-            .then(
-              response => {            
-              res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
-            })
-            .catch(e => {res.status(400).json({status:400, message:e })}); 
-          } else {
-            res.send({status:0,message:'Password Change Failed! The current password is Incorrect'})
-          }        
-        } else { 
-          res.send({status:0,message:'Password Change Failed! The confirm password confirmation did not match'})
-        }  
-    }catch (error) {
-      res.send({status:0,message:`system error! ${error.message}`})
-    } 
-  });
-
-
+  const conn = await connection(dbConfig).catch(e => { return e; });
+  let password_hash = null;
+  const {
+    country,
+    district,
+    email,
+    name,
+    phone,
+    region,
+    timezone,
+    username,
+    village,
+    ward,
+    option,
+    id,
+    org,
+    user,
+    role,
+    status
+  } = req.body;
   
-  router.put('/api/v1.0/user/account/reset-password/self-service', async (req, res) => { 
-    try{
+  let message = '';
+  let subject = '';
+  if (parseInt(option) === 0) {
 
-        let email_settings = {};   
-        let email_template = {}; 
-        const {email} = req.body;                 
-        const conn = await connection(dbConfig).catch(e => {return e;}); 
-        
-                    
-        const saltRounds = 10; 
-        let plain_text_password = generateString(10);        
-        plain_text_password  = 'password@123'; // use this for now till email functions    
-        const salt = bcrypt.genSaltSync(saltRounds);
-        const hashed_password = bcrypt.hashSync(plain_text_password, salt); 
-        
-        /*
-            user: 'ADGGILRIsupport@cgiar.orgs', 
-            pass: 'Summer@123!', 
+    let plain_text_password = generateString(10).trim();;
+    const saltRounds = 10;
+    const salt = bcrypt.genSaltSync(saltRounds);
+    password_hash = bcrypt.hashSync(plain_text_password, salt);
+    subject = 'ADGG User Account Setup';
+    message = `
+    Congratulation on joining the ADGG platform. Your account has been setup successfully.<br/>    
+    <h3>Account Details</h3>
+    <b>username:</b> ${email}<br/>
+    <b>password:</b> ${plain_text_password}<br/>    
+    `;
+  }
+  /**
+   * some timezone are coming as string values not key values.
+   * SP is failing. 
+   * Need to handle the strings > convert them to null
+   */
 
-        */
+  const timezone_1 = Number.isInteger(parseInt(timezone)) ? parseInt(timezone) : null;
 
-       // const sql = `CALL sp_view_mail_settings()`;     
-        const sql2 = `CALL sp_reset_forgotten_password(${JSON.stringify(email)},${JSON.stringify(hashed_password)})`;    
-        //const sql3 = `CALL sp_get_mail_template("user_login_details")`; 
+  const sql = `CALL sp_createOrUpdateUserAccount(${option} ,${id} , ${org} , ${JSON.stringify(name)} ,${JSON.stringify(username)} , ${JSON.stringify(email)} ,${JSON.stringify(password_hash)} , ${JSON.stringify(phone)} ,${country}, ${region} , ${district} , ${village} , ${ward} , ${timezone_1} ,${user},${role},${status})`;
+  await query(conn, sql)
+  .then(response => {
+    res.status(200).json({ payload: response });
+    if (response[0][0].status === 1 && parseInt(option) === 0) {
+      mailer.sendMail(email, subject, name, message);
+    }
+  }).catch(e => { 
+    res.status(400).json({ status: 400, message: e }) });
+} catch (error) {
+  res.send({ status: 0, message: `system error! ${error.message}` })
+}
+});
 
-       /* await query(conn, sql)
-        .then(response => {   
-          email_settings = {
-            email_host:response[0][0].email_host,    
-            email_port:parseInt(response[0][0].email_port),
-            email_username:response[0][0].email_username,
-            email_password:response[0][0].email_password,
-            email_security:response[0][0].email_security, 
-            email_theme:response[0][0].email_theme 
-          }         
+router.get('/api/v1.0/org/:id', async (req, res) => {
+  const conn = await connection(dbConfig).catch(e => { return e; });
+  const { id } = req.params;
+  const sql = `CALL sp_view_org_details(${id})`;
+  await query(conn, sql).then(response => { res.status(200).json({ payload: response }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
+});
+
+
+/** Upload profile Pic */
+router.post('/api/v1.0/org/upload/profile-logo/:org/:user/:type', upload.single('image'), async (req, res) => {
+  try {
+    const { org, user, type } = req.params;
+    const conn = await connection(dbConfig).catch(e => { return e; });
+    const account = (parseInt(type) === 0) ? org : user;
+
+    if (!req.file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+      res.send({ status: 0, message: 'Only image files (jpg, jpeg, png) are allowed!' })
+    } else {
+
+      const sql = `CALL sp_createOrUpdateUserAccountAvatar(${type},${account},${JSON.stringify(req.file.originalname)},${JSON.stringify(req.file.path)},${req.file.size},${user})`;
+      await query(conn, sql).then(
+        response => {
+          res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
         })
-        .catch(e=>{
-          res.status(400).json({
-            status:400, message:e 
-          })
-        });  
-        
-        await query(conn, sql3)
-        .then(response => {  
-          email_template = {
-            id:response[0][0].id,
-            subject:response[0][0].subject,
-            body:response[0][0].body,
-            sender:response[0][0].sender
-          };                 
-        })
-        .catch(e=>{
-          res.status(400).json({
-            status:400, message:e 
-          })
-        }); */
+        .catch(e => { res.status(400).json({ status: 400, message: e }) });
+    }
+  } catch (error) {
+    res.send({ status: 0, message: `system error! ${error.message}` });
+  }
 
-        
-        /*
-        const transporter = nodemailer.createTransport({
-          host: email_settings.email_host,
-          port: email_settings.email_host,
-          secure: false,
-          auth: {
-            user: "g.kipkosgei@cgiar.org", 
-            pass: "Trump2024", 
-          },
-        });
-       
-        const mailOptions = {
-          from: "g.kipkosgei@cgiar.org",
-          to: 'mr.gkosgei@gmail.com',
-          subject: email_template.subject,         
-          html: `<b>Hey ${email}! </b><br/> Your new password is ${plain_text_password} <br/>`
-        };  
-        */      
-       
+});
 
-        /*
-        const transporter = nodemailer.createTransport({
-          host: "cluster5.us.messagelabs.com",
-          service: "outlook",
-          port: '25',  
-          secure: false,                  
-          auth: {
-            user: 'ADGGILRIsupport@cgiar.orgs', 
-            pass: 'Summer@123!', 
-          },
-          debug: true                              
-        });
-               
-        const mailOptions = {
-          from: 'ADGGILRIsupport@cgiar.org',
-          to: 'mr.gkosgei@gmail.com',
-          subject: "password change",         
-          html: `<b>Hey ${email}! </b><br/> Your new password is ${plain_text_password} <br/>`
-        };
+router.get('/api/v1.0/org/profile-logo/:id/:type', async (req, res) => {
+  const conn = await connection(dbConfig).catch(e => { return e; });
+  const { id, type } = req.params;
+  const sql = `CALL sp_ViewAccountAvatar(${type},${id})`;
+  await query(conn, sql).then(response => { res.status(200).json({ payload: response, dir: __dirname }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
+});
 
-        transporter.sendMail(mailOptions, function(error, info){
-          if (error) {
-          console.log(error);
-          } else {            
-            console.log('Email sent: ' + info.response);
+router.put('/api/v1.0/user/account/change-password/self-service', async (req, res) => {
+  try {
+    const conn = await connection(dbConfig).catch(e => { return e; });
+    const { email, current_password, new_password, confirm_password, user, hash } = req.body;
+    const saltRounds = 10;
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const new_password_hash = bcrypt.hashSync(new_password, salt);
+    const sql = `CALL sp_change_account_password(${JSON.stringify(email)},${JSON.stringify(new_password_hash)},${user})`;
+
+    if (new_password === confirm_password) {
+      if (bcrypt.compareSync(current_password, hash)) {
+        await query(conn, sql)
+          .then(
+            response => {
+              res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
+            })
+          .catch(e => { res.status(400).json({ status: 400, message: e }) });
+      } else {
+        res.send({ status: 0, message: 'Password Change Failed! The current password is Incorrect' })
+      }
+    } else {
+      res.send({ status: 0, message: 'Password Change Failed! The confirm password confirmation did not match' })
+    }
+  } catch (error) {
+    res.send({ status: 0, message: `system error! ${error.message}` })
+  }
+});
+
+router.put('/api/v1.0/user/account/reset-password/self-service', async (req, res) => {
+  try {
+    /*
+        user: 'ADGGILRIsupport@cgiar.orgs', 
+        pass: 'Summer@123!', 
+    */
+
+    const { email } = req.body;
+    const conn = await connection(dbConfig).catch(e => { return e; });
+    const saltRounds = 10;
+    let plain_text_password = generateString(10).trim();
+     
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hashed_password = bcrypt.hashSync(plain_text_password, salt);
+
+    const sql2 = `CALL sp_reset_forgotten_password(${JSON.stringify(email)},${JSON.stringify(hashed_password)})`;
+
+    const message = ` A request has been received to change the password for your ADGG account.<br/><br/>
+      Your new password is <b>${plain_text_password}</b> <br/><br/>
+      If you did not initiate this request, Please contact us immediately at g.kipkosgei@cgiar.org <br/>
+      <br/>`;
+
+    await query(conn, sql2)
+      .then(
+        response => {
+          res.status(200).json({ status: response[0][0].status, message: response[0][0].message });
+          if (response[0][0].status === 1) {
+            mailer.sendMail(email, 'ADGG Password Reset Request', response[0][0].username, message);
           }
-        });
-        */
-        
-               
-        await query(conn, sql2)
-        .then(
-          response => {            
-          res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
         })
-        .catch(e => {res.status(400).json({status:400, message:e })});  
+      .catch(e => { res.status(400).json({ status: 400, message: e }) });
 
-    } catch (error) {
-        res.send({status:0,message:`system error! ${error.message}`})
-    } 
-          
-  });
-  module.exports = router
+  } catch (error) {
+    res.send({ status: 0, message: `system error! ${error.message}` })
+  }
+
+});
+module.exports = router
