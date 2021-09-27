@@ -151,6 +151,7 @@ router.post('/api/v1.0/users/org/create-user-account', async (req, res) => {
   
   let message = '';
   let subject = '';
+  let salutation = '';
   if (parseInt(option) === 0) {
 
     let plain_text_password = generateString(10).trim();;
@@ -158,6 +159,9 @@ router.post('/api/v1.0/users/org/create-user-account', async (req, res) => {
     const salt = bcrypt.genSaltSync(saltRounds);
     password_hash = bcrypt.hashSync(plain_text_password, salt);
     subject = 'ADGG User Account Setup';
+    salutation =  `Hi ${name},`
+
+
     message = `
     Congratulation on joining the ADGG platform. Your account has been setup successfully.<br/>    
     <h3>Account Details</h3>
@@ -178,7 +182,7 @@ router.post('/api/v1.0/users/org/create-user-account', async (req, res) => {
   .then(response => {
     res.status(200).json({ payload: response });
     if (response[0][0].status === 1 && parseInt(option) === 0) {
-      mailer.sendMail(email, subject, name, message);
+      mailer.sendMail(email, subject, salutation, message);
     }
   }).catch(e => { 
     res.status(400).json({ status: 400, message: e }) });
@@ -270,7 +274,6 @@ router.put('/api/v1.0/user/account/reset-password/self-service', async (req, res
     const hashed_password = bcrypt.hashSync(plain_text_password, salt);
 
     const sql2 = `CALL sp_reset_forgotten_password(${JSON.stringify(email)},${JSON.stringify(hashed_password)})`;
-
     const message = ` A request has been received to change the password for your ADGG account.<br/><br/>
       Your new password is <b>${plain_text_password}</b> <br/><br/>
       If you did not initiate this request, Please contact us immediately at g.kipkosgei@cgiar.org <br/>
@@ -281,7 +284,8 @@ router.put('/api/v1.0/user/account/reset-password/self-service', async (req, res
         response => {
           res.status(200).json({ status: response[0][0].status, message: response[0][0].message });
           if (response[0][0].status === 1) {
-            mailer.sendMail(email, 'ADGG Password Reset Request', response[0][0].username, message);
+            const salutation  = `Hi ${response[0][0].username}`;
+            mailer.sendMail(email, 'ADGG Password Reset Request', salutation, message);
           }
         })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });

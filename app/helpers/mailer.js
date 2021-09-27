@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-exports.sendMail = function(recipient_email,subject,username,message) {
+exports.sendMail = function(recipient_email,subject,salutation,message) {
 
   var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -17,7 +17,7 @@ var mailOptions = {
     text: '',
     html: `                
     <p>
-      Hello ${username} ,<br/>
+      ${salutation} <br/>
       ${message}
       <br/>
       Thank you <br/>
