@@ -3,9 +3,7 @@ var router = express.Router();
 const path = require("path");
 
 const multer = require('multer');
-
 const bcrypt = require("bcrypt");
-const nodemailer = require("nodemailer");
 
 const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
@@ -130,7 +128,6 @@ router.get('/api/v1.0/users/list/:option/:user', async (req, res) => {
 
 router.post('/api/v1.0/users/org/create-user-account', async (req, res) => {
   try {
-
   const conn = await connection(dbConfig).catch(e => { return e; });
   let password_hash = null;
   const {
