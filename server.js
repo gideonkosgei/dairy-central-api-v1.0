@@ -13,6 +13,7 @@ const Strategy = require('passport-http').BasicStrategy;
 const key_secret = require('./app/helpers/db-get-api-keys');
 const compression = require('compression');
 const cron = require('node-cron');
+const reporter = require('./app/helpers/system-report');
 
 // import Routes
 const animal = require('./app/routes/animal');
@@ -88,8 +89,8 @@ app.use('/', validations);
 app.use('/', reports);
 
 
-// Schedule a task to run every minute.
-//cron.schedule('* * * * *', () => {console.log("Task is running every minute")});
+// Schedule a daily report task to run every day at 6:00 am.
+cron.schedule('00 00 06 * * 0-5', () => {reporter.sendReport(1);});
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
 const IP = '127.0.0.1'

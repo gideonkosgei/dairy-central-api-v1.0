@@ -17,7 +17,7 @@ var mailOptions = {
     text: '',
     html: `                
     <p>
-      ${salutation} <br/>
+      ${salutation}<br/>
       ${message}
       <br/>
       Thank you <br/>
