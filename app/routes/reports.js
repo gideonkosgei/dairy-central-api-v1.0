@@ -10,7 +10,24 @@ router.get('/api/v1.0/reports/daily', async (req, res) => {
   }catch (error) {
     res.send({ status: 0, message: `system error! ${error.message}` })
   }
- 
+});
+
+router.get('/api/v1.0/reports/weekly', async (req, res) => {
+  try{
+    reporter.sendReport(2);
+    res.status(200).json({ status: 200, message: "success" });
+  }catch (error) {
+    res.send({ status: 0, message: `system error! ${error.message}` })
+  }
+});
+
+router.get('/api/v1.0/reports/monthly', async (req, res) => {
+  try{
+    reporter.sendReport(3);
+    res.status(200).json({ status: 200, message: "success" });
+  }catch (error) {
+    res.send({ status: 0, message: `system error! ${error.message}` })
+  }
 });
 
 module.exports = router

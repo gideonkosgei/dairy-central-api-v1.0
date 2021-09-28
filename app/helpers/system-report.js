@@ -1,6 +1,5 @@
 const express = require("express");
 const moment = require('moment');
-var router = express.Router();
 const dbConfig = require('../config/dbConfig.js');
 const connection = require('./connection');
 const query = require('./query1');
@@ -9,11 +8,19 @@ const mailer = require('./mailer')
 async function sendReport(report_code) {
 
   try {
+    /**
+     * REPORT CODE DETAILS
+     * 1 - DAILY
+     * 2 - WEEKLY
+     * 3 - MONTHLY
+     */
+
+    report_code
+
 
     const conn = await connection(dbConfig).catch(e => { return e; });
 
-    /** Get recipients */
-    const report_code = 1;
+    /** Get recipients */  
     let email_recipients = '';
     const sql_0 = `CALL sp_system_reports_recipients(${report_code})`;
     await query(conn, sql_0).then(response => {
@@ -23,19 +30,46 @@ async function sendReport(report_code) {
     })
       .catch(e => { console.log(console.log(e.message)) });
 
+    let report_date = '';
+    let start = '';
+    let end = '';
 
+    let subject = ''
+    let title = '';
+    let subtitle = '';
 
-    const report_date = moment().subtract(1, 'days').format('YYYY-MM-DD');
-    const start = report_date;
-    const end = report_date;
-    let subject = 'ADGG Daily Data Flow Report'
-    //let email = 'g.kipkosgei@cgiar.org; mr.gkosgei@gmail.com';
-    let message = '<p>ADGG Daily Data Flow Report</p>';
+    if (report_code ===1) {
+      /** daily */
+
+      start = moment().subtract(1, 'days').format('YYYY-MM-DD');
+      end = moment().subtract(1, 'days').format('YYYY-MM-DD');
+
+      subject = 'ADGG Daily Data Flow Report';
+      title = 'DAILY DATA FLOW REPORT';
+      subtitle = `<b>Reporting Date</b> : ${start}`;
+
+    } else if(report_code === 2){
+      /** weekly */
+
+      start = moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD');
+      end  = moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD');
+      subject = 'ADGG Weekly Data Flow Report';
+      title = 'WEEKLY DATA FLOW REPORT';
+      subtitle = `<b>WEEK ${moment(start).week()}</b>: ${start} to ${end} `;
+    } else {
+      /** monthly */
+      start = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
+      end  = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
+      subject = 'ADGG Monthly Data Flow Report';
+      title = 'MONTHLY DATA FLOW REPORT';
+      subtitle = `<b>${moment(start).format('MMMM YYYY')}</b> : ${start} to ${end}`;
+    }
 
     let report_0 = `
     <div>
-      <h3>DAILY DATA FLOW REPORT</h3>
-      <b>Reporting Date</b> : ${report_date} <br/><br/>
+      <h3>${title}</h3>      
+      ${subtitle}
+      <br/><br/>
       <i>****** This is a system generated report ******</i> 
       <br/>
     </div>
