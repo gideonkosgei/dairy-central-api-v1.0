@@ -15,7 +15,7 @@ const query = require('../helpers/query');
   router.post('/api/v1.0/farms', async (req, res) => { 
     try {    
     const conn = await connection(dbConfig).catch(e => {return e;}); 
-    const { user,org,country,district,email,farm_code,farm_type,farm_name,farmer_name,phone,region,village,ward} = req.body; 
+    const { user,org,country,district,email,farm_code,farm_type,farm_name,farmer_name,phone,region,village,ward,longitude,latitude} = req.body; 
     const option = 0;
     const id = null;
     const reg_date = null;
@@ -36,7 +36,9 @@ const query = require('../helpers/query');
       ${ward},
       ${village},
       ${user},
-      ${org}
+      ${org},
+      ${latitude},
+      ${longitude}
       )`;        
   
     await query(conn, sql).then(
@@ -52,7 +54,7 @@ const query = require('../helpers/query');
 router.put('/api/v1.0/farms', async (req, res) => { 
   try {    
   const conn = await connection(dbConfig).catch(e => {return e;});  
-  const { user,org,country,district,email,farm_code,farm_type,farm_name,farmer_name,phone,region,village,ward,reg_date,farm_id} = req.body; 
+  const { user,org,country,district,email,farm_code,farm_type,farm_name,farmer_name,phone,region,village,ward,reg_date,farm_id,latitude,longitude} = req.body; 
   const option = 1;
   
   const sql = `CALL sp_CreateOrUpdateFarmRecord(
@@ -71,7 +73,9 @@ router.put('/api/v1.0/farms', async (req, res) => {
     ${ward},
     ${village},
     ${user},
-    ${org}
+    ${org},
+    ${latitude},
+    ${longitude}
     )`;
 
   await query(conn, sql).then(
