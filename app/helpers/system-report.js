@@ -1,4 +1,3 @@
-const express = require("express");
 const moment = require('moment');
 const dbConfig = require('../config/dbConfig.js');
 const connection = require('./connection');
@@ -15,9 +14,6 @@ async function sendReport(report_code) {
      * 3 - MONTHLY
      */
 
-    report_code
-
-
     const conn = await connection(dbConfig).catch(e => { return e; });
 
     /** Get recipients */  
@@ -30,7 +26,6 @@ async function sendReport(report_code) {
     })
       .catch(e => { console.log(console.log(e.message)) });
 
-    let report_date = '';
     let start = '';
     let end = '';
 
@@ -134,6 +129,7 @@ async function sendReport(report_code) {
                 <td>${!response[0][i].Country ? "N/A" : response[0][i].Country}</td>
                 <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
                 <td>${!response[0][i].Cow ? 0 : response[0][i].Cow.toLocaleString()}</td>
+                <td>${!response[0][i].Bull ? 0 : response[0][i].Bull.toLocaleString()}</td>
                 <td>${!response[0][i].Female_Calf ? 0 : response[0][i].Female_Calf.toLocaleString()}</td>
                 <td>${!response[0][i].Heifer ? 0 : response[0][i].Heifer.toLocaleString()}</td>
                 <td>${!response[0][i].Male_Calf ? 0 : response[0][i].Male_Calf.toLocaleString()}</td>
@@ -150,6 +146,7 @@ async function sendReport(report_code) {
             <th>COUNTRY</th>
             <th>FARMS</th>
             <th>COWS</th>
+            <th>BULLS</th>
             <th>FEMALE CALVES</th>
             <th>HEIFERS</th>
             <th>MALE CALVES</th>
