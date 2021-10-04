@@ -90,7 +90,7 @@ app.use('/', reports);
 
 /** NOTE: THE SERVER TIME IS 3 HOURS BEHIND */
 // Schedule a daily report task to run every day at 6:00 am.
-cron.schedule('0 3 * * 0-5', () => {reporter.sendReport(1);});
+cron.schedule('0 3 * * 1-5', () => {reporter.sendReport(1);});
 
 // Schedule a weekly report task to run every Monday at 6:30 am.
 cron.schedule('30 3 * * 1', () => {reporter.sendReport(2);});
