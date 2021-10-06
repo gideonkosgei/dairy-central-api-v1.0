@@ -37,6 +37,7 @@ const stats = require('./app/routes/stats');
 const graduation = require('./app/routes/graduation');
 const background_processes = require('./app/routes/background_processes');
 const reports = require('./app/routes/reports');
+const weather = require('./app/routes/weather');
 
 
 passport.use(new Strategy(
@@ -87,6 +88,8 @@ app.use('/', graduation);
 app.use('/', background_processes);
 app.use('/', validations);
 app.use('/', reports);
+app.use('/', weather);
+
 
 /** NOTE: THE SERVER TIME IS 3 HOURS BEHIND */
 // Schedule a daily report task to run every day at 6:00 am.
