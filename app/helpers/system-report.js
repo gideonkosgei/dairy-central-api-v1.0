@@ -725,12 +725,11 @@ async function sendReport(report_code) {
               rpt_rows += `
          <tr>
            <td>${!response[0][i].Country ? "N/A" : response[0][i].Country}</td>
-           <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
-           <td>${!response[0][i].Animals ? 0 : response[0][i].Animals.toLocaleString()}</td>
-           <td>${!response[0][i].Records ? 0 : response[0][i].Records.toLocaleString()}</td>            
+           <td>${!response[0][i].Normal_AI ? 0 : response[0][i].Normal_AI.toLocaleString()}</td>
+           <td>${!response[0][i].Synchronized_AI ? 0 : response[0][i].Synchronized_AI.toLocaleString()}</td>
+           <td>${!response[0][i].Total_inseminations ? 0 : response[0][i].Total_inseminations.toLocaleString()}</td>            
          </tr>`;
             }
-
             report_13 = `     
              <div>
                <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
@@ -738,9 +737,9 @@ async function sendReport(report_code) {
                <thead>
                <tr>
                  <th>COUNTRY</th>
-                 <th>FARMS</th>
-                 <th>ANIMALS</th>
-                 <th>RECORDS</th>                 
+                 <th>NORMAL AI</th>
+                 <th>SYNCHRONIZED AI (FTAI)</th>
+                 <th>TOTAL</th>                 
                </tr>
                </thead>
                <tbody>
