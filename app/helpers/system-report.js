@@ -723,12 +723,12 @@ async function sendReport(report_code) {
             let rpt_rows = '';
             for (let i = 0; i < response[0].length; i++) {
               rpt_rows += `
-         <tr>
-           <td>${!response[0][i].Country ? "N/A" : response[0][i].Country}</td>
-           <td>${!response[0][i].Normal_AI ? 0 : response[0][i].Normal_AI.toLocaleString()}</td>
-           <td>${!response[0][i].Synchronized_AI ? 0 : response[0][i].Synchronized_AI.toLocaleString()}</td>
-           <td>${!response[0][i].Total_inseminations ? 0 : response[0][i].Total_inseminations.toLocaleString()}</td>            
-         </tr>`;
+              <tr>
+                <td>${!response[0][i].Country ? "N/A" : response[0][i].Country}</td>
+                <td>${!response[0][i].Normal_AI ? 0 : response[0][i].Normal_AI.toLocaleString()}</td>
+                <td>${!response[0][i].Synchronized_AI ? 0 : response[0][i].Synchronized_AI.toLocaleString()}</td>
+                <td>${!response[0][i].Total_inseminations ? 0 : response[0][i].Total_inseminations.toLocaleString()}</td>            
+              </tr>`;
             }
             report_13 = `     
              <div>

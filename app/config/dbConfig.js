@@ -17,3 +17,14 @@ const password = process.env.DB_PASS;
 const database = "adgg_uat";
 const port = process.env.DB_PORT;
 module.exports = {user, password, host, database, port}; 
+
+
+/*
+const host = "ec2-18-222-108-130.us-east-2.compute.amazonaws.com";
+const user = "lsf_system_account"    
+const password = "qwertyuiop2020"
+const database = "adgg_uat";
+module.exports = {user, password, host, database};
+*/
+ 
+//

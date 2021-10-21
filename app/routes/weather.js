@@ -22,9 +22,11 @@ router.get('/api/v1.0/nasa-power/:rec_id/:longitude/:latitude', async (req, res)
     const end_date =  moment(new Date()).format('YYYYMMDD');
    
     const api_url = `https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M,T2M_MAX,T2M_MIN,RH2M&community=RE&longitude=${longitude}&latitude=${latitude}&start=${start_date}&end=${end_date}`;
+    console.log(api_url);
     await axios.get(api_url)
       .then(
         response => {
+          console.log(respose);
           let T2M_ARRAY = Object.values(response.data.properties.parameter.T2M);
           let T2M_MAX_ARRAY = Object.values(response.data.properties.parameter.T2M_MAX);
           let T2M_MIN_ARRAY = Object.values(response.data.properties.parameter.T2M_MIN);
