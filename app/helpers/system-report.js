@@ -920,7 +920,7 @@ async function sendPraPerformanceReport(report_code) {
     let title = '';
     let subtitle = '';
 
-    if (report_code ===1) {
+    if (report_code ===4) {
       /** daily */
 
       start = moment().subtract(1, 'days').format('YYYY-MM-DD');
@@ -930,7 +930,7 @@ async function sendPraPerformanceReport(report_code) {
       title = 'DAILY PRA PERFORMANCE REPORT';
       subtitle = `<b>Reporting Date</b> : ${start}`;
 
-    } else if(report_code === 2){
+    } else if(report_code === 5){
       /** weekly */
 
       start = moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD');
