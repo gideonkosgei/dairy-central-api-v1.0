@@ -29,11 +29,14 @@ var mailOptions = {
 transporter.sendMail(mailOptions, function(error, info){
   if (error)
   {
-    res.json({status: true, respMesg: 'Email Failed To Send'});
+    console.log("Email Failed To Send");
+    console.log(error);
+    //res.json({status: true, respMesg: 'Email Failed To Send'});
   } 
   else
   {
-    res.json({status: true, respMesg: 'Email Sent Successfully'});
+    console.log("Email Sent Successfully");
+    //res.json({status: true, respMesg: 'Email Sent Successfully'});
   }             
 });       
   

@@ -92,14 +92,18 @@ app.use('/', weather);
 
 
 /** NOTE: THE SERVER TIME IS 3 HOURS BEHIND */
-// Schedule a daily report task to run every day at 6:00 am.
-cron.schedule('0 3 * * 1-5', () => {reporter.sendReport(1);});
 
-// Schedule a weekly report task to run every Monday at 6:30 am.
-cron.schedule('30 3 * * 1', () => {reporter.sendReport(2);});
+// Schedule a daily report task to run every day 
+cron.schedule('0 3 * * 1-5', () => {reporter.sendReport(1);});//at 6:00 am.
+cron.schedule('05 3 * * 1-5', () => {reporter.sendPraPerformanceReport(4);});//at 6:05 am.
 
-// Schedule a Monthly report task to run 1st day of the month at 7:00 am.
-cron.schedule('0 4 1 * *', () => {reporter.sendReport(3);});
+// Schedule a weekly report task to run every Monday 
+cron.schedule('30 3 * * 1', () => {reporter.sendReport(2);});// at 6:30 am.
+cron.schedule('35 3 * * 1', () => {reporter.sendPraPerformanceReport(5);});// at 6:35 am.
+
+// Schedule a Monthly report task to run 1st day of the month 
+cron.schedule('0 4 1 * *', () => {reporter.sendReport(3);}); //at 7:00 am.
+cron.schedule('05 4 1 * *', () => {reporter.sendPraPerformanceReport(6);}); //at 7:05 am.
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
 const IP = '127.0.0.1'
