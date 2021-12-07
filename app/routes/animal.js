@@ -44,10 +44,16 @@ router.put('/api/v1.0/animal/:animal_id', async (req, res) => {
     deformities, entry_date, entry_type, herd_book_number, main_breed_other, purchase_cost, secondary_breed, secondary_breed_other,
     sire_type, sire_id, dam_id, herd_id, org_id, farm_id
   } = req.body;
+
+  let color_array =   `${color}`;
+  let deformaties_array =   `${deformities}`;
+
   const sql = `CALL sp_update_animal(${id},${JSON.stringify(updated_by)} ,${JSON.stringify(animal_type)} ,${JSON.stringify(birthdate)},${JSON.stringify(name)} ,${JSON.stringify(breed_composition)} ,${JSON.stringify(hair_sample_id)} ,${JSON.stringify(main_breed)} ,${JSON.stringify(reg_date)} ,${JSON.stringify(tag_id)} ,
-      ${JSON.stringify(breed_combination)} ,${JSON.stringify(notes)} ,${JSON.stringify(breed_composition_details)} ,${JSON.stringify(color)} ,${JSON.stringify(color_other)} ,${JSON.stringify(country_of_origin)} ,
-      ${JSON.stringify(deformities)} ,${JSON.stringify(entry_date)},${JSON.stringify(entry_type)} ,${JSON.stringify(herd_book_number)} ,${JSON.stringify(main_breed_other)} ,${JSON.stringify(purchase_cost)} ,${JSON.stringify(secondary_breed)} ,${JSON.stringify(secondary_breed_other)} ,
+      ${JSON.stringify(breed_combination)} ,${JSON.stringify(notes)} ,${JSON.stringify(breed_composition_details)} ,${JSON.stringify(color_array)} ,${JSON.stringify(color_other)} ,${JSON.stringify(country_of_origin)} ,
+      ${JSON.stringify(deformaties_array)} ,${JSON.stringify(entry_date)},${JSON.stringify(entry_type)} ,${JSON.stringify(herd_book_number)} ,${JSON.stringify(main_breed_other)} ,${JSON.stringify(purchase_cost)} ,${JSON.stringify(secondary_breed)} ,${JSON.stringify(secondary_breed_other)} ,
       ${JSON.stringify(sire_type)} ,${JSON.stringify(sire_id)} ,${JSON.stringify(dam_id)},${JSON.stringify(herd_id)},${JSON.stringify(org_id)},${JSON.stringify(farm_id)})`;
+
+     console.log(sql); 
       await query(conn, sql)
     .then(response => {
       res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
@@ -74,8 +80,6 @@ router.post('/api/v1.0/animal', async (req, res) => {
       ${JSON.stringify(breed_combination)} ,${JSON.stringify(notes)} ,${JSON.stringify(breed_composition_details)} ,${JSON.stringify(color_array)} ,${JSON.stringify(color_other)} ,${JSON.stringify(country_of_origin)} ,
       ${JSON.stringify(deformaties_array)} ,${JSON.stringify(entry_type)} ,${JSON.stringify(herd_book_number)} ,${JSON.stringify(main_breed_other)} ,${JSON.stringify(purchase_cost)} ,${JSON.stringify(secondary_breed)} ,${JSON.stringify(secondary_breed_other)} ,
       ${JSON.stringify(sire_type)} ,${JSON.stringify(sire_id)} ,${JSON.stringify(dam_id)},${JSON.stringify(herd_id)},${JSON.stringify(org_id)},${JSON.stringify(farm_id)},null)`;
-      
-      console.log(sql);
       
       await query(conn, sql).then(
       response => {
