@@ -1208,7 +1208,7 @@ async function sendTagIdUnificationReport(report_code) {
             for (let i = 0; i < response[0].length; i++) {
               rpt_rows += `            
               <tr>
-                <td>${!response[0][i].reg_date ? 0 :moment(response[0][i]).format('YYYY-MM-DD')}</td>
+                <td>${!response[0][i].reg_date ? 0 :moment(response[0][i].reg_date).format('YYYY-MM-DD')}</td>
                 <td>${!response[0][i].animal_name ? "" : response[0][i].animal_name.toLocaleString()}</td>
                 <td>${!response[0][i].original_tag_id ? 0 : response[0][i].original_tag_id.toLocaleString()}</td>
                 <td>${!response[0][i].new_tag_id ? 0 : response[0][i].new_tag_id.toLocaleString()}</td>
