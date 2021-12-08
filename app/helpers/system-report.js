@@ -1217,8 +1217,9 @@ async function sendTagIdUnificationReport(report_code) {
 
             report_1 = `     
         <div>
-          <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
-          <caption>Tag ID Unification Report</caption>         
+          The table below contains the animals whose Tag IDs were changed
+          <br/>
+          <table  border='1' cellpadding="7" style='border-collapse:collapse;'>                  
           <thead>
           <tr>
             <th>REGISTRATION DATE</th>
