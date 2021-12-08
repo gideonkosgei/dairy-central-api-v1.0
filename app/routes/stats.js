@@ -4,10 +4,10 @@ const dbConfig = require('../config/dbConfig.js');
 const connection = require('../helpers/connection');
 const query = require('../helpers/query');
 
-router.get('/api/v1.0/stats/top-cows/:org/:year', async (req, res) => {   
-  const {org,year} = req.params;   
+router.get('/api/v1.0/stats/top-cows/:option/:org/:year', async (req, res) => {   
+  const {org,year,option} = req.params;   
   const conn = await connection(dbConfig).catch(e => {return e;});     
-  const sql = `CALL sp_stats_top_cows(${org},${year})`;      
+  const sql = `CALL sp_stats_top_cows(${option},${org},${year})`;      
   await query(conn, sql).then(response => {res.status(200).json({payload:response[0]})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
 });
 
