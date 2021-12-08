@@ -1165,6 +1165,103 @@ async function sendPraPerformanceReport(report_code) {
     console.log(error.message);
   }  
 }
+
+async function sendTagIdUnificationReport(report_code) {
+
+  try {    
+
+    const conn = await connection(dbConfig).catch(e => { return e; });
+
+    /** Get recipients */  
+    let email_recipients = '';
+    const sql_0 = `CALL sp_system_reports_recipients(${report_code})`;
+    await query(conn, sql_0).then(response => {
+      for (let i = 0; i < response[0].length; i++) {
+        email_recipients += `${response[0][i].recipient};`
+      }
+    })
+      .catch(e => { console.log(console.log(e.message)) });
+
+    let subject = 'Tag ID Unification Report'
+    
+    let run_date = moment().subtract(1, 'days').format('YYYY-MM-DD');
+
+    let report_0 = `
+    <div>
+      Hello,    
+      <br/>
+    </div>
+    <br/>
+    `;
+
+    /** Report Content */
+    let report_1 = '';
+
+    /** check if there are any recipients to the email */
+    if (email_recipients.length > 0) {
+      /** Report Content */
+      const sql1 = `CALL sp_tag_id_unification(${JSON.stringify(run_date)})`;
+      await query(conn, sql1)
+        .then(response => {
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `            
+              <tr>
+                <td>${!response[0][i].reg_date ? 0 : response[0][i].reg_date.toLocaleString()}</td>
+                <td>${!response[0][i].animal_name ? "" : response[0][i].animal_name.toLocaleString()}</td>
+                <td>${!response[0][i].original_tag_id ? 0 : response[0][i].original_tag_id.toLocaleString()}</td>
+                <td>${!response[0][i].new_tag_id ? 0 : response[0][i].new_tag_id.toLocaleString()}</td>
+              </tr>`;
+            }
+
+            report_1 = `     
+        <div>
+          <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
+          <caption>Tag ID Unification Report</caption>         
+          <thead>
+          <tr>
+            <th>REGISTRATION DATE</th>
+            <th>ANIMAL NAME</th>
+            <th>ORIGINAL TAG ID</th>
+            <th>NEW TAG ID</th>            
+          </tr>
+          </thead>
+          <tbody>
+          ${rpt_rows}
+          </tbody>
+          </table>  
+        </div>  
+        <br/>  
+        <br/>          
+      `;
+          }
+        })
+        .catch(e => { console.log(console.log(e.message)) });
+
+      if (report_1 === ""){
+        report_1 =  `
+            <div>
+             Based on yesteday's data flow, there are no Tag IDs for unification.<br/>
+             This might be attributed to:<br/>
+              1. No animal registration records were received <br/>
+              2. Tag IDs for all animals registered were in conformity <br/>            
+            </div>
+        `;
+      } 
+
+      let reports = report_0 + report_1;
+      mailer.sendMail(email_recipients, subject, '', reports);
+      conn.end();
+    }
+    console.log('success');
+  } catch (error) {
+    console.log(error.message);
+  }  
+}
+
 module.exports.sendReport = sendReport;
 module.exports.sendPraPerformanceReport = sendPraPerformanceReport;
+module.exports.sendTagIdUnificationReport = sendTagIdUnificationReport;
+
 

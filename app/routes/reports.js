@@ -59,6 +59,16 @@ router.get('/api/v1.0/pra-performance/monthly', async (req, res) => {
   }
 });
 
+router.get('/api/v1.0/tag-id-unification', async (req, res) => {
+  try{
+    reporter.sendTagIdUnificationReport(7);
+    res.status(200).json({ status: 200, message: "success" });
+  }catch (error) {
+    res.send({ status: 0, message: `system error! ${error.message}` })
+  }
+});
+
+
 
 
 
