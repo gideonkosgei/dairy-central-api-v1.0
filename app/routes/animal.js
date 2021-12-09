@@ -53,8 +53,6 @@ router.put('/api/v1.0/animal/:animal_id', async (req, res) => {
       ${JSON.stringify(deformaties_array)} ,${JSON.stringify(entry_date)},${JSON.stringify(entry_type)} ,${JSON.stringify(herd_book_number)} ,${JSON.stringify(main_breed_other)} ,${JSON.stringify(purchase_cost)} ,${JSON.stringify(secondary_breed)} ,${JSON.stringify(secondary_breed_other)} ,
       ${JSON.stringify(sire_type)} ,${JSON.stringify(sire_id)} ,${JSON.stringify(dam_id)},${JSON.stringify(herd_id)},${JSON.stringify(org_id)},${JSON.stringify(farm_id)})`;
   
-  console.log(sql);
-
       await query(conn, sql)
     .then(response => {
       res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
@@ -81,7 +79,7 @@ router.post('/api/v1.0/animal', async (req, res) => {
       ${JSON.stringify(breed_combination)} ,${JSON.stringify(notes)} ,${JSON.stringify(breed_composition_details)} ,${JSON.stringify(color_array)} ,${JSON.stringify(color_other)} ,${JSON.stringify(country_of_origin)} ,
       ${JSON.stringify(deformaties_array)} ,${JSON.stringify(entry_type)} ,${JSON.stringify(herd_book_number)} ,${JSON.stringify(main_breed_other)} ,${JSON.stringify(purchase_cost)} ,${JSON.stringify(secondary_breed)} ,${JSON.stringify(secondary_breed_other)} ,
       ${JSON.stringify(sire_type)} ,${JSON.stringify(sire_id)} ,${JSON.stringify(dam_id)},${JSON.stringify(herd_id)},${JSON.stringify(org_id)},${JSON.stringify(farm_id)},null)`;
-      
+
       await query(conn, sql).then(
       response => {
         res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
