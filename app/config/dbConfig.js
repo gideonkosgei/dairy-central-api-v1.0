@@ -12,10 +12,10 @@ module.exports = {user, password, host, database};*/
 
 
 const host = 'localhost';
-const user = process.env.DB_USER;
-const password = process.env.DB_PASS;
+const user = 'root';
+const password = 'G1d30nk0sg3189'
 const database = "adgg_uat";
-const port = process.env.DB_PORT;
+const port = '3306';
 module.exports = {user, password, host, database, port}; 
 
 

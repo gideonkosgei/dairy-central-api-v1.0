@@ -54,8 +54,11 @@ passport.use(new Strategy(
 app.use(compression()); //Compress all routes
 app.use(helmet()); // Helmet helps you secure your Express apps by setting various HTTP headers
 app.use(cors()); // Enable Cross-origin resource sharing (CORS)
-app.use(bodyParser.json()); // parse requests of content-type - application/json
-app.use(bodyParser.urlencoded({ extended: true }));// parse requests of content-type - application/x-www-form-urlencoded
+//app.use(bodyParser.json()); // parse requests of content-type - application/json
+//app.use(bodyParser.urlencoded({ extended: true }));// parse requests of content-type - application/x-www-form-urlencoded
+
+app.use(bodyParser.json({limit: '50mb'}));// parse requests of content-type - application/json
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));// parse requests of content-type - application/x-www-form-urlencoded
 
 // create a rotating write stream
 var accessLogStream = rfs.createStream('access.log', {

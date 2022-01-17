@@ -7,7 +7,7 @@ const query = require('../helpers/query');
 
 router.get('/api/v1.0/countries', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;});     
-    const sql = "select id,code,name,country,unit1_name,unit2_name,unit3_name,unit4_name from core_country where is_active=1";    
+    const sql = "select id,code,name,country,unit1_name,unit2_name,unit3_name,unit4_name from core_country where is_active=1";   
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
        
   });
@@ -15,7 +15,7 @@ router.get('/api/v1.0/countries', async (req, res) => {
   router.get('/api/v1.0/countries/:id', async (req, res) => {
      const conn = await connection(dbConfig).catch(e => {return e;}); 
      const {id} = req.params;
-     const sql = `select id,code,name,country,unit1_name,unit2_name,unit3_name,unit4_name from core_country where  id = ${id}`;    
+     const sql = `select id,code,name,country,unit1_name,unit2_name,unit3_name,unit4_name from core_country where  id = ${id}`;   
      await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
     
    });
