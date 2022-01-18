@@ -331,6 +331,7 @@ router.get('/api/v1.0/events/calving/animal/:parameter/:option', async (req, res
         ${parameter},
         ${option}
     )`;
+
   await query(conn, sql).then(
     response => { res.status(200).json({ payload: response }) })
     .catch(e => { res.status(400).json({ status: 400, message: e }) }
@@ -385,6 +386,7 @@ router.post('/api/v1.0/events/calving', async (req, res) => {
       calf_tag_id2
     } = req.body;
 
+
     let color_array1 = `${calf_color1}`;
     let deformaties_array1 = `${calf_deformities1}`;
 
@@ -404,7 +406,7 @@ router.post('/api/v1.0/events/calving', async (req, res) => {
         ${created_by},
         ${body_condition_score},
         ${JSON.stringify(color_array1)},
-         ${JSON.stringify(deformaties_array1)},
+        ${JSON.stringify(deformaties_array1)},
         ${JSON.stringify(other_calf_deformities)}, 
         ${heart_girth},
         ${JSON.stringify(calf_name)},
@@ -455,6 +457,7 @@ router.put('/api/v1.0/events/calving/:rec_id', async (req, res) => {
     const rec_id = req.params.rec_id;
     const conn = await connection(dbConfig).catch(e => { return e; });
     const option = 1;
+    const output = 1;
     const {
       calving_date,
       birth_type,
@@ -495,8 +498,16 @@ router.put('/api/v1.0/events/calving/:rec_id', async (req, res) => {
       use_of_calf_other2,
       calf_tag_id2
     } = req.body;
+    
 
-    const sql = `CALL sp_CreateOrUpdateCalvingEventRecord(         
+    let color_array1 = `${calf_color}`;
+    let deformaties_array1 = `${calf_deformities}`;
+
+    let color_array2 = `${calf_color2}`;
+    let deformaties_array2 = `${calf_deformities2}`;
+  
+    const sql = `CALL sp_CreateOrUpdateCalvingEventRecord(  
+        ${output},       
         ${option},
         ${rec_id},
         ${JSON.stringify(calving_date)},
@@ -506,8 +517,10 @@ router.put('/api/v1.0/events/calving/:rec_id', async (req, res) => {
         ${JSON.stringify(field_agent_id)},
         ${updated_by},
         ${body_condition_score},
-        ${calf_color},
-        ${calf_deformities},
+
+        ${JSON.stringify(color_array1)},
+        ${JSON.stringify(deformaties_array1)},
+       
         ${JSON.stringify(other_calf_deformities)}, 
         ${heart_girth},
         ${JSON.stringify(calf_name)},
@@ -522,8 +535,10 @@ router.put('/api/v1.0/events/calving/:rec_id', async (req, res) => {
         ${JSON.stringify(use_of_calf_other)},
         ${JSON.stringify(calf_tag_id)},
         ${body_condition_score2},
-        ${calf_color2},
-        ${calf_deformities2},
+
+        ${JSON.stringify(color_array2)},
+        ${JSON.stringify(deformaties_array2)},
+
         ${JSON.stringify(other_calf_deformities2)}, 
         ${heart_girth2},
         ${JSON.stringify(calf_name2)},
@@ -538,6 +553,8 @@ router.put('/api/v1.0/events/calving/:rec_id', async (req, res) => {
         ${JSON.stringify(use_of_calf_other2)},
         ${JSON.stringify(calf_tag_id2)} 
     )`;
+
+
     await query(conn, sql).then(
       response => {
         res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
@@ -549,6 +566,7 @@ router.put('/api/v1.0/events/calving/:rec_id', async (req, res) => {
 });
 
 //Milking events
+
 //view miking records
 router.get('/api/v1.0/events/milking/animal/:parameter/:option', async (req, res) => {
   const conn = await connection(dbConfig).catch(e => { return e; });
