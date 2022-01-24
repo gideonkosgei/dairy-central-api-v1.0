@@ -677,8 +677,8 @@ router.get('/api/v1.0/events/setup', async (req, res) => {
 router.put('/api/v1.0/events/setup/:id', async (req, res) => {
   const conn = await connection(dbConfig).catch(e => { return e; });
   const animal_type_id = req.params.id;
-  const { calving, milking, health, bio_data, insemination, sync, exit, weight, pd, updated_by } = req.body;
-  const sql = `CALL sp_update_event_menu_setup(${calving},${milking},${health},${bio_data},${insemination},${sync},${exit},${weight},${pd},${updated_by},${animal_type_id})`;
+  const { calving, milking, health, bio_data, insemination, sync, exit, weight, pd,hair, updated_by } = req.body;
+  const sql = `CALL sp_update_event_menu_setup(${calving},${milking},${health},${bio_data},${insemination},${sync},${exit},${weight},${pd},${hair},${updated_by},${animal_type_id})`;
   await query(conn, sql).then(e => { res.status(200).json({ status: 200, message: "success" }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
 });
 
@@ -1057,6 +1057,56 @@ router.get('/api/v1.0/events/data-capture-validation/:option/:animal_id', async 
   const sql = `CALL sp_validate_data_capture(${option},${animal_id})`;
   await query(conn, sql).then(response => { res.status(200).json({ payload: response[0] }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
 });
+
+
+/* Hair Sampling */
+// create hair Sample record
+
+
+router.post('/api/v1.0/events/hair-sample', async (req, res) => {
+  try {
+    const conn = await connection(dbConfig).catch(e => { return e; });
+    const { id, event_date, barcode,field_agent_id, user} = req.body;
+    const createOrUpdateFlag = 0;
+    const sql = `CALL sp_CreateOrUpdateHairSample(${createOrUpdateFlag},${id},${JSON.stringify(event_date)},${barcode},${field_agent_id},${user})`;
+    await query(conn, sql).then(
+      response => {
+        res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
+      })
+      .catch(e => { res.status(400).json({ status: 400, message: e }) });
+  } catch (error) {
+    res.send({ status: 0, message: `system error! ${error.message}` });
+  }
+});
+
+// edit animal injury event record
+router.put('/api/v1.0/events/hair-sample', async (req, res) => {
+  try {
+    const conn = await connection(dbConfig).catch(e => { return e; });
+    const createOrUpdateFlag = 1;
+    const { id, event_date, barcode,field_agent_id, user} = req.body;
+    const sql = `CALL sp_CreateOrUpdateHairSample(${createOrUpdateFlag},${id},${JSON.stringify(event_date)},${barcode},${field_agent_id},${user})`;
+    await query(conn, sql).then(
+      response => {
+        res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
+      })
+      .catch(e => { res.status(400).json({ status: 400, message: e }) });
+
+  } catch (error) {
+    res.send({ status: 0, message: `system error! ${error.message}` });
+  }
+});
+
+
+//get hair-sample(s)
+router.get('/api/v1.0/events/hair-sample/:parameter/:option', async (req, res) => {
+  const { parameter, option } = req.params;
+  const conn = await connection(dbConfig).catch(e => { return e; });
+  const sql = `CALL sp_event_hair_sample_view(${parameter},${option})`;
+  await query(conn, sql).then(response => { res.status(200).json({ payload: response[0] }) }).catch(e => { res.status(400).json({ status: 400, message: e }) });
+});
+
+
 
 
 
