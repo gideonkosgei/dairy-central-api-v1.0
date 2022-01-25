@@ -50,4 +50,23 @@ router.put('/api/v1.0/herds', async (req, res) => {
   }   
 });
 
+//create default herd
+router.post('/api/v1.0/default-herd', async (req, res) => { 
+  try {    
+  const conn = await connection(dbConfig).catch(e => {return e;}); 
+  
+  const {farm_id, user_id} = req.body; 
+    
+  const sql = `CALL sp_CreateDefaultHerd(${farm_id},${user_id})`;   
+
+  await query(conn, sql).then(
+    response => {            
+    res.status(200).json({status:response[0][0].status,message:response[0][0].message}) 
+  })
+  .catch(e => {res.status(400).json({status:400, message:e })}); 
+  } catch(error) {
+    res.send({status:0,message:`system error! ${error.message}`});
+  }   
+});
+
 module.exports = router
