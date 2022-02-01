@@ -19,7 +19,6 @@ router.post('/api/v1.0/batches/action', async (req, res) => {
     const { action, uuid, user } = req.body;
     const conn = await connection(dbConfig).catch(e => { return e; });
     const sql = `CALL sp_batch_process_action(${JSON.stringify(uuid)},${action},${user})`;
-    console.log(sql);
     await query(conn, sql)
       .then(
         response => {
