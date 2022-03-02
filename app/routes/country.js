@@ -24,7 +24,7 @@ router.get('/api/v1.0/countries', async (req, res) => {
    router.get('/api/v1.0/admin-units/:unit/:option', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;}); 
     const {unit,option} = req.params;    
-    const sql = `CALL sp_administrative_units_view(${unit},${option})`;    
+    const sql = `CALL sp_administrative_units_view(${unit},${option})`;  
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
     
   });

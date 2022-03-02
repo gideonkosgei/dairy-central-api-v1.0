@@ -1156,6 +1156,11 @@ async function sendPraPerformanceReport(report_code) {
           }
         })
         .catch(e => { console.log(console.log(e.message)) });
+
+
+
+
+
       let reports = report_0 + report_1 + report_2 + report_3 + report_99;
       mailer.sendMail(email_recipients, subject, '', reports);
       conn.end();
@@ -1261,8 +1266,190 @@ async function sendTagIdUnificationReport(report_code) {
   }  
 }
 
+
+
+async function sendDataQualityReport(report_code) {
+
+  try {
+    
+    const conn = await connection(dbConfig).catch(e => { return e; });
+
+    /** Get recipients */  
+    let email_recipients = '';
+
+    const sql_0 = `CALL sp_system_reports_recipients(${report_code})`;
+    await query(conn, sql_0).then(response => {
+      for (let i = 0; i < response[0].length; i++) {
+        email_recipients += `${response[0][i].recipient};`
+      }
+    })
+      .catch(e => { console.log(console.log(e.message)) });
+
+  
+    let last_month_start_date  = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
+    let subject = `ADGG Monthly Data Quality Report For ${moment(last_month_start_date).format('MMMM YYYY')}`;  
+
+    let title_1 = `
+    <div>
+      <h3>MONTHLY DATA QUALITY REPORT : ${moment(last_month_start_date).format('MMMM YYYY').toUpperCase()}</h3>   
+      <br/><br/>
+      <i>****** This is a system generated report ******</i> 
+      <br/>
+    </div>
+    <br/>
+    
+    `;
+
+    let title_2 = `
+    <div>
+      <h3>Consolidated Data Quality Report: All countries Combined</h3> 
+      <br/>
+    </div>
+    <br/>    
+    `;
+    
+
+    let title_3 = `
+    <div>
+      <h3>Data Quality Report: Grouped By Country</h3> 
+      <br/>
+    </div>
+    <br/>
+    
+    `;
+
+    let title_4 = "<div> <i>****** End of Report ******</i></div> "
+
+    
+    /** Report Content */
+    let report_1 = '';   
+    let report_3 = '';
+    let report_3_temp = '';   
+
+
+    /** check if there are any recipients to the email */
+    if (email_recipients.length > 0) {
+      /** Report Content */
+
+        /** report 1 : Global Report */
+        const sql1 = `CALL sp_rpt_data_quality(0,0,0)`;
+        await query(conn, sql1)
+          .then(response => {
+            if (response[0].length > 0) {
+
+              let rpt_rows = '';
+              for (let i = 0; i < response[0].length; i++) {
+                rpt_rows += `            
+                <tr>                 
+                  <td>${!response[0][i].quality_check ? 0 : response[0][i].quality_check.toLocaleString()}</td>
+                  <td>${!response[0][i].total_records ? 0 : response[0][i].total_records.toLocaleString()}</td>
+                  <td>${!response[0][i].total_error_records ? 0 : response[0][i].total_error_records.toLocaleString()}</td>
+                  <td>${!response[0][i].error_rate ? 0 : response[0][i].error_rate.toLocaleString()}</td>                          
+                </tr>`;
+              }
+  
+              report_1 = `     
+                        <div>
+                          <table  border='1' cellpadding="7" style='border-collapse:collapse;'>                                
+                          <thead>
+                          <tr>
+                            <th>QUALITY CHECK</th>
+                            <th>TOTAL RECORDS</th>
+                            <th>RECORDS WITH ERRORS</th>
+                            <th>ERROR RATE(%)</th>              
+                          </tr>
+                          </thead>
+                          <tbody>
+                          ${rpt_rows}
+                          </tbody>
+                          </table>  
+                        </div>  
+                        <br/>  
+                        <br/>          
+                      `;
+            }
+          })
+          .catch(e => { console.log(console.log(e.message)) });
+
+
+          /** report 3 : Country Report */
+          const sql2 = `CALL sp_rpt_data_quality(0,1,0)`;
+          await query(conn, sql2)
+            .then(response => {
+              if (response[0].length > 0) {
+                /** get distinct countries */
+                const unique_country_ids = [...new Set(response[0].map(item => item.country_id))]; 
+  
+                let temp_rows = '';
+                
+                //unique_country_ids.length
+                for (let i =0; i<unique_country_ids.length; i++){           
+  
+                  temp_rows = '';
+                  for (let r=0; r<response[0].length;r++){
+                    if (response[0][r].country_id === unique_country_ids[i]){
+                      temp_rows += `            
+                      <tr> 
+                        <td>${!response[0][r].country ? 0 : response[0][r].country.toLocaleString()}</td>                
+                        <td>${!response[0][r].quality_check ? 0 : response[0][r].quality_check.toLocaleString()}</td>
+                        <td>${!response[0][r].total_records ? 0 : response[0][r].total_records.toLocaleString()}</td>
+                        <td>${!response[0][r].total_error_records ? 0 : response[0][r].total_error_records.toLocaleString()}</td>
+                        <td>${!response[0][r].error_rate ? 0 : response[0][r].error_rate.toLocaleString()}</td>                          
+                      </tr>`;
+                      
+                    }  
+  
+                    report_3_temp = `     
+                          <div>
+                            <table  border='1' cellpadding="7" style='border-collapse:collapse;'>                                   
+                            <thead>
+                            <tr>
+                              <th>COUNTRY</th>
+                              <th>QUALITY CHECK</th>
+                              <th>TOTAL RECORDS</th>
+                              <th>RECORDS WITH ERRORS</th>
+                              <th>ERROR RATE(%)</th>              
+                            </tr>
+                            </thead>
+                            <tbody>
+                            ${temp_rows}
+                            </tbody>
+                            </table>  
+                          </div>  
+                          <br/>  
+                          <br/>          
+                        `;
+                  }               
+                  report_3 += report_3_temp;             
+                   
+                }
+                  
+              }
+            })
+            .catch(e => { console.log(console.log(e.message)) });
+  
+  
+            
+
+
+
+     //console.log(report_3);
+      let reports = title_1 + title_2 + report_1 + title_3 +report_3 + title_4;
+      mailer.sendMail(email_recipients, subject, '', reports);
+      conn.end();
+    }
+    console.log('success');
+  } catch (error) {
+    console.log(error.message);
+
+  }  
+}
+
 module.exports.sendReport = sendReport;
 module.exports.sendPraPerformanceReport = sendPraPerformanceReport;
 module.exports.sendTagIdUnificationReport = sendTagIdUnificationReport;
+module.exports.sendDataQualityReport = sendDataQualityReport;
+
+
 
 

@@ -68,6 +68,15 @@ router.get('/api/v1.0/tag-id-unification', async (req, res) => {
   }
 });
 
+router.get('/api/v1.0/data-quality-report', async (req, res) => {
+  try{
+    reporter.sendDataQualityReport(8);
+    res.status(200).json({ status: 200, message: "success" });
+  }catch (error) {
+    res.send({ status: 0, message: `system error! ${error.message}` })
+  }
+});
+
 
 
 

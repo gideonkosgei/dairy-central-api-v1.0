@@ -108,6 +108,7 @@ cron.schedule('35 3 * * 1', () => {reporter.sendPraPerformanceReport(5);});// at
 // Schedule a Monthly report task to run 1st day of the month 
 cron.schedule('0 4 1 * *', () => {reporter.sendReport(3);}); //at 7:00 am.
 cron.schedule('05 4 1 * *', () => {reporter.sendPraPerformanceReport(6);}); //at 7:05 am.
+cron.schedule('45 4 1 * *', () => {reporter.sendDataQualityReport(8);}); //at 7:45 am.
 
 const PORT = process.env.PORT || 8080; // set port, listen for requests
 const IP = '127.0.0.1'
