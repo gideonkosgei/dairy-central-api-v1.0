@@ -17,7 +17,7 @@ async function sendReport(report_code) {
 
     const conn = await connection(dbConfig).catch(e => { return e; });
 
-    /** Get recipients */  
+    /** Get recipients */
     let email_recipients = '';
     const sql_0 = `CALL sp_system_reports_recipients(${report_code})`;
     await query(conn, sql_0).then(response => {
@@ -34,7 +34,7 @@ async function sendReport(report_code) {
     let title = '';
     let subtitle = '';
 
-    if (report_code ===1) {
+    if (report_code === 1) {
       /** daily */
 
       start = moment().subtract(1, 'days').format('YYYY-MM-DD');
@@ -44,18 +44,18 @@ async function sendReport(report_code) {
       title = 'DAILY DATA FLOW REPORT';
       subtitle = `<b>Reporting Date</b> : ${start}`;
 
-    } else if(report_code === 2){
+    } else if (report_code === 2) {
       /** weekly */
 
       start = moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD');
-      end  = moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD');
+      end = moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD');
       subject = 'ADGG Weekly Data Flow Report';
       title = 'WEEKLY DATA FLOW REPORT';
       subtitle = `<b>WEEK ${moment(start).week()}</b>: ${start} to ${end} `;
     } else {
       /** monthly */
       start = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
-      end  = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
+      end = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
       subject = 'ADGG Monthly Data Flow Report';
       title = 'MONTHLY DATA FLOW REPORT';
       subtitle = `<b>${moment(start).format('MMMM YYYY')}</b> : ${start} to ${end}`;
@@ -887,8 +887,8 @@ async function sendReport(report_code) {
 
   } catch (error) {
     console.log(error.message);
-  }  
- 
+  }
+
 }
 
 async function sendPraPerformanceReport(report_code) {
@@ -903,7 +903,7 @@ async function sendPraPerformanceReport(report_code) {
 
     const conn = await connection(dbConfig).catch(e => { return e; });
 
-    /** Get recipients */  
+    /** Get recipients */
     let email_recipients = '';
     const sql_0 = `CALL sp_system_reports_recipients(${report_code})`;
     await query(conn, sql_0).then(response => {
@@ -920,7 +920,7 @@ async function sendPraPerformanceReport(report_code) {
     let title = '';
     let subtitle = '';
 
-    if (report_code ===4) {
+    if (report_code === 4) {
       /** daily */
 
       start = moment().subtract(1, 'days').format('YYYY-MM-DD');
@@ -930,18 +930,18 @@ async function sendPraPerformanceReport(report_code) {
       title = 'DAILY PRA PERFORMANCE REPORT';
       subtitle = `<b>Reporting Date</b> : ${start}`;
 
-    } else if(report_code === 5){
+    } else if (report_code === 5) {
       /** weekly */
 
       start = moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD');
-      end  = moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD');
+      end = moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD');
       subject = 'ADGG Weekly PRA Performance Report';
       title = 'WEEKLY PRA PERFORMANCE  REPORT';
       subtitle = `<b>WEEK ${moment(start).week()}</b>: ${start} to ${end} `;
     } else {
       /** monthly */
       start = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
-      end  = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
+      end = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
       subject = 'ADGG Monthly  PRA Performance Report';
       title = 'MONTHLY PRA PERFORMANCE REPORT';
       subtitle = `<b>${moment(start).format('MMMM YYYY')}</b> : ${start} to ${end}`;
@@ -968,7 +968,7 @@ async function sendPraPerformanceReport(report_code) {
     /** Report Content */
     let report_1 = '';
     let report_2 = '';
-    let report_3 = '';    
+    let report_3 = '';
 
 
     /** check if there are any recipients to the email */
@@ -1168,16 +1168,16 @@ async function sendPraPerformanceReport(report_code) {
     console.log('success');
   } catch (error) {
     console.log(error.message);
-  }  
+  }
 }
 
 async function sendTagIdUnificationReport(report_code) {
 
-  try {    
+  try {
 
     const conn = await connection(dbConfig).catch(e => { return e; });
 
-    /** Get recipients */  
+    /** Get recipients */
     let email_recipients = '';
     const sql_0 = `CALL sp_system_reports_recipients(${report_code})`;
     await query(conn, sql_0).then(response => {
@@ -1188,7 +1188,7 @@ async function sendTagIdUnificationReport(report_code) {
       .catch(e => { console.log(console.log(e.message)) });
 
     let subject = 'Tag ID Unification Report'
-    
+
     let run_date = moment().subtract(1, 'days').format('YYYY-MM-DD');
 
     let report_0 = `
@@ -1213,7 +1213,7 @@ async function sendTagIdUnificationReport(report_code) {
             for (let i = 0; i < response[0].length; i++) {
               rpt_rows += `            
               <tr>
-                <td>${!response[0][i].reg_date ? 0 :moment(response[0][i].reg_date).format('YYYY-MM-DD')}</td>
+                <td>${!response[0][i].reg_date ? 0 : moment(response[0][i].reg_date).format('YYYY-MM-DD')}</td>
                 <td>${!response[0][i].animal_name ? "" : response[0][i].animal_name.toLocaleString()}</td>
                 <td>${!response[0][i].original_tag_id ? 0 : response[0][i].original_tag_id.toLocaleString()}</td>
                 <td>${!response[0][i].new_tag_id ? 0 : response[0][i].new_tag_id.toLocaleString()}</td>
@@ -1245,8 +1245,8 @@ async function sendTagIdUnificationReport(report_code) {
         })
         .catch(e => { console.log(console.log(e.message)) });
 
-      if (report_1 === ""){
-        report_1 =  `
+      if (report_1 === "") {
+        report_1 = `
             <div>
              Based on yesteday's data flow, there are no Tag IDs for unification.<br/>
              This might be attributed to:<br/>
@@ -1254,7 +1254,7 @@ async function sendTagIdUnificationReport(report_code) {
               2. Tag IDs for all animals registered were in conformity <br/>            
             </div>
         `;
-      } 
+      }
 
       let reports = report_0 + report_1;
       mailer.sendMail(email_recipients, subject, '', reports);
@@ -1263,7 +1263,7 @@ async function sendTagIdUnificationReport(report_code) {
     console.log('success');
   } catch (error) {
     console.log(error.message);
-  }  
+  }
 }
 
 
@@ -1271,10 +1271,10 @@ async function sendTagIdUnificationReport(report_code) {
 async function sendDataQualityReport(report_code) {
 
   try {
-    
+
     const conn = await connection(dbConfig).catch(e => { return e; });
 
-    /** Get recipients */  
+    /** Get recipients */
     let email_recipients = '';
 
     const sql_0 = `CALL sp_system_reports_recipients(${report_code})`;
@@ -1285,9 +1285,9 @@ async function sendDataQualityReport(report_code) {
     })
       .catch(e => { console.log(console.log(e.message)) });
 
-  
-    let last_month_start_date  = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
-    let subject = `ADGG Monthly Data Quality Report For ${moment(last_month_start_date).format('MMMM YYYY')}`;  
+
+    let last_month_start_date = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
+    let subject = `ADGG Monthly Data Quality Report For ${moment(last_month_start_date).format('MMMM YYYY')}`;
 
     let title_1 = `
     <div>
@@ -1302,16 +1302,16 @@ async function sendDataQualityReport(report_code) {
 
     let title_2 = `
     <div>
-      <h3>Consolidated Data Quality Report: All countries Combined</h3> 
+      <h3>1. Consolidated Data Quality Report: All countries Combined</h3> 
       <br/>
     </div>
     <br/>    
     `;
-    
+
 
     let title_3 = `
     <div>
-      <h3>Data Quality Report: Grouped By Country</h3> 
+      <h3>2. Data Quality Report: Grouped By Country</h3> 
       <br/>
     </div>
     <br/>
@@ -1320,35 +1320,35 @@ async function sendDataQualityReport(report_code) {
 
     let title_4 = "<div> <i>****** End of Report ******</i></div> "
 
-    
+
     /** Report Content */
-    let report_1 = '';   
+    let report_1 = '';
     let report_3 = '';
-    let report_3_temp = '';   
+    let report_3_temp = '';
 
 
     /** check if there are any recipients to the email */
     if (email_recipients.length > 0) {
       /** Report Content */
 
-        /** report 1 : Global Report */
-        const sql1 = `CALL sp_rpt_data_quality(0,0,0)`;
-        await query(conn, sql1)
-          .then(response => {
-            if (response[0].length > 0) {
+      /** report 1 : Global Report */
+      const sql1 = `CALL sp_rpt_data_quality(0,0,0)`;
+      await query(conn, sql1)
+        .then(response => {
+          if (response[0].length > 0) {
 
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `            
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `            
                 <tr>                 
                   <td>${!response[0][i].quality_check ? 0 : response[0][i].quality_check.toLocaleString()}</td>
                   <td>${!response[0][i].total_records ? 0 : response[0][i].total_records.toLocaleString()}</td>
                   <td>${!response[0][i].total_error_records ? 0 : response[0][i].total_error_records.toLocaleString()}</td>
                   <td>${!response[0][i].error_rate ? 0 : response[0][i].error_rate.toLocaleString()}</td>                          
                 </tr>`;
-              }
-  
-              report_1 = `     
+            }
+
+            report_1 = `     
                         <div>
                           <table  border='1' cellpadding="7" style='border-collapse:collapse;'>                                
                           <thead>
@@ -1367,28 +1367,27 @@ async function sendDataQualityReport(report_code) {
                         <br/>  
                         <br/>          
                       `;
-            }
-          })
-          .catch(e => { console.log(console.log(e.message)) });
+          }
+        })
+        .catch(e => { console.log(console.log(e.message)) });
 
+      /** report 3 : Country Report */
+      const sql2 = `CALL sp_rpt_data_quality(0,1,0)`;
+      await query(conn, sql2)
+        .then(response => {
+          if (response[0].length > 0) {
+            /** get distinct countries */
+            const unique_country_ids = [...new Set(response[0].map(item => item.country_id))];
 
-          /** report 3 : Country Report */
-          const sql2 = `CALL sp_rpt_data_quality(0,1,0)`;
-          await query(conn, sql2)
-            .then(response => {
-              if (response[0].length > 0) {
-                /** get distinct countries */
-                const unique_country_ids = [...new Set(response[0].map(item => item.country_id))]; 
-  
-                let temp_rows = '';
-                
-                //unique_country_ids.length
-                for (let i =0; i<unique_country_ids.length; i++){           
-  
-                  temp_rows = '';
-                  for (let r=0; r<response[0].length;r++){
-                    if (response[0][r].country_id === unique_country_ids[i]){
-                      temp_rows += `            
+            let temp_rows = '';
+
+            //unique_country_ids.length
+            for (let i = 0; i < unique_country_ids.length; i++) {
+
+              temp_rows = '';
+              for (let r = 0; r < response[0].length; r++) {
+                if (response[0][r].country_id === unique_country_ids[i]) {
+                  temp_rows += `            
                       <tr> 
                         <td>${!response[0][r].country ? 0 : response[0][r].country.toLocaleString()}</td>                
                         <td>${!response[0][r].quality_check ? 0 : response[0][r].quality_check.toLocaleString()}</td>
@@ -1396,10 +1395,10 @@ async function sendDataQualityReport(report_code) {
                         <td>${!response[0][r].total_error_records ? 0 : response[0][r].total_error_records.toLocaleString()}</td>
                         <td>${!response[0][r].error_rate ? 0 : response[0][r].error_rate.toLocaleString()}</td>                          
                       </tr>`;
-                      
-                    }  
-  
-                    report_3_temp = `     
+
+                }
+
+                report_3_temp = `     
                           <div>
                             <table  border='1' cellpadding="7" style='border-collapse:collapse;'>                                   
                             <thead>
@@ -1419,22 +1418,17 @@ async function sendDataQualityReport(report_code) {
                           <br/>  
                           <br/>          
                         `;
-                  }               
-                  report_3 += report_3_temp;             
-                   
-                }
-                  
               }
-            })
-            .catch(e => { console.log(console.log(e.message)) });
-  
-  
-            
+              report_3 += report_3_temp;
 
+            }
 
+          }
+        })
+        .catch(e => { console.log(console.log(e.message)) });
 
-     //console.log(report_3);
-      let reports = title_1 + title_2 + report_1 + title_3 +report_3 + title_4;
+      //console.log(report_3);
+      let reports = title_1 + title_2 + report_1 + title_3 + report_3 + title_4;
       mailer.sendMail(email_recipients, subject, '', reports);
       conn.end();
     }
@@ -1442,13 +1436,213 @@ async function sendDataQualityReport(report_code) {
   } catch (error) {
     console.log(error.message);
 
-  }  
+  }
+}
+
+
+async function sendComparativeDataQualityReport(report_code) {
+
+  try {
+
+    const conn = await connection(dbConfig).catch(e => { return e; });
+
+    /** Get recipients */
+    let email_recipients = '';
+
+    const sql_0 = `CALL sp_system_reports_recipients(${report_code})`;
+    await query(conn, sql_0).then(response => {
+      for (let i = 0; i < response[0].length; i++) {
+        email_recipients += `${response[0][i].recipient};`
+      }
+    })
+      .catch(e => { console.log(console.log(e.message)) });
+
+
+    let year = moment().format('YYYY');
+    let subject = `ADGG Comparative Data Quality Report For ${year}`;
+
+    let title_1 = `
+    <div>
+      <h3>COMPARATIVE DATA QUALITY REPORT : ${year}</h3>   
+      <br/><br/>
+      <i>****** This is a system generated report ******</i> 
+      <br/>
+    </div>
+    <br/>
+    
+    `;
+
+    let title_2 = `
+    <div>
+      <h3>1. Consolidated Comparative Data Quality Report: All countries Combined</h3> 
+      <br/>
+    </div>
+    <br/>    
+    `;
+
+
+    let title_3 = `
+    <div>
+      <h3>2. Comparative Data Quality Report: Grouped By Country</h3> 
+      <br/>
+    </div>
+    <br/>    
+    `;
+
+    let title_4 = "<div> <i>****** End of Report ******</i></div> "
+
+    let report_description = `
+    <div> 
+      The report tracks the monthly progression of data quality error rate  
+      <br/><br/>
+    </div>
+    <br/>
+    
+    `;
+
+
+    /** Report Content */
+    let report_1 = '';
+    let report_2 = '';
+    let report_2_temp = '';
+
+
+    /** check if there are any recipients to the email */
+    if (email_recipients.length > 0) {
+      /** Report Content */
+
+      /** report 1 : Global Report */
+
+      const sql1 = `CALL sp_rpt_comparative_data_quality(${year},0)`;
+      await query(conn, sql1)
+        .then(response => {
+          if (response[0].length > 0) {
+            // extract the object keys. The keys will be the column headers on the report
+            let object_keys = Object.keys(response[0][0]);
+            let column_headers = '';
+
+            if (object_keys.length > 0) {
+              for (let i = 0; i < object_keys.length; i++) {
+                // concatenate '(%)' for all column headers except the header at index 0 
+                // Get the 1st 3 letters all column headers except the header at index 0  
+                if (i === 0) {
+                  column_headers += `<th>${object_keys[i].replace("_", " ").toUpperCase()}</th>`;
+                } else {
+                  column_headers += `<th>${object_keys[i].substring(0, 3)}(%)</th>`;
+                }
+
+              }
+            }
+
+            let rows = '';
+
+            for (let i = 0; i < response[0].length; i++) {
+              // check if object is empty
+              if (object_keys.length > 0) {
+                let cells = '';
+                // iterate through the object assigning values dynamically
+                for (let r = 0; r < object_keys.length; r++) {
+                  let object_attribute = object_keys[r];  // fetch the object key         
+                  cells += `<td>${!response[0][i][object_attribute] ? 0 : response[0][i][object_attribute].toLocaleString()}</td>`;
+                }
+                rows += `<tr> ${cells}</tr>`;
+              }
+            }
+
+
+            report_1 = `     
+                        <div>
+                          <table  border='1' cellpadding="7" style='border-collapse:collapse;'>                                
+                          <thead>
+                          <tr>
+                            ${column_headers}             
+                          </tr>
+                          </thead>
+                          <tbody>
+                            ${rows}
+                          </tbody>
+                          </table>  
+                        </div>  
+                        <br/>  
+                        <br/>          
+                      `;
+          }
+        })
+        .catch(e => { console.log(console.log(e.message)) });
+
+
+      /** report 2 : Country Report */
+      const sql2 = `CALL sp_rpt_comparative_data_quality(${year},1)`;
+      await query(conn, sql2)
+        .then(response => {
+          if (response[0].length > 0) {
+
+            // extract the object keys. The keys will be the column headers on the report
+            let object_keys = Object.keys(response[0][0]);
+            let column_headers = '';
+
+            if (object_keys.length > 0) {
+              for (let i = 0; i < object_keys.length; i++) {
+                 //  skip country_id (should not appear as header) -> located at index 0
+                if (i !==0){
+                  // concatenate '(%)' for all column headers except the header at index 1  
+                  // Get the 1st 3 letters all column headers except the header at index 0
+                  if (i!==0 && i === 1 || i === 2) {
+                    column_headers += `<th>${object_keys[i].replace("_", " ").toUpperCase()}</th>`;
+                  } else  {
+                    column_headers += `<th>${object_keys[i].substring(0, 3)}(%)</th>`;
+                  }
+                }
+              }
+            }
+
+            /** get distinct countries */
+            const unique_country_ids = [...new Set(response[0].map(item => item.country_id))];
+
+            //unique_country_ids.length
+            for (let x = 0; x < unique_country_ids.length; x++) {
+              let rows = '';
+              for (let i = 0; i < response[0].length; i++) {
+                if (response[0][i].country_id === unique_country_ids[x]) {
+                  // check if object is empty
+                  if (object_keys.length > 0) {
+                    let cells = '';
+                    // iterate through the object assigning values dynamically
+                    for (let r = 0; r < object_keys.length; r++) {
+                      let object_attribute = object_keys[r];  // fetch the object key 
+                      //skip cell 0 . It holds the country_id which should not be included        
+                      if(r!==0){
+                        cells += `<td>${!response[0][i][object_attribute] ? 0 : response[0][i][object_attribute].toLocaleString()}</td>`;
+                      }
+                    }
+                    rows += `<tr> ${cells}</tr>`;
+                  }
+                }
+                report_2_temp = `<div> <table  border='1' cellpadding="7" style='border-collapse:collapse;'> <thead><tr>${column_headers}</tr> </thead> <tbody>${rows}</tbody> </table> </div> <br/> <br/> `;
+              }
+              report_2 += report_2_temp;
+            }
+          }
+        })
+        .catch(e => { console.log(console.log(e.message)) });
+
+
+      let reports = title_1 + title_2 + report_description + report_1  + title_3 + report_2 + title_4;
+      mailer.sendMail(email_recipients, subject, '', reports);
+      conn.end();
+    }
+    console.log('success');
+  } catch (error) {
+    console.log(error.message);
+
+  }
 }
 
 module.exports.sendReport = sendReport;
 module.exports.sendPraPerformanceReport = sendPraPerformanceReport;
 module.exports.sendTagIdUnificationReport = sendTagIdUnificationReport;
 module.exports.sendDataQualityReport = sendDataQualityReport;
+module.exports.sendComparativeDataQualityReport = sendComparativeDataQualityReport;
 
 
 
