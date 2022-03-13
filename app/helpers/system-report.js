@@ -122,11 +122,11 @@ async function sendReport(report_code) {
       const sql1 = `CALL sp_rpt_overall_summaries(${code_rpt1},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql1)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
                 <tr>
                   <td>${!response[0][i].Country ? "N/A" : response[0][i].Country}</td>
                   <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
@@ -137,9 +137,9 @@ async function sendReport(report_code) {
                   <td>${!response[0][i].Male_Calf ? 0 : response[0][i].Male_Calf.toLocaleString()}</td>
                   <td>${!response[0][i].Total_Animals ? 0 : response[0][i].Total_Animals.toLocaleString()}</td>      
                 </tr>`;
-              }
+            }
 
-              report_1 = `     
+            report_1 = `     
           <div>
             <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
             <caption>A summary of farmer and animal registration</caption>         
@@ -163,8 +163,8 @@ async function sendReport(report_code) {
           <br/>  
           <br/>          
         `;
-            }
           }
+
         })
         .catch(e => { console.log(console.log(e.message)) });
 
@@ -173,11 +173,10 @@ async function sendReport(report_code) {
       const sql2 = `CALL sp_rpt_overall_summaries(${code_rpt2},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql2)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
             <tr>
               <td>${!response[0][i].country ? 'N/A' : response[0][i].country}</td>
               <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
@@ -188,9 +187,9 @@ async function sendReport(report_code) {
               <td>${!response[0][i].Mean ? 0 : response[0][i].Mean.toLocaleString()}</td>   
               <td>${!response[0][i].Std ? 0 : response[0][i].Std.toLocaleString()}</td>     
             </tr>`;
-              }
+            }
 
-              report_2 = `     
+            report_2 = `     
                 <div>
                   <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                   <caption>A summary of cow monitoring - Daily milk yied (Litres)</caption>         
@@ -214,7 +213,6 @@ async function sendReport(report_code) {
                 <br/>  
                 <br/>           
               `;
-            }
           }
 
         })
@@ -226,11 +224,10 @@ async function sendReport(report_code) {
       const sql3 = `CALL sp_rpt_overall_summaries(${code_rpt3},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql3)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
               <tr>
                 <td>${!response[0][i].country ? 'N/A' : response[0][i].country}</td>
                 <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
@@ -241,9 +238,9 @@ async function sendReport(report_code) {
                 <td>${!response[0][i].Mean ? 0 : response[0][i].Mean.toLocaleString()}</td>   
                 <td>${!response[0][i].Std ? 0 : response[0][i].Std.toLocaleString()}</td>     
               </tr>`;
-              }
+            }
 
-              report_3 = `     
+            report_3 = `     
                   <div>
                     <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                     <caption>A summary of cow monitoring - Milk quality parameters(Milk Fat)</caption>         
@@ -267,7 +264,6 @@ async function sendReport(report_code) {
                   <br/>  
                   <br/>           
                 `;
-            }
           }
 
         })
@@ -278,11 +274,10 @@ async function sendReport(report_code) {
       const sql4 = `CALL sp_rpt_overall_summaries(${code_rpt4},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql4)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
             <tr>
               <td>${!response[0][i].country ? 'N/A' : response[0][i].country}</td>
               <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
@@ -293,9 +288,9 @@ async function sendReport(report_code) {
               <td>${!response[0][i].Mean ? 0 : response[0][i].Mean.toLocaleString()}</td>   
               <td>${!response[0][i].Std ? 0 : response[0][i].Std.toLocaleString()}</td>     
             </tr>`;
-              }
+            }
 
-              report_4 = `     
+            report_4 = `     
                 <div>
                   <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                   <caption>A summary of cow monitoring - Milk quality parameters(Milk protein)</caption>         
@@ -319,7 +314,6 @@ async function sendReport(report_code) {
                 <br/>  
                 <br/>           
               `;
-            }
           }
 
         })
@@ -331,11 +325,10 @@ async function sendReport(report_code) {
       const sql5 = `CALL sp_rpt_overall_summaries(${code_rpt5},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql5)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
             <tr>
               <td>${!response[0][i].country ? 'N/A' : response[0][i].country}</td>
               <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
@@ -346,9 +339,9 @@ async function sendReport(report_code) {
               <td>${!response[0][i].Mean ? 0 : response[0][i].Mean.toLocaleString()}</td>   
               <td>${!response[0][i].Std ? 0 : response[0][i].Std.toLocaleString()}</td>     
             </tr>`;
-              }
+            }
 
-              report_5 = `     
+            report_5 = `     
                 <div>
                   <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                   <caption>A summary of cow monitoring - Milk quality parameters(Somatic Cell count)</caption>         
@@ -372,7 +365,6 @@ async function sendReport(report_code) {
                 <br/>  
                 <br/>           
               `;
-            }
           }
 
         })
@@ -384,11 +376,10 @@ async function sendReport(report_code) {
       const sql6 = `CALL sp_rpt_overall_summaries(${code_rpt6},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql6)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
             <tr>
               <td>${!response[0][i].country ? "N/A" : response[0][i].country}</td>
               <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
@@ -399,9 +390,9 @@ async function sendReport(report_code) {
               <td>${!response[0][i].Mean ? 0 : response[0][i].Mean.toLocaleString()}</td>   
               <td>${!response[0][i].Std ? 0 : response[0][i].Std.toLocaleString()}</td>     
             </tr>`;
-              }
+            }
 
-              report_6 = `     
+            report_6 = `     
                 <div>
                   <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                   <caption>A summary of cow monitoring - Milk quality parameters(Urea)</caption>         
@@ -425,7 +416,6 @@ async function sendReport(report_code) {
                 <br/>  
                 <br/>           
               `;
-            }
           }
 
         })
@@ -435,11 +425,10 @@ async function sendReport(report_code) {
       const sql7 = `CALL sp_rpt_overall_summaries(${code_rpt7},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql7)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
           <tr>
             <td>${!response[0][i].country ? 'N/A' : response[0][i].country}</td>
             <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
@@ -450,9 +439,9 @@ async function sendReport(report_code) {
             <td>${!response[0][i].Mean ? 0 : response[0][i].Mean.toLocaleString()}</td>   
             <td>${!response[0][i].Std ? 0 : response[0][i].Std.toLocaleString()}</td>     
           </tr>`;
-              }
+            }
 
-              report_7 = `     
+            report_7 = `     
               <div>
                 <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                 <caption>A summary of cow monitoring - Milk quality parameters(Lactose)</caption>         
@@ -476,7 +465,6 @@ async function sendReport(report_code) {
               <br/>  
               <br/>           
             `;
-            }
           }
         })
         .catch(e => { console.log(console.log(e.message)) });
@@ -486,11 +474,10 @@ async function sendReport(report_code) {
       const sql8 = `CALL sp_rpt_overall_summaries(${code_rpt8},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql8)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
           <tr>
             <td>${!response[0][i].Country ? 'N/A' : response[0][i].Country}</td>
             <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
@@ -501,9 +488,9 @@ async function sendReport(report_code) {
             <td>${!response[0][i].Mean ? 0 : response[0][i].Mean.toLocaleString()}</td>   
             <td>${!response[0][i].Std ? 0 : response[0][i].Std.toLocaleString()}</td>     
           </tr>`;
-              }
+            }
 
-              report_8 = `     
+            report_8 = `     
               <div>
                 <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                 <caption>A summary of cow monitoring - Weight records (Kgs)</caption>         
@@ -527,7 +514,6 @@ async function sendReport(report_code) {
               <br/>  
               <br/>           
             `;
-            }
           }
         })
         .catch(e => { console.log(console.log(e.message)) });
@@ -537,11 +523,10 @@ async function sendReport(report_code) {
       const sql9 = `CALL sp_rpt_overall_summaries(${code_rpt9},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql9)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
           <tr>
             <td>${!response[0][i].Country ? 'N/A' : response[0][i].Country}</td>
             <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
@@ -550,9 +535,9 @@ async function sendReport(report_code) {
             <td>${!response[0][i].Vaccination ? 0 : response[0][i].Vaccination.toLocaleString()}</td>
             <td>${!response[0][i].Total ? 0 : response[0][i].Total.toLocaleString()}</td>
           </tr>`;
-              }
+            }
 
-              report_9 = `     
+            report_9 = `     
               <div>
                 <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                 <caption>A summary of cow monitoring - Heath records</caption>         
@@ -574,7 +559,6 @@ async function sendReport(report_code) {
               <br/>  
               <br/>           
             `;
-            }
           }
         })
         .catch(e => { console.log(console.log(e.message)) });
@@ -584,11 +568,10 @@ async function sendReport(report_code) {
       const sql10 = `CALL sp_rpt_overall_summaries(${code_rpt10},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql10)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
           <tr>
             <td>${!response[0][i].Country ? 'N/A' : response[0][i].Country}</td>
             <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
@@ -599,9 +582,9 @@ async function sendReport(report_code) {
             <td>${!response[0][i].Mean ? 0 : response[0][i].Mean.toLocaleString()}</td>   
             <td>${!response[0][i].Std ? 0 : response[0][i].Std.toLocaleString()}</td>
           </tr>`;
-              }
+            }
 
-              report_10 = `     
+            report_10 = `     
               <div>
                 <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                 <caption>A summary of calf monitoring - Weight records (Kgs)</caption>         
@@ -625,7 +608,6 @@ async function sendReport(report_code) {
               <br/>  
               <br/>           
             `;
-            }
           }
         })
         .catch(e => { console.log(console.log(e.message)) });
@@ -635,11 +617,10 @@ async function sendReport(report_code) {
       const sql11 = `CALL sp_rpt_overall_summaries(${code_rpt11},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql11)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
           <tr>
               <td>${!response[0][i].Country ? 'N/A' : response[0][i].Country}</td>
               <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
@@ -648,9 +629,9 @@ async function sendReport(report_code) {
               <td>${!response[0][i].Vaccination ? 0 : response[0][i].Vaccination.toLocaleString()}</td>
               <td>${!response[0][i].Total ? 0 : response[0][i].Total.toLocaleString()}</td>
           </tr>`;
-              }
+            }
 
-              report_11 = `     
+            report_11 = `     
               <div>
                 <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                 <caption>A summary of calf monitoring - Heath records</caption>         
@@ -672,7 +653,6 @@ async function sendReport(report_code) {
               <br/>  
               <br/>           
             `;
-            }
           }
         })
         .catch(e => { console.log(console.log(e.message)) });
@@ -682,12 +662,11 @@ async function sendReport(report_code) {
       const sql12 = `CALL sp_rpt_overall_summaries(${code_rpt12},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql12)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
+          if (response[0].length > 0) {
+            let rpt_rows = '';
 
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
           <tr>
 
           <td>${!response[0][i].Country ? "N/A" : response[0][i].Country}</td>
@@ -699,9 +678,9 @@ async function sendReport(report_code) {
           <td>${!response[0][i].Male_Calf ? 0 : response[0][i].Male_Calf.toLocaleString()}</td>
           <td>${!response[0][i].Total_Animals ? 0 : response[0][i].Total_Animals.toLocaleString()}</td>  
           </tr>`;
-              }
+            }
 
-              report_12 = `     
+            report_12 = `     
               <div>
                 <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                 <caption>A summary of exit records</caption>         
@@ -725,7 +704,6 @@ async function sendReport(report_code) {
               <br/>  
               <br/>           
             `;
-            }
           }
 
         })
@@ -736,19 +714,18 @@ async function sendReport(report_code) {
       const sql13 = `CALL sp_rpt_overall_summaries(${code_rpt13},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql13)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
                 <tr>
                   <td>${!response[0][i].Country ? "N/A" : response[0][i].Country}</td>
                   <td>${!response[0][i].Normal_AI ? 0 : response[0][i].Normal_AI.toLocaleString()}</td>
                   <td>${!response[0][i].Synchronized_AI ? 0 : response[0][i].Synchronized_AI.toLocaleString()}</td>
                   <td>${!response[0][i].Total_inseminations ? 0 : response[0][i].Total_inseminations.toLocaleString()}</td>            
                 </tr>`;
-              }
-              report_13 = `     
+            }
+            report_13 = `     
               <div>
                 <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                 <caption>A summary of artificial insemination</caption>         
@@ -768,7 +745,6 @@ async function sendReport(report_code) {
               <br/>  
               <br/>           
             `;
-            }
           }
         })
         .catch(e => { console.log(console.log(e.message)) });
@@ -778,20 +754,19 @@ async function sendReport(report_code) {
       const sql14 = `CALL sp_rpt_overall_summaries(${code_rpt14},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql14)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
           <tr>
             <td>${!response[0][i].Country ? "N/A" : response[0][i].Country}</td>
             <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
             <td>${!response[0][i].Animals ? 0 : response[0][i].Animals.toLocaleString()}</td>
             <td>${!response[0][i].Records ? 0 : response[0][i].Records.toLocaleString()}</td>
           </tr>`;
-              }
+            }
 
-              report_14 = `     
+            report_14 = `     
               <div>
                 <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                 <caption>A summary of pregnancy diagnosis</caption>         
@@ -811,7 +786,6 @@ async function sendReport(report_code) {
               <br/>  
               <br/>           
             `;
-            }
           }
         })
         .catch(e => { console.log(console.log(e.message)) });
@@ -821,20 +795,19 @@ async function sendReport(report_code) {
       const sql15 = `CALL sp_rpt_overall_summaries(${code_rpt15},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql15)
         .then(response => {
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
           <tr>
             <td>${!response[0][i].Country ? "N/A" : response[0][i].Country}</td>
             <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
             <td>${!response[0][i].Animals ? 0 : response[0][i].Animals.toLocaleString()}</td>
             <td>${!response[0][i].Records ? 0 : response[0][i].Records.toLocaleString()}</td>
           </tr>`;
-              }
+            }
 
-              report_15 = `     
+            report_15 = `     
               <div>
                 <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                 <caption>A summary of synchronization</caption>         
@@ -854,7 +827,6 @@ async function sendReport(report_code) {
               <br/>  
               <br/>           
             `;
-            }
           }
         })
         .catch(e => { console.log(console.log(e.message)) });
@@ -863,21 +835,20 @@ async function sendReport(report_code) {
 
       const sql16 = `CALL sp_rpt_overall_summaries(${code_rpt16},${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql16)
-        .then(response => { 
-          if (response.affectedRows>0){
-            if (response[0].length > 0) {
-              let rpt_rows = '';
-              for (let i = 0; i < response[0].length; i++) {
-                rpt_rows += `
+        .then(response => {
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
           <tr>
             <td>${!response[0][i].Country ? "N/A" : response[0][i].Country}</td>
             <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
             <td>${!response[0][i].Cow ? 0 : response[0][i].Cow.toLocaleString()}</td>
             <td>${!response[0][i].Total_Animals ? 0 : response[0][i].Total_Animals.toLocaleString()}</td>
           </tr>`;
-              }
+            }
 
-              report_16 = `     
+            report_16 = `     
               <div>
                 <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                 <caption>A summary of still births/abortions</caption>         
@@ -897,24 +868,23 @@ async function sendReport(report_code) {
               <br/>  
               <br/>           
             `;
-            }
           }
 
 
         })
-        .catch(e => { console.log(console.log(e.message)) });     
+        .catch(e => { console.log(console.log(e.message)) });
 
       let reports = report_0 + report_1 + report_2 + report_3 + report_4 + report_5 + report_6 + report_7 + report_8 + report_9 + report_10 + report_11 + report_12 + report_13 + report_14 + report_15 + report_16 + report_99;
-      
-      if(report_1==='' && report_2==='' && report_3==='' && report_4==='' && report_5==='' && report_6==='' && report_7==='' && report_8==='' && report_9==='' && report_10==='' && report_11==='' && report_12==='' && report_13==='' && report_14==='' && report_15==='' && report_16===''){
+
+      if (report_1 === '' && report_2 === '' && report_3 === '' && report_4 === '' && report_5 === '' && report_6 === '' && report_7 === '' && report_8 === '' && report_9 === '' && report_10 === '' && report_11 === '' && report_12 === '' && report_13 === '' && report_14 === '' && report_15 === '' && report_16 === '') {
         console.log('Report not sent. No Data');
-      } else{
+      } else {
         mailer.sendMail(email_recipients, subject, '', reports);
         console.log('Report Sent');
-      } 
+      }
       conn.end();
     }
-  
+
   } catch (error) {
     console.log(error.message);
   }
@@ -1612,13 +1582,13 @@ async function sendComparativeDataQualityReport(report_code) {
 
             if (object_keys.length > 0) {
               for (let i = 0; i < object_keys.length; i++) {
-                 //  skip country_id (should not appear as header) -> located at index 0
-                if (i !==0){
+                //  skip country_id (should not appear as header) -> located at index 0
+                if (i !== 0) {
                   // concatenate '(%)' for all column headers except the header at index 1  
                   // Get the 1st 3 letters all column headers except the header at index 0
-                  if (i!==0 && i === 1 || i === 2) {
+                  if (i !== 0 && i === 1 || i === 2) {
                     column_headers += `<th>${object_keys[i].replace("_", " ").toUpperCase()}</th>`;
-                  } else  {
+                  } else {
                     column_headers += `<th>${object_keys[i].substring(0, 3)}(%)</th>`;
                   }
                 }
@@ -1640,7 +1610,7 @@ async function sendComparativeDataQualityReport(report_code) {
                     for (let r = 0; r < object_keys.length; r++) {
                       let object_attribute = object_keys[r];  // fetch the object key 
                       //skip cell 0 . It holds the country_id which should not be included        
-                      if(r!==0){
+                      if (r !== 0) {
                         cells += `<td>${!response[0][i][object_attribute] ? 0 : response[0][i][object_attribute].toLocaleString()}</td>`;
                       }
                     }
@@ -1656,7 +1626,7 @@ async function sendComparativeDataQualityReport(report_code) {
         .catch(e => { console.log(console.log(e.message)) });
 
 
-      let reports = title_1 + title_2 + report_description + report_1  + title_3 + report_2 + title_4;
+      let reports = title_1 + title_2 + report_description + report_1 + title_3 + report_2 + title_4;
       mailer.sendMail(email_recipients, subject, '', reports);
       conn.end();
     }
