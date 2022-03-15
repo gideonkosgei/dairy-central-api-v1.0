@@ -91,6 +91,7 @@ async function sendReport(report_code) {
     let code_rpt14 = 14;
     let code_rpt15 = 15;
     let code_rpt16 = 16;
+    let code_rpt18 = 18;
 
 
 
@@ -111,6 +112,7 @@ async function sendReport(report_code) {
     let report_14 = '';
     let report_15 = '';
     let report_16 = '';
+    let report_18 = '';
 
 
     /** check if there are any recipients to the email */
@@ -874,9 +876,52 @@ async function sendReport(report_code) {
         })
         .catch(e => { console.log(console.log(e.message)) });
 
-      let reports = report_0 + report_1 + report_2 + report_3 + report_4 + report_5 + report_6 + report_7 + report_8 + report_9 + report_10 + report_11 + report_12 + report_13 + report_14 + report_15 + report_16 + report_99;
 
-      if (report_1 === '' && report_2 === '' && report_3 === '' && report_4 === '' && report_5 === '' && report_6 === '' && report_7 === '' && report_8 === '' && report_9 === '' && report_10 === '' && report_11 === '' && report_12 === '' && report_13 === '' && report_14 === '' && report_15 === '' && report_16 === '') {
+
+       /** report 18 > Hair Sampling*/
+       const sql18 = `CALL sp_rpt_overall_summaries(${code_rpt18},${JSON.stringify(start)},${JSON.stringify(end)})`;
+       await query(conn, sql18)
+         .then(response => {
+           if (response[0].length > 0) {
+             let rpt_rows = '';
+             for (let i = 0; i < response[0].length; i++) {
+               rpt_rows += `
+           <tr>
+             <td>${!response[0][i].Country ? "N/A" : response[0][i].Country}</td>
+             <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
+             <td>${!response[0][i].Animals ? 0 : response[0][i].Animals.toLocaleString()}</td>
+             <td>${!response[0][i].Records ? 0 : response[0][i].Records.toLocaleString()}</td>
+           </tr>`;
+             }
+ 
+             report_18 = `     
+               <div>
+                 <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
+                 <caption>A summary of Hair Sampling</caption>         
+                 <thead>
+                 <tr>
+                   <th>COUNTRY</th>
+                   <th>FARMS</th>
+                   <th>ANIMALS</th>
+                   <th>RECORDS</th>                 
+                 </tr>
+                 </thead>
+                 <tbody>
+                 ${rpt_rows}
+                 </tbody>
+                 </table>  
+               </div> 
+               <br/>  
+               <br/>           
+             `;
+           }
+         })
+         .catch(e => { console.log(console.log(e.message)) });
+   
+
+      let reports = report_0 + report_1 + report_2 + report_3 + report_4 + report_5 + report_6 + report_7 + report_8 + report_9 + report_10 + report_11 + report_12 + report_13 + report_14 + report_15 + report_16 + report_18 + report_99;
+
+      if (report_1 === '' && report_2 === '' && report_3 === '' && report_4 === '' && report_5 === '' && report_6 === '' && report_7 === '' && report_8 === '' && report_9 === '' && report_10 === '' && report_11 === '' && report_12 === '' && report_13 === '' && report_14 === '' && report_15 === '' && report_16 === '' && report_18 === '') {
         console.log('Report not sent. No Data');
       } else {
         mailer.sendMail(email_recipients, subject, '', reports);
