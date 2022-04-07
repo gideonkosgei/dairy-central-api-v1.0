@@ -174,6 +174,7 @@ router.put('/api/v1.0/batches/animal/modify-and-revalidate', async (req, res) =>
     const conn = await connection(dbConfig).catch(e => { return e; });
     const {
       record_id,
+      animal_type_id,
       user_id,
       Purchase_cost,
       altitude,
@@ -239,9 +240,11 @@ router.put('/api/v1.0/batches/animal/modify-and-revalidate', async (req, res) =>
                                                               ${JSON.stringify(tag_id)},
                                                                 ${JSON.stringify(tag_prefix)},
                                                                   ${JSON.stringify(tag_sequence)},  
-                                                                    ${remove}
+                                                                    ${animal_type_id},
+                                                                      ${remove}
       )`;
-
+    
+  
     await query(conn, sql)
       .then(
         response => {
