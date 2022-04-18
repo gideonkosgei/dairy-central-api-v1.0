@@ -60,7 +60,7 @@ router.get('/api/v1.0/pra-performance/monthly', async (req, res) => {
 
 router.get('/api/v1.0/pra-performance/county/weekly', async (req, res) => {
   try{
-    reporter.sendPraPerformanceReport(5);
+    reporter.sendCountyPraPerformanceReport(10);
     res.status(200).json({ status: 200, message: "success" });
   }catch (error) {
     res.send({ status: 0, message: `system error! ${error.message}` })
@@ -69,7 +69,7 @@ router.get('/api/v1.0/pra-performance/county/weekly', async (req, res) => {
 
 router.get('/api/v1.0/pra-performance/county/monthly', async (req, res) => {
   try{
-    reporter.sendPraPerformanceReport(6);
+    reporter.sendCountyPraPerformanceReport(11);
     res.status(200).json({ status: 200, message: "success" });
   }catch (error) {
     res.send({ status: 0, message: `system error! ${error.message}` })
