@@ -1290,6 +1290,7 @@ async function sendCountyPraPerformanceReport(report_code) {
             for (let i = 0; i < response[0].length; i++) {
               rpt_rows += `            
               <tr>
+                <td>${!response[0][i].County ? "N/A" : response[0][i].County}</td>
                 <td>${!response[0][i].PRA ? "N/A" : response[0][i].PRA}</td>
                 <td>${!response[0][i].Animal_Registration ? 0 : response[0][i].Animal_Registration.toLocaleString()}</td>
                 <td>${!response[0][i].Farmer_Registration ? 0 : response[0][i].Farmer_Registration.toLocaleString()}</td>
@@ -1313,6 +1314,7 @@ async function sendCountyPraPerformanceReport(report_code) {
           <caption>Tanzania PRA Performance Report</caption>         
           <thead>
           <tr>
+            <th>COUNTY</th>
             <th>PRA</th>
             <th>ANIMAL-REGISTRATION</th>
             <th>FARM-REGISTRATION</th>
