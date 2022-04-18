@@ -104,12 +104,16 @@ cron.schedule('30 4 * * 1-5', () => {reporter.sendTagIdUnificationReport(7);});/
 // Schedule a weekly report task to run every Monday 
 cron.schedule('30 3 * * 1', () => {reporter.sendReport(2);});// at 6:30 am.
 cron.schedule('35 3 * * 1', () => {reporter.sendPraPerformanceReport(5);});// at 6:35 am.
+cron.schedule('30 5 * * 1', () => {reporter.sendCountyPraPerformanceReport(10);});// at 8:30 am.
+
+
 
 // Schedule a Monthly report task to run 1st day of the month 
 cron.schedule('0 4 1 * *', () => {reporter.sendReport(3);}); //at 7:00 am.
 cron.schedule('05 4 1 * *', () => {reporter.sendPraPerformanceReport(6);}); //at 7:05 am.
 cron.schedule('45 4 1 * *', () => {reporter.sendDataQualityReport(8);}); //at 7:45 am.
 cron.schedule('0 5 1 * *', () => {reporter.sendComparativeDataQualityReport(9);}); //at 8:00 am.
+cron.schedule('35 5 1 * *', () => {reporter.sendCountyPraPerformanceReport(11);}); //at 8:35 am.
 
 
 

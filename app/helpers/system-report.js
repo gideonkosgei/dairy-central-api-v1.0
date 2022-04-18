@@ -1215,6 +1215,143 @@ async function sendPraPerformanceReport(report_code) {
   }
 }
 
+
+async function sendCountyPraPerformanceReport(report_code) {
+
+  try {
+    /**
+     * REPORT CODE DETAILS     
+     * 2 - WEEKLY
+     * 3 - MONTHLY
+     */
+
+    const conn = await connection(dbConfig).catch(e => { return e; });
+
+    /** Get recipients */
+    let email_recipients = '';
+    const sql_0 = `CALL sp_system_reports_recipients(${report_code})`;
+    await query(conn, sql_0).then(response => {
+      for (let i = 0; i < response[0].length; i++) {
+        email_recipients += `${response[0][i].recipient};`
+      }
+    })
+      .catch(e => { console.log(console.log(e.message)) });
+
+    let start = '';
+    let end = '';
+
+    let subject = ''
+    let title = '';
+    let subtitle = '';
+
+    if (report_code === 10) {
+     /** weekly */
+
+     start = moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD');
+     end = moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD');
+     subject = 'ADGG Weekly County DFA Performance Report';
+     title = 'WEEKLY COUNTY DFA PERFORMANCE  REPORT';
+     subtitle = `<b>WEEK ${moment(start).week()}</b>: ${start} to ${end} `;
+
+    } else { // REPORT CODE 11
+      /** monthly */
+      start = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
+      end = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
+      subject = 'ADGG Monthly County DFA Performance Report';
+      title = 'MONTHLY COUNTY DFA PERFORMANCE REPORT';
+      subtitle = `<b>${moment(start).format('MMMM YYYY')}</b> : ${start} to ${end}`;
+    }
+
+    let report_0 = `
+    <div>
+      <h3>${title}</h3>      
+      ${subtitle}
+      <br/><br/>
+      <i>****** This is a system generated report ******</i> 
+      <br/>
+    </div>
+    <br/>
+    `;
+
+    let report_99 = "<div> <i>****** End of Report ******</i></div> "    
+
+    /** Report Content */
+    let report_1 = '';
+   
+    /** check if there are any recipients to the email */
+    if (email_recipients.length > 0) {
+      /** Report Content */   
+
+      const sql1 = `CALL sp_rpt_pra_performance_for_county(11,${JSON.stringify(start)},${JSON.stringify(end)})`;
+      await query(conn, sql1)
+        .then(response => {
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `            
+              <tr>
+                <td>${!response[0][i].PRA ? "N/A" : response[0][i].PRA}</td>
+                <td>${!response[0][i].Animal_Registration ? 0 : response[0][i].Animal_Registration.toLocaleString()}</td>
+                <td>${!response[0][i].Farmer_Registration ? 0 : response[0][i].Farmer_Registration.toLocaleString()}</td>
+                <td>${!response[0][i].Calving ? 0 : response[0][i].Calving.toLocaleString()}</td>
+                <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>
+                <td>${!response[0][i].Feeding ? 0 : response[0][i].Feeding.toLocaleString()}</td>
+                <td>${!response[0][i].Hair_Sampling ? 0 : response[0][i].Hair_Sampling.toLocaleString()}</td>
+                <td>${!response[0][i].Hoof_Health ? 0 : response[0][i].Hoof_Health.toLocaleString()}</td>
+                <td>${!response[0][i].Injury ? 0 : response[0][i].Injury.toLocaleString()}</td>
+                <td>${!response[0][i].Insemination ? 0 : response[0][i].Insemination.toLocaleString()}</td>      
+                <td>${!response[0][i].Milking ? 0 : response[0][i].Milking.toLocaleString()}</td>      
+                <td>${!response[0][i].Parasite_Infection ? 0 : response[0][i].Parasite_Infection.toLocaleString()}</td>      
+                <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td>   
+                <td>${!response[0][i].Total ? 0 : response[0][i].Total.toLocaleString()}</td>          
+              </tr>`;
+            }
+
+            report_1 = `     
+        <div>
+          <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
+          <caption>Tanzania PRA Performance Report</caption>         
+          <thead>
+          <tr>
+            <th>PRA</th>
+            <th>ANIMAL-REGISTRATION</th>
+            <th>FARM-REGISTRATION</th>
+            <th>CALVING</th>
+            <th>EXITS</th>
+            <th>FEEDING</th>
+            <th>HAIR-SAMPLING</th>
+            <th>HOOF-HEALTH</th>
+            <th>INJURY</th>
+            <th>INSEMINATION</th>
+            <th>MILKING</th>
+            <th>PARASITE-INFECTION</th>
+            <th>WEIGHT</th>
+            <th>TOTAL</th>
+          </tr>
+          </thead>
+          <tbody>
+          ${rpt_rows}
+          </tbody>
+          </table>  
+        </div>  
+        <br/>  
+        <br/>          
+      `;
+          }
+        })
+        .catch(e => { console.log(console.log(e.message)) });
+
+      let reports = report_0 + report_1 + report_99;
+      mailer.sendMail(email_recipients, subject, '', reports);
+      conn.end();
+    }
+    console.log('success');
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
 async function sendTagIdUnificationReport(report_code) {
 
   try {
@@ -1684,6 +1821,7 @@ async function sendComparativeDataQualityReport(report_code) {
 
 module.exports.sendReport = sendReport;
 module.exports.sendPraPerformanceReport = sendPraPerformanceReport;
+module.exports.sendCountyPraPerformanceReport = sendCountyPraPerformanceReport;
 module.exports.sendTagIdUnificationReport = sendTagIdUnificationReport;
 module.exports.sendDataQualityReport = sendDataQualityReport;
 module.exports.sendComparativeDataQualityReport = sendComparativeDataQualityReport;
