@@ -164,9 +164,10 @@ router.post('/api/v1.0/users/org/create-user-account', async (req, res) => {
 
     message = `
     Congratulation on joining the ADGG platform. Your account has been setup successfully.<br/>    
-    <h3>Account Details</h3>
+    <h3>Account Details</h3>   
     <b>username:</b> ${email}<br/>
-    <b>password:</b> ${plain_text_password}<br/>    
+    <b>password:</b> ${plain_text_password}<br/> 
+    <b>link:</b> <a href="https://lsf.adgg.ilri.org" target= "_blank"> Click to access application</a><br/>
     `;
   }
   /**
