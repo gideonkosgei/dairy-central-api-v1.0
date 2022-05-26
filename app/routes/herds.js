@@ -8,7 +8,7 @@ const query = require('../helpers/query');
   router.get('/api/v1.0/herds/:option/:id/:user', async (req, res) => {
     const conn = await connection(dbConfig).catch(e => {return e;}); 
     const {id,option,user} = req.params;
-    const sql =  `CALL sp_ViewHerdOrHerds(${option},${id},${user})`;   
+    const sql =  `CALL sp_ViewHerdOrHerds(${option},${id},${user})`;  
     await query(conn, sql).then(response => {res.status(200).json({payload:response})}).catch(e=>{res.status(400).json({status:400, message:e })}); 
   });
   
