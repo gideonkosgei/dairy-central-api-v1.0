@@ -1311,7 +1311,7 @@ async function sendCountyPraPerformanceReport(report_code) {
             report_1 = `     
         <div>
           <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
-          <caption>Tanzania PRA Performance Report</caption>         
+          <caption>DFA Performance Report</caption>         
           <thead>
           <tr>
             <th>COUNTY</th>
