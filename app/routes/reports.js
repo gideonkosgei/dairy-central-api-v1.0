@@ -104,7 +104,7 @@ router.get('/api/v1.0/comparative-data-quality-report', async (req, res) => {
 });
 
 
-router.get('/api/v1.0/graduation/:report_code/:report_option/:report_date', async (req, res) => {
+router.get('/api/v1.0/graduation-report/:report_code/:report_option/:report_date', async (req, res) => {
   try{
     const {report_code,report_option, report_date} = req.params;
     reporter.sendGraduationReport(report_code,report_option,report_date);
