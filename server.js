@@ -15,8 +15,6 @@ const compression = require('compression');
 const cron = require('node-cron');
 const reporter = require('./app/helpers/system-report');
 
-require('dotenv').config();
-
 // import Routes
 const animal = require('./app/routes/animal');
 const index = require('./app/routes/index');
