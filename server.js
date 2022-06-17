@@ -117,6 +117,7 @@ cron.schedule('05 4 1 * *', () => {reporter.sendPraPerformanceReport(6);}); //at
 cron.schedule('45 4 1 * *', () => {reporter.sendDataQualityReport(8);}); //at 7:45 am.
 cron.schedule('0 5 1 * *', () => {reporter.sendComparativeDataQualityReport(9);}); //at 8:00 am.
 cron.schedule('35 5 1 * *', () => {reporter.sendCountyPraPerformanceReport(11);}); //at 8:35 am.
+cron.schedule('0 6 1 * *', () => {reporter.sendGraduationReport(13,4,moment().subtract(1, 'months').format('YYYY-MM-DD'));});//at 9:00 am.
 
 
 

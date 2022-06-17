@@ -6,7 +6,7 @@ exports.sendMail = function(recipient_email,subject,salutation,message) {
     service: 'gmail',
     auth: {
       user: 'noreply.adgg@gmail.com',
-      pass: '!2sYstemmaster'
+      pass: 'rvpizpgabllbuwfo'
     }
 });
 

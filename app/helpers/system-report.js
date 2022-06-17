@@ -1836,18 +1836,40 @@ async function sendGraduationReport(report_code,report_option,report_date) {
         email_recipients += `${response[0][i].recipient};`
       }
     })
-      .catch(e => { console.log(console.log(e.message)) });
-
+      .catch(e => { console.log(console.log(e.message)) }); 
     
-    let subject = 'Animal Graduation Report';  
+      let subject = '';      
+      let title = '';
+      let subtitle = '';  
+      
+    if (report_option === '1' ||report_option === '2'){ // daily
+      subject = 'Daily Animal Graduation Report';      
+      title = 'Daily Animal Graduation Report';
+      subtitle = `<b>Reporting Date</b> : ${report_date.replace(/['"]+/g, '')}`; 
+    }  else if(report_option === '3'){ //weekly    
+      start = moment(report_date.replace(/['"]+/g, '')).startOf('isoWeek').format('YYYY-MM-DD');
+      end = moment(report_date.replace(/['"]+/g, '')).endOf('isoWeek').format('YYYY-MM-DD');
+      subject = 'Weekly Animal Graduation Report';
+      title = 'Weekly Animal Graduation Report';
+      subtitle = `<b>Reporting Period</b>: ${start} to ${end} `;
+    } else if (report_option === '4'){ // monthly
+      subject = 'Monthly Animal Graduation Report';
+      title = 'Monthly Animal Graduation Report';
+      subtitle = `<b>Reporting Period</b> : ${moment(report_date.replace(/['"]+/g, '')).format('MMMM YYYY')}</b> `;
+    }
 
     let report_0 = `
     <div>
-      Hello,    
+      <h3>${title}</h3>      
+      ${subtitle}
+      <br/><br/>
+      <i>****** This is a system generated report ******</i> 
       <br/>
     </div>
     <br/>
     `;
+
+    let report_99 = "<div> <i>****** End of Report ******</i></div> "
 
     /** Report Content */
     let report_1 = '';
@@ -1855,8 +1877,7 @@ async function sendGraduationReport(report_code,report_option,report_date) {
     /** check if there are any recipients to the email */
     if (email_recipients.length > 0) {
       /** Report Content */
-      const sql1 = `CALL sp_graduation_automatic_processor(${report_option,report_date})`;
-      console.log(` report_option:${report_option}  report_date: ${report_date}`)
+      const sql1 = `CALL sp_graduation_automatic_processor(${report_option},${report_date})`;
       await query(conn, sql1)
         .then(response => {
           if (response[0].length > 0) {
@@ -1865,14 +1886,13 @@ async function sendGraduationReport(report_code,report_option,report_date) {
               rpt_rows += `            
               <tr>
                 <td>${!response[0][i].country ? "" : response[0][i].country.toLocaleString()}</td>
-                <td>${!response[0][i].farm ? "" : response[0][i].farm.toLocaleString()}</td>
-                <td>${!response[0][i].animal_id ? "" : response[0][i].animal_id.toLocaleString()}</td>
-                <td>${!response[0][i].tag_id ? "" : moment(response[0][i].tag_id).toLocaleString()}</td>
-                <td>${!response[0][i].birthdate ? "" : response[0][i].birthdate.toLocaleString()}</td>
-                <td>${!response[0][i].pre_graduation_animal_type ? 0 : response[0][i].pre_graduation_animal_type.toLocaleString()}</td>
-                <td>${!response[0][i].new_tag_id ? "" : response[0][i].new_tag_id.toLocaleString()}</td>
+                <td>${!response[0][i].farm ? "" : response[0][i].farm.toLocaleString()}</td>              
+                <td>${!response[0][i].tag_id ? "" : response[0][i].tag_id.toLocaleString()}</td>
+                <td>${!response[0][i].birthdate ? "" : moment(response[0][i].birthdate).format('YYYY-MM-DD')}</td>
+                <td>${!response[0][i].graduation_date ? "" : moment(response[0][i].graduation_date).format('YYYY-MM-DD')}</td>
+                <td>${!response[0][i].pre_graduation_animal_type ? 0 : response[0][i].pre_graduation_animal_type.toLocaleString()}</td>               
                 <td>${!response[0][i].post_graduation_animal_type ? "" : response[0][i].post_graduation_animal_type.toLocaleString()}</td>
-                <td>${!response[0][i].graduation_date ? "" : response[0][i].graduation_date.format('YYYY-MM-DD')}</td>
+               
               </tr>`;
             }
             							
@@ -1882,17 +1902,16 @@ async function sendGraduationReport(report_code,report_option,report_date) {
           The table below contains the animals that have been graduated.
           
           <br/><br/>
-          <table  border='1' cellpadding="7" style='border-collapse:collapse;'>                  
+          <table  border='1' cellpadding='7' style='border-collapse:collapse;' >                      
           <thead>         
           <tr>
             <th>COUNTRY</th>
-            <th>FARM</th>
-            <th>ANIMAL ID</th>
+            <th>FARM</th>           
             <th>TAG ID</th>
-            <th>BIRTH DATE</th>
+            <th>BIRTH OF DATE</th>
             <th>GRADUATION DATE</th>    
-            <th>PRE-GRADUATION TYPE</th>   
-            <th>PRE-GRADUATION TYPE</th>           
+            <th>PRE-GRADUATION </th>   
+            <th>POST-GRADUATION </th>           
           </tr>
           </thead>
           <tbody>
@@ -1912,10 +1931,12 @@ async function sendGraduationReport(report_code,report_option,report_date) {
             <div>
              There were no candidates for graduation.<br/>                       
             </div>
+            <br/>  
+            <br/>
         `;
       }
 
-      let reports = report_0 + report_1;
+      let reports = report_0 + report_1 + report_99;
       mailer.sendMail(email_recipients, subject, '', reports);
       conn.end();
     }
