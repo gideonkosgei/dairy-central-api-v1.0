@@ -1821,12 +1821,120 @@ async function sendComparativeDataQualityReport(report_code) {
   }
 }
 
+
+async function sendGraduationReport(report_code,report_option,report_date) {
+
+  try {
+    
+    const conn = await connection(dbConfig).catch(e => { return e; });
+
+    /** Get recipients */
+    let email_recipients = '';
+    const sql_0 = `CALL sp_system_reports_recipients(${report_code})`;
+    await query(conn, sql_0).then(response => {
+      for (let i = 0; i < response[0].length; i++) {
+        email_recipients += `${response[0][i].recipient};`
+      }
+    })
+      .catch(e => { console.log(console.log(e.message)) });
+
+    
+    let subject = 'Animal Graduation Report'
+    let run_date = moment().subtract(2, 'days').format('YYYY-MM-DD');
+
+    let report_0 = `
+    <div>
+      Hello,    
+      <br/>
+    </div>
+    <br/>
+    `;
+
+    /** Report Content */
+    let report_1 = '';
+
+    /** check if there are any recipients to the email */
+    if (email_recipients.length > 0) {
+      /** Report Content */
+      const sql1 = `CALL sp_graduation_automatic_processor(${report_option,run_date})`;
+      await query(conn, sql1)
+        .then(response => {
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `            
+              <tr>
+                <td>${!response[0][i].country ? "" : response[0][i].country.toLocaleString()}</td>
+                <td>${!response[0][i].farm ? "" : response[0][i].farm.toLocaleString()}</td>
+                <td>${!response[0][i].animal_id ? "" : response[0][i].animal_id.toLocaleString()}</td>
+                <td>${!response[0][i].tag_id ? "" : moment(response[0][i].tag_id).toLocaleString()}</td>
+                <td>${!response[0][i].birthdate ? "" : response[0][i].birthdate.toLocaleString()}</td>
+                <td>${!response[0][i].pre_graduation_animal_type ? 0 : response[0][i].pre_graduation_animal_type.toLocaleString()}</td>
+                <td>${!response[0][i].new_tag_id ? "" : response[0][i].new_tag_id.toLocaleString()}</td>
+                <td>${!response[0][i].post_graduation_animal_type ? "" : response[0][i].post_graduation_animal_type.toLocaleString()}</td>
+                <td>${!response[0][i].graduation_date ? "" : response[0][i].graduation_date.format('YYYY-MM-DD')}</td>
+              </tr>`;
+            }
+            							
+
+            report_1 = `     
+        <div>
+          The table below contains the animals that have been graduated.
+          
+          <br/><br/>
+          <table  border='1' cellpadding="7" style='border-collapse:collapse;'>                  
+          <thead>         
+          <tr>
+            <th>COUNTRY</th>
+            <th>FARM</th>
+            <th>ANIMAL ID</th>
+            <th>TAG ID</th>
+            <th>BIRTH DATE</th>
+            <th>GRADUATION DATE</th>    
+            <th>PRE-GRADUATION TYPE</th>   
+            <th>PRE-GRADUATION TYPE</th>           
+          </tr>
+          </thead>
+          <tbody>
+          ${rpt_rows}
+          </tbody>
+          </table>  
+        </div>  
+        <br/>  
+        <br/>          
+      `;
+          }
+        })
+        .catch(e => { console.log(console.log(e.message)) });
+
+      if (report_1 === "") {
+        report_1 = `
+            <div>
+             There were no candidates for graduation.<br/>                       
+            </div>
+        `;
+      }
+
+      let reports = report_0 + report_1;
+      mailer.sendMail(email_recipients, subject, '', reports);
+      conn.end();
+    }
+    console.log('success');
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
 module.exports.sendReport = sendReport;
 module.exports.sendPraPerformanceReport = sendPraPerformanceReport;
 module.exports.sendCountyPraPerformanceReport = sendCountyPraPerformanceReport;
 module.exports.sendTagIdUnificationReport = sendTagIdUnificationReport;
 module.exports.sendDataQualityReport = sendDataQualityReport;
 module.exports.sendComparativeDataQualityReport = sendComparativeDataQualityReport;
+module.exports.sendGraduationReport = sendGraduationReport;
+
+
 
 
 

@@ -15,6 +15,8 @@ const compression = require('compression');
 const cron = require('node-cron');
 const reporter = require('./app/helpers/system-report');
 
+require('dotenv').config();
+
 // import Routes
 const animal = require('./app/routes/animal');
 const index = require('./app/routes/index');
@@ -100,11 +102,14 @@ app.use('/', weather);
 cron.schedule('0 3 * * 1-5', () => {reporter.sendReport(1);});//at 6:00 am.
 cron.schedule('05 3 * * 1-5', () => {reporter.sendPraPerformanceReport(4);});//at 6:05 am.
 cron.schedule('30 4 * * 1-5', () => {reporter.sendTagIdUnificationReport(7);});//at 7:30 am.
+cron.schedule('45 4 * * 1-5', () => {reporter.sendGraduationReport(12,1,moment().format('YYYY-MM-DD'));});//at 7:45 am.
+
 
 // Schedule a weekly report task to run every Monday 
 cron.schedule('30 3 * * 1', () => {reporter.sendReport(2);});// at 6:30 am.
 cron.schedule('35 3 * * 1', () => {reporter.sendPraPerformanceReport(5);});// at 6:35 am.
 cron.schedule('30 5 * * 1', () => {reporter.sendCountyPraPerformanceReport(10);});// at 8:30 am.
+cron.schedule('45 5 * * 1', () => {reporter.sendGraduationReport(13,3,moment().subtract(2, 'days').format('YYYY-MM-DD'));});//at 8:45 am.
 
 
 
