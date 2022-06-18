@@ -95,7 +95,7 @@ router.post('/api/v1.0/batches/upload', async (req, res) => {
 
     const sql = `CALL sp_create_batch_upload(${batch_type},${org_id},${created_by},${JSON.stringify(uuid)},${JSON.stringify(jString)})`;
     await query(conn, sql).then(
-      response => {       
+      response => {
         res.status(200).json({ status: response[0][0].status, message: response[0][0].message })
       })
       .catch(e => { res.status(400).json({ status: 400, message: e }) });
@@ -205,6 +205,7 @@ router.put('/api/v1.0/batches/animal/modify-and-revalidate', async (req, res) =>
       tag_id,
       tag_prefix,
       tag_sequence,
+      herd_id,
       remove
     } = req.body;
 
@@ -241,10 +242,11 @@ router.put('/api/v1.0/batches/animal/modify-and-revalidate', async (req, res) =>
                                                                 ${JSON.stringify(tag_prefix)},
                                                                   ${JSON.stringify(tag_sequence)},  
                                                                     ${animal_type_id},
+                                                                    ${herd_id},
                                                                       ${remove}
       )`;
-    
-  
+
+
     await query(conn, sql)
       .then(
         response => {
