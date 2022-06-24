@@ -1201,7 +1201,17 @@ async function sendPraPerformanceReport(report_code) {
         })
         .catch(e => { console.log(console.log(e.message)) });
 
+        // if no activity reported. Dont send a blank report . At least send something
+        if (report_1 === "" || report_2 === "" || report_2 === "") {
 
+          report_1 = `
+              <div>
+               There is no activity during the period under review to report.<br/>                       
+              </div>
+              <br/>  
+              <br/>
+          `;
+        }
 
 
 
@@ -1448,7 +1458,6 @@ async function sendTagIdUnificationReport(report_code) {
     console.log(error.message);
   }
 }
-
 
 
 async function sendDataQualityReport(report_code) {
