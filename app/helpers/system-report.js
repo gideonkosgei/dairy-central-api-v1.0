@@ -1524,7 +1524,7 @@ async function sendDataQualityReport(report_code) {
       /** Report Content */
 
       /** report 1 : Global Report */
-      const sql1 = `CALL sp_rpt_data_quality(0,0,0)`;
+      const sql1 = `CALL sp_rpt_data_quality(0,0,0,${last_month_start_date})`;
       await query(conn, sql1)
         .then(response => {
           if (response[0].length > 0) {
@@ -1564,7 +1564,7 @@ async function sendDataQualityReport(report_code) {
         .catch(e => { console.log(console.log(e.message)) });
 
       /** report 3 : Country Report */
-      const sql2 = `CALL sp_rpt_data_quality(0,1,0)`;
+      const sql2 = `CALL sp_rpt_data_quality(0,1,0,${last_month_start_date})`;
       await query(conn, sql2)
         .then(response => {
           if (response[0].length > 0) {
@@ -1635,7 +1635,7 @@ async function sendDataQualityReport(report_code) {
 async function sendComparativeDataQualityReport(report_code) {
 
   try {
-
+    
     const conn = await connection(dbConfig).catch(e => { return e; });
 
     /** Get recipients */
@@ -1688,8 +1688,7 @@ async function sendComparativeDataQualityReport(report_code) {
       The report tracks the monthly progression of data quality error rate  
       <br/><br/>
     </div>
-    <br/>
-    
+    <br/>    
     `;
 
 
@@ -1818,7 +1817,6 @@ async function sendComparativeDataQualityReport(report_code) {
         })
         .catch(e => { console.log(console.log(e.message)) });
 
-
       let reports = title_1 + title_2 + report_description + report_1 + title_3 + report_2 + title_4;
       mailer.sendMail(email_recipients, subject, '', reports);
       conn.end();
@@ -1829,7 +1827,6 @@ async function sendComparativeDataQualityReport(report_code) {
 
   }
 }
-
 
 async function sendGraduationReport(report_code,report_option,report_date) {
 
