@@ -1830,10 +1830,8 @@ async function sendComparativeDataQualityReport(report_code) {
 
 async function sendGraduationReport(report_code,report_option,report_date) {
 
-  try {
-    
+  try {    
     const conn = await connection(dbConfig).catch(e => { return e; });
-
     /** Get recipients */
     let email_recipients = '';
     const sql_0 = `CALL sp_system_reports_recipients(${report_code})`;
@@ -1848,17 +1846,17 @@ async function sendGraduationReport(report_code,report_option,report_date) {
       let title = '';
       let subtitle = '';  
       
-    if (report_option === '1' ||report_option === '2'){ // daily
+    if (report_option === 1 ||report_option === 2){ // daily
       subject = 'Daily Animal Graduation Report';      
       title = 'Daily Animal Graduation Report';
       subtitle = `<b>Reporting Date</b> : ${report_date.replace(/['"]+/g, '')}`; 
-    }  else if(report_option === '3'){ //weekly    
+    }  else if(report_option === 3){ //weekly    
       start = moment(report_date.replace(/['"]+/g, '')).startOf('isoWeek').format('YYYY-MM-DD');
       end = moment(report_date.replace(/['"]+/g, '')).endOf('isoWeek').format('YYYY-MM-DD');
       subject = 'Weekly Animal Graduation Report';
       title = 'Weekly Animal Graduation Report';
       subtitle = `<b>Reporting Period</b>: ${start} to ${end} `;
-    } else if (report_option === '4'){ // monthly
+    } else if (report_option === 4){ // monthly
       subject = 'Monthly Animal Graduation Report';
       title = 'Monthly Animal Graduation Report';
       subtitle = `<b>Reporting Period</b> : ${moment(report_date.replace(/['"]+/g, '')).format('MMMM YYYY')}</b> `;
