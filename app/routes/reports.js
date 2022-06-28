@@ -105,8 +105,7 @@ router.get('/api/v1.0/comparative-data-quality-report', async (req, res) => {
 
 
 router.get('/api/v1.0/graduation-report/:report_code/:report_option/:report_date', async (req, res) => {
-  try{
-    console.lo
+  try{  
     const {report_code,report_option, report_date} = req.params;   
     reporter.sendGraduationReport(parseInt(report_code),parseInt(report_option),report_date);
     res.status(200).json({ status: 200, message: "success" });
@@ -114,10 +113,5 @@ router.get('/api/v1.0/graduation-report/:report_code/:report_option/:report_date
     res.send({ status: 0, message: `system error! ${error.message}` })
   }
 });
-
-
-
-
-
 
 module.exports = router

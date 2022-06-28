@@ -1830,7 +1830,8 @@ async function sendComparativeDataQualityReport(report_code) {
 
 async function sendGraduationReport(report_code,report_option,report_date) {
 
-  try {    
+  try {  
+    
     const conn = await connection(dbConfig).catch(e => { return e; });
     /** Get recipients */
     let email_recipients = '';
@@ -1881,7 +1882,9 @@ async function sendGraduationReport(report_code,report_option,report_date) {
     /** check if there are any recipients to the email */
     if (email_recipients.length > 0) {
       /** Report Content */
-      const sql1 = `CALL sp_graduation_automatic_processor(${report_option},${report_date})`;
+      let reporting_date = JSON.stringify(report_date);
+      const sql1 = `CALL sp_graduation_automatic_processor(${report_option},${reporting_date})`;
+      console.log(sql1);
       await query(conn, sql1)
         .then(response => {
           if (response[0].length > 0) {

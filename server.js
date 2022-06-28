@@ -13,6 +13,7 @@ const Strategy = require('passport-http').BasicStrategy;
 const key_secret = require('./app/helpers/db-get-api-keys');
 const compression = require('compression');
 const cron = require('node-cron');
+const moment = require('moment');
 const reporter = require('./app/helpers/system-report');
 
 // import Routes
@@ -102,7 +103,6 @@ cron.schedule('05 3 * * 1-5', () => {reporter.sendPraPerformanceReport(4);});//a
 cron.schedule('30 4 * * 1-5', () => {reporter.sendTagIdUnificationReport(7);});//at 7:30 am.
 cron.schedule('45 1 * * 1-5', () => {reporter.sendGraduationReport(12,1,moment().format('YYYY-MM-DD'));});//at 4:45 am.
 cron.schedule('45 4 * * 1-5', () => {reporter.sendGraduationReport(12,2,moment().format('YYYY-MM-DD'));});//at 7:45 am.
-
 
 // Schedule a weekly report task to run every Monday 
 cron.schedule('30 3 * * 1', () => {reporter.sendReport(2);});// at 6:30 am.
