@@ -1944,7 +1944,9 @@ async function sendGraduationReport(report_code,report_option,report_date) {
       }
 
       let reports = report_0 + report_1 + report_99;
-      mailer.sendMail(email_recipients, subject, '', reports);
+      if (report_option !== 1) { // do no send email if the report option is 1. 
+        mailer.sendMail(email_recipients, subject, '', reports);
+      }     
       conn.end();
     }
     console.log('success');
