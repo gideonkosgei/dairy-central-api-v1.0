@@ -2,13 +2,11 @@
 # dependencies
 /node_modules
 
-
-
 # misc
 /log
+.env
+package-lock.json
 #/app/config/dbConfig.js
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-.env
