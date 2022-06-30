@@ -10,6 +10,8 @@ const path = require('path');
 const rfs = require('rotating-file-stream') ;
 const passport = require('passport');
 const Strategy = require('passport-http').BasicStrategy;
+const dotenv = require('dotenv');
+
 const key_secret = require('./app/helpers/db-get-api-keys');
 const compression = require('compression');
 const cron = require('node-cron');
@@ -39,6 +41,8 @@ const graduation = require('./app/routes/graduation');
 const background_processes = require('./app/routes/background_processes');
 const reports = require('./app/routes/reports');
 const weather = require('./app/routes/weather');
+
+dotenv.config();
 
 
 passport.use(new Strategy(
@@ -123,7 +127,7 @@ cron.schedule('0 6 1 * *', () => {reporter.sendGraduationReport(13,4,moment().su
 
 
 
-const PORT = process.env.PORT || 8080; // set port, listen for requests
+const PORT = process.env.PORT; // set port, listen for requests
 const IP = '127.0.0.1'
 app.listen(PORT,IP, () => {
   console.log(`Server is running on port ${PORT}.`);
