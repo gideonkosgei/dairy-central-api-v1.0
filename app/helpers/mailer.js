@@ -1,17 +1,22 @@
 const nodemailer = require("nodemailer");
+const dotenv = require('dotenv');
+dotenv.config();
+
+
 
 exports.sendMail = function(recipient_email,subject,salutation,message) {
-
+  
   var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'noreply.adgg@gmail.com',
-      pass: 'rvpizpgabllbuwfo'
+      user: process.env.MAILER_USER_ACCOUNT,
+      pass: process.env.MAILER_PASSWORD
     }
 });
 
+
 var mailOptions = {
-    from: 'noreply.adgg@gmail.com',// sender address
+    from: process.env.MAILER_USER_ACCOUNT,// sender address
     to: recipient_email, // list of receivers
     subject: subject, // Subject line
     text: '',
@@ -25,6 +30,7 @@ var mailOptions = {
     </p>
     `
 };
+
 
 transporter.sendMail(mailOptions, function(error, info){
   if (error)

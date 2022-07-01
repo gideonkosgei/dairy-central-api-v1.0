@@ -1879,12 +1879,13 @@ async function sendGraduationReport(report_code,report_option,report_date) {
     /** Report Content */
     let report_1 = '';
 
+    
     /** check if there are any recipients to the email */
     if (email_recipients.length > 0) {
       /** Report Content */
-      let reporting_date = JSON.stringify(report_date);
-      const sql1 = `CALL sp_graduation_automatic_processor(${report_option},${reporting_date})`;
-      console.log(sql1);
+     
+      const sql1 = `CALL sp_graduation_automatic_processor(${report_option},${report_date})`;
+     
       await query(conn, sql1)
         .then(response => {
           if (response[0].length > 0) {
@@ -1898,8 +1899,7 @@ async function sendGraduationReport(report_code,report_option,report_date) {
                 <td>${!response[0][i].birthdate ? "" : moment(response[0][i].birthdate).format('YYYY-MM-DD')}</td>
                 <td>${!response[0][i].graduation_date ? "" : moment(response[0][i].graduation_date).format('YYYY-MM-DD')}</td>
                 <td>${!response[0][i].pre_graduation_animal_type ? 0 : response[0][i].pre_graduation_animal_type.toLocaleString()}</td>               
-                <td>${!response[0][i].post_graduation_animal_type ? "" : response[0][i].post_graduation_animal_type.toLocaleString()}</td>
-               
+                <td>${!response[0][i].post_graduation_animal_type ? "" : response[0][i].post_graduation_animal_type.toLocaleString()}</td>               
               </tr>`;
             }
             							
@@ -1943,7 +1943,7 @@ async function sendGraduationReport(report_code,report_option,report_date) {
         `;
       }
 
-      let reports = report_0 + report_1 + report_99;       
+      let reports = report_0 + report_1 + report_99;
       mailer.sendMail(email_recipients, subject, '', reports);      
       conn.end();
       
