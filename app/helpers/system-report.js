@@ -1033,16 +1033,14 @@ async function sendPraPerformanceReport(report_code) {
                 <td>${!response[0][i].Animal_Registration ? 0 : response[0][i].Animal_Registration.toLocaleString()}</td>
                 <td>${!response[0][i].Farmer_Registration ? 0 : response[0][i].Farmer_Registration.toLocaleString()}</td>
                 <td>${!response[0][i].Calving ? 0 : response[0][i].Calving.toLocaleString()}</td>
-                <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>
-                <td>${!response[0][i].Feeding ? 0 : response[0][i].Feeding.toLocaleString()}</td>
+                <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>               
                 <td>${!response[0][i].Hair_Sampling ? 0 : response[0][i].Hair_Sampling.toLocaleString()}</td>
                 <td>${!response[0][i].Hoof_Health ? 0 : response[0][i].Hoof_Health.toLocaleString()}</td>
                 <td>${!response[0][i].Injury ? 0 : response[0][i].Injury.toLocaleString()}</td>
                 <td>${!response[0][i].Insemination ? 0 : response[0][i].Insemination.toLocaleString()}</td>      
                 <td>${!response[0][i].Milking ? 0 : response[0][i].Milking.toLocaleString()}</td>      
                 <td>${!response[0][i].Parasite_Infection ? 0 : response[0][i].Parasite_Infection.toLocaleString()}</td>      
-                <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td>   
-                <td>${!response[0][i].Total ? 0 : response[0][i].Total.toLocaleString()}</td>          
+                <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td>                          
               </tr>`;
             }
 
@@ -1056,16 +1054,14 @@ async function sendPraPerformanceReport(report_code) {
             <th>ANIMAL-REGISTRATION</th>
             <th>FARM-REGISTRATION</th>
             <th>CALVING</th>
-            <th>EXITS</th>
-            <th>FEEDING</th>
+            <th>EXITS</th>            
             <th>HAIR-SAMPLING</th>
             <th>HOOF-HEALTH</th>
             <th>INJURY</th>
             <th>INSEMINATION</th>
             <th>MILKING</th>
             <th>PARASITE-INFECTION</th>
-            <th>WEIGHT</th>
-            <th>TOTAL</th>
+            <th>WEIGHT</th>           
           </tr>
           </thead>
           <tbody>
@@ -1094,16 +1090,14 @@ async function sendPraPerformanceReport(report_code) {
             <td>${!response[0][i].Animal_Registration ? 0 : response[0][i].Animal_Registration.toLocaleString()}</td>
             <td>${!response[0][i].Farmer_Registration ? 0 : response[0][i].Farmer_Registration.toLocaleString()}</td>
             <td>${!response[0][i].Calving ? 0 : response[0][i].Calving.toLocaleString()}</td>
-            <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>
-            <td>${!response[0][i].Feeding ? 0 : response[0][i].Feeding.toLocaleString()}</td>
+            <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>           
             <td>${!response[0][i].Hair_Sampling ? 0 : response[0][i].Hair_Sampling.toLocaleString()}</td>
             <td>${!response[0][i].Hoof_Health ? 0 : response[0][i].Hoof_Health.toLocaleString()}</td>
             <td>${!response[0][i].Injury ? 0 : response[0][i].Injury.toLocaleString()}</td>
             <td>${!response[0][i].Insemination ? 0 : response[0][i].Insemination.toLocaleString()}</td>      
             <td>${!response[0][i].Milking ? 0 : response[0][i].Milking.toLocaleString()}</td>      
             <td>${!response[0][i].Parasite_Infection ? 0 : response[0][i].Parasite_Infection.toLocaleString()}</td>      
-            <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td>   
-            <td>${!response[0][i].Total ? 0 : response[0][i].Total.toLocaleString()}</td>  
+            <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td>               
           </tr>`;
             }
             report_2 = `     
@@ -1117,15 +1111,13 @@ async function sendPraPerformanceReport(report_code) {
                   <th>FARM-REGISTRATION</th>
                   <th>CALVING</th>
                   <th>EXITS</th>
-                  <th>FEEDING</th>
                   <th>HAIR-SAMPLING</th>
                   <th>HOOF-HEALTH</th>
                   <th>INJURY</th>
                   <th>INSEMINATION</th>
                   <th>MILKING</th>
                   <th>PARASITE-INFECTION</th>
-                  <th>WEIGHT</th>
-                  <th>TOTAL</th>
+                  <th>WEIGHT</th>                 
                 </tr>
                 </thead>
                 <tbody>
@@ -1154,16 +1146,14 @@ async function sendPraPerformanceReport(report_code) {
               <td>${!response[0][i].Animal_Registration ? 0 : response[0][i].Animal_Registration.toLocaleString()}</td>
               <td>${!response[0][i].Farmer_Registration ? 0 : response[0][i].Farmer_Registration.toLocaleString()}</td>
               <td>${!response[0][i].Calving ? 0 : response[0][i].Calving.toLocaleString()}</td>
-              <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>
-              <td>${!response[0][i].Feeding ? 0 : response[0][i].Feeding.toLocaleString()}</td>
+              <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>              
               <td>${!response[0][i].Hair_Sampling ? 0 : response[0][i].Hair_Sampling.toLocaleString()}</td>
               <td>${!response[0][i].Hoof_Health ? 0 : response[0][i].Hoof_Health.toLocaleString()}</td>
               <td>${!response[0][i].Injury ? 0 : response[0][i].Injury.toLocaleString()}</td>
               <td>${!response[0][i].Insemination ? 0 : response[0][i].Insemination.toLocaleString()}</td>      
               <td>${!response[0][i].Milking ? 0 : response[0][i].Milking.toLocaleString()}</td>      
               <td>${!response[0][i].Parasite_Infection ? 0 : response[0][i].Parasite_Infection.toLocaleString()}</td>      
-              <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td>   
-              <td>${!response[0][i].Total ? 0 : response[0][i].Total.toLocaleString()}</td>   
+              <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td>                   
             </tr>`;
             }
 
@@ -1177,16 +1167,14 @@ async function sendPraPerformanceReport(report_code) {
                     <th>ANIMAL-REGISTRATION</th>
                     <th>FARM-REGISTRATION</th>
                     <th>CALVING</th>
-                    <th>EXITS</th>
-                    <th>FEEDING</th>
+                    <th>EXITS</th>                   
                     <th>HAIR-SAMPLING</th>
                     <th>HOOF-HEALTH</th>
                     <th>INJURY</th>
                     <th>INSEMINATION</th>
                     <th>MILKING</th>
                     <th>PARASITE-INFECTION</th>
-                    <th>WEIGHT</th>
-                    <th>TOTAL</th>
+                    <th>WEIGHT</th>                   
                   </tr>
                   </thead>
                   <tbody>
@@ -1305,16 +1293,14 @@ async function sendCountyPraPerformanceReport(report_code) {
                 <td>${!response[0][i].Animal_Registration ? 0 : response[0][i].Animal_Registration.toLocaleString()}</td>
                 <td>${!response[0][i].Farmer_Registration ? 0 : response[0][i].Farmer_Registration.toLocaleString()}</td>
                 <td>${!response[0][i].Calving ? 0 : response[0][i].Calving.toLocaleString()}</td>
-                <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>
-                <td>${!response[0][i].Feeding ? 0 : response[0][i].Feeding.toLocaleString()}</td>
+                <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>               
                 <td>${!response[0][i].Hair_Sampling ? 0 : response[0][i].Hair_Sampling.toLocaleString()}</td>
                 <td>${!response[0][i].Hoof_Health ? 0 : response[0][i].Hoof_Health.toLocaleString()}</td>
                 <td>${!response[0][i].Injury ? 0 : response[0][i].Injury.toLocaleString()}</td>
                 <td>${!response[0][i].Insemination ? 0 : response[0][i].Insemination.toLocaleString()}</td>      
                 <td>${!response[0][i].Milking ? 0 : response[0][i].Milking.toLocaleString()}</td>      
                 <td>${!response[0][i].Parasite_Infection ? 0 : response[0][i].Parasite_Infection.toLocaleString()}</td>      
-                <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td>   
-                <td>${!response[0][i].Total ? 0 : response[0][i].Total.toLocaleString()}</td>          
+                <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td> 
               </tr>`;
             }
 
@@ -1329,16 +1315,14 @@ async function sendCountyPraPerformanceReport(report_code) {
             <th>ANIMAL-REGISTRATION</th>
             <th>FARM-REGISTRATION</th>
             <th>CALVING</th>
-            <th>EXITS</th>
-            <th>FEEDING</th>
+            <th>EXITS</th>            
             <th>HAIR-SAMPLING</th>
             <th>HOOF-HEALTH</th>
             <th>INJURY</th>
             <th>INSEMINATION</th>
             <th>MILKING</th>
             <th>PARASITE-INFECTION</th>
-            <th>WEIGHT</th>
-            <th>TOTAL</th>
+            <th>WEIGHT</th>          
           </tr>
           </thead>
           <tbody>
@@ -1885,7 +1869,6 @@ async function sendGraduationReport(report_code,report_option,report_date) {
       /** Report Content */
      
       const sql1 = `CALL sp_graduation_automatic_processor(${report_option},${report_date})`;
-     
       await query(conn, sql1)
         .then(response => {
           if (response[0].length > 0) {
