@@ -1189,24 +1189,22 @@ async function sendPraPerformanceReport(report_code) {
         })
         .catch(e => { console.log(console.log(e.message)) });
 
-        // if no activity reported. Dont send a blank report . At least send something
+        // if no activity reported. Dont send a blank report . At least send something -> this is depracted
         if (report_1 === "" || report_2 === "" || report_2 === "") {
-
           report_1 = `
               <div>
                There is no activity during the period under review to report.<br/>                       
               </div>
               <br/>  
               <br/>
-          `;
+          `; 
+        } else {
+          let reports = report_0 + report_1 + report_2 + report_3 + report_99;
+          mailer.sendMail(email_recipients, subject, '', reports); // send report only when their is activity.
+
         }
-
-
-
-      let reports = report_0 + report_1 + report_2 + report_3 + report_99;
-      mailer.sendMail(email_recipients, subject, '', reports);
-      conn.end();
-    }
+      
+      conn.end();    }
     console.log('success');
   } catch (error) {
     console.log(error.message);
@@ -1337,8 +1335,11 @@ async function sendCountyPraPerformanceReport(report_code) {
         })
         .catch(e => { console.log(console.log(e.message)) });
 
-      let reports = report_0 + report_1 + report_99;
-      mailer.sendMail(email_recipients, subject, '', reports);
+      if (report_1 !== ''){
+        let reports = report_0 + report_1 + report_99;
+        mailer.sendMail(email_recipients, subject, '', reports);
+      }
+      
       conn.end();
     }
     console.log('success');
@@ -1604,8 +1605,12 @@ async function sendDataQualityReport(report_code) {
         .catch(e => { console.log(console.log(e.message)) });
 
       //console.log(report_3);
-      let reports = title_1 + title_2 + report_1 + title_3 + report_3 + title_4;
-      mailer.sendMail(email_recipients, subject, '', reports);
+
+      if (report_1 !=="" || report_3 !== "" ){
+        let reports = title_1 + title_2 + report_1 + title_3 + report_3 + title_4;
+        mailer.sendMail(email_recipients, subject, '', reports);
+      }
+      
       conn.end();
     }
     console.log('success');
@@ -1800,9 +1805,12 @@ async function sendComparativeDataQualityReport(report_code) {
           }
         })
         .catch(e => { console.log(console.log(e.message)) });
+      
 
-      let reports = title_1 + title_2 + report_description + report_1 + title_3 + report_2 + title_4;
-      mailer.sendMail(email_recipients, subject, '', reports);
+      if(report_1 !=='' || report_2 !==''){
+        let reports = title_1 + title_2 + report_description + report_1 + title_3 + report_2 + title_4;
+        mailer.sendMail(email_recipients, subject, '', reports);
+      }  
       conn.end();
     }
     console.log('success');
@@ -1916,7 +1924,7 @@ async function sendGraduationReport(report_code,report_option,report_date) {
         })
         .catch(e => { console.log(console.log(e.message)) });
 
-      if (report_1 === "") {
+      if (report_1 === "") { // deprecated
         report_1 = `
             <div>
              There were no candidates for graduation.<br/>                       
@@ -1924,12 +1932,12 @@ async function sendGraduationReport(report_code,report_option,report_date) {
             <br/>  
             <br/>
         `;
+      } else { // only send report when there are candidates for graduation
+        let reports = report_0 + report_1 + report_99;
+        mailer.sendMail(email_recipients, subject, '', reports);  
       }
-
-      let reports = report_0 + report_1 + report_99;
-      mailer.sendMail(email_recipients, subject, '', reports);      
-      conn.end();
-      
+         
+      conn.end();      
     }
     console.log('success');
   } catch (error) {
