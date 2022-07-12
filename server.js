@@ -100,28 +100,27 @@ app.use('/', reports);
 app.use('/', weather);
 
 
-/** NOTE: THE SERVER TIME IS 3 HOURS BEHIND */
-
+/** NOTE: DEFAULT TIMEZONE IS America/Sao_Paulo .IT IS 3 HOURS BEHIND */
 // Schedule daily tasks to run every day (Monday to Friday)
-cron.schedule('0 3 * * 1-5', () => {reporter.sendReport(1);});//at 6:00 am.
-cron.schedule('05 3 * * 1-5', () => {reporter.sendPraPerformanceReport(4);});//at 6:05 am.
-cron.schedule('30 4 * * 1-5', () => {reporter.sendTagIdUnificationReport(7);});//at 7:30 am.
-cron.schedule('45 4 * * 1-5', () => {reporter.sendGraduationReport(12,1,moment().format('YYYY-MM-DD'));});//at 7:45 am.
-cron.schedule('0 0 * * 1-5', () => {routines.RunBackgroundProcesses();});//at 3:00 am.
+cron.schedule('0 6 * * 1-5', () => {reporter.sendReport(1);},{scheduled: true,timezone: "Africa/Nairobi"});//at 6:00 am.
+cron.schedule('05 6 * * 1-5', () => {reporter.sendPraPerformanceReport(4);},{scheduled: true,timezone: "Africa/Nairobi"});//at 6:05 am.
+cron.schedule('30 7 * * 1-5', () => {reporter.sendTagIdUnificationReport(7);},{scheduled: true,timezone: "Africa/Nairobi"});//at 7:30 am.
+cron.schedule('45 7 * * 1-5', () => {reporter.sendGraduationReport(12,1,moment().format('YYYY-MM-DD'));},{scheduled: true,timezone: "Africa/Nairobi"});//at 7:45 am.
+cron.schedule('0 0 * * 1-5', () => {routines.RunBackgroundProcesses();},{scheduled: true,timezone: "Africa/Nairobi"});//at 3:00 am.
 
 // Schedule weekly tasks to run every Monday 
-cron.schedule('30 3 * * 1', () => {reporter.sendReport(2);});// at 6:30 am.
-cron.schedule('35 3 * * 1', () => {reporter.sendPraPerformanceReport(5);});// at 6:35 am.
-cron.schedule('30 5 * * 1', () => {reporter.sendCountyPraPerformanceReport(10);});// at 8:30 am.
-cron.schedule('45 5 * * 1', () => {reporter.sendGraduationReport(13,3,moment().subtract(2, 'days').format('YYYY-MM-DD'));});//at 8:45 am.
+cron.schedule('30 6 * * 1', () => {reporter.sendReport(2);},{scheduled: true,timezone: "Africa/Nairobi"});// at 6:30 am.
+cron.schedule('35 6 * * 1', () => {reporter.sendPraPerformanceReport(5);},{scheduled: true,timezone: "Africa/Nairobi"});// at 6:35 am.
+cron.schedule('30 8 * * 1', () => {reporter.sendCountyPraPerformanceReport(10);},{scheduled: true,timezone: "Africa/Nairobi"});// at 8:30 am.
+cron.schedule('45 8 * * 1', () => {reporter.sendGraduationReport(13,3,moment().subtract(2, 'days').format('YYYY-MM-DD'));},{scheduled: true,timezone: "Africa/Nairobi"});//at 8:45 am.
 
 // Schedule monthly tasks to run 1st day of the month 
-cron.schedule('0 4 1 * *', () => {reporter.sendReport(3);}); //at 7:00 am.
-cron.schedule('05 4 1 * *', () => {reporter.sendPraPerformanceReport(6);}); //at 7:05 am.
-cron.schedule('45 4 1 * *', () => {reporter.sendDataQualityReport(8);}); //at 7:45 am.
-cron.schedule('0 5 1 * *', () => {reporter.sendComparativeDataQualityReport(9);}); //at 8:00 am.
-cron.schedule('35 5 1 * *', () => {reporter.sendCountyPraPerformanceReport(11);}); //at 8:35 am.
-cron.schedule('0 6 1 * *', () => {reporter.sendGraduationReport(13,4,moment().subtract(1, 'months').format('YYYY-MM-DD'));});//at 9:00 am.
+cron.schedule('0 7 1 * *', () => {reporter.sendReport(3);},{scheduled: true,timezone: "Africa/Nairobi"}); //at 7:00 am.
+cron.schedule('05 7 1 * *', () => {reporter.sendPraPerformanceReport(6);},{scheduled: true,timezone: "Africa/Nairobi"}); //at 7:05 am.
+cron.schedule('45 7 1 * *', () => {reporter.sendDataQualityReport(8);},{scheduled: true,timezone: "Africa/Nairobi"}); //at 7:45 am.
+cron.schedule('0 8 1 * *', () => {reporter.sendComparativeDataQualityReport(9);},{scheduled: true,timezone: "Africa/Nairobi"}); //at 8:00 am.
+cron.schedule('35 8 1 * *', () => {reporter.sendCountyPraPerformanceReport(11);},{scheduled: true,timezone: "Africa/Nairobi"}); //at 8:35 am.
+cron.schedule('0 9 1 * *', () => {reporter.sendGraduationReport(13,4,moment().subtract(1, 'months').format('YYYY-MM-DD'));},{scheduled: true,timezone: "Africa/Nairobi"});//at 9:00 am.
 
 const PORT = process.env.PORT; // set port, listen for requests
 const IP = '127.0.0.1'
