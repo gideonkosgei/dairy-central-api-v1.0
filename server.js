@@ -17,6 +17,7 @@ const compression = require('compression');
 const cron = require('node-cron');
 const moment = require('moment');
 const reporter = require('./app/helpers/system-report');
+const routines = require('./app/helpers/routines');
 
 // import Routes
 const animal = require('./app/routes/animal');
@@ -101,19 +102,20 @@ app.use('/', weather);
 
 /** NOTE: THE SERVER TIME IS 3 HOURS BEHIND */
 
-// Schedule a daily report task to run every day (Monday to Friday)
+// Schedule daily tasks to run every day (Monday to Friday)
 cron.schedule('0 3 * * 1-5', () => {reporter.sendReport(1);});//at 6:00 am.
 cron.schedule('05 3 * * 1-5', () => {reporter.sendPraPerformanceReport(4);});//at 6:05 am.
 cron.schedule('30 4 * * 1-5', () => {reporter.sendTagIdUnificationReport(7);});//at 7:30 am.
 cron.schedule('45 4 * * 1-5', () => {reporter.sendGraduationReport(12,1,moment().format('YYYY-MM-DD'));});//at 7:45 am.
+cron.schedule('0 0 * * 1-5', () => {routines.RunBackgroundProcesses();});//at 3:00 am.
 
-// Schedule a weekly report task to run every Monday 
+// Schedule weekly tasks to run every Monday 
 cron.schedule('30 3 * * 1', () => {reporter.sendReport(2);});// at 6:30 am.
-cron.schedule('26 15 * * 1', () => {reporter.sendPraPerformanceReport(5);});// at 6:35 am.
+cron.schedule('35 3 * * 1', () => {reporter.sendPraPerformanceReport(5);});// at 6:35 am.
 cron.schedule('30 5 * * 1', () => {reporter.sendCountyPraPerformanceReport(10);});// at 8:30 am.
 cron.schedule('45 5 * * 1', () => {reporter.sendGraduationReport(13,3,moment().subtract(2, 'days').format('YYYY-MM-DD'));});//at 8:45 am.
 
-// Schedule a Monthly report task to run 1st day of the month 
+// Schedule monthly tasks to run 1st day of the month 
 cron.schedule('0 4 1 * *', () => {reporter.sendReport(3);}); //at 7:00 am.
 cron.schedule('05 4 1 * *', () => {reporter.sendPraPerformanceReport(6);}); //at 7:05 am.
 cron.schedule('45 4 1 * *', () => {reporter.sendDataQualityReport(8);}); //at 7:45 am.
