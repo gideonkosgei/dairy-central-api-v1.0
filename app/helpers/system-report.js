@@ -1875,8 +1875,8 @@ async function sendGraduationReport(report_code,report_option,report_date) {
     /** check if there are any recipients to the email */
     if (email_recipients.length > 0) {
       /** Report Content */
-     
-      const sql1 = `CALL sp_graduation_automatic_processor(${report_option},${report_date})`;
+      const sql1 = `CALL sp_graduation_automatic_processor(${report_option},${JSON.stringify(report_date)})`;
+      console.log(sql1);
       await query(conn, sql1)
         .then(response => {
           if (response[0].length > 0) {
