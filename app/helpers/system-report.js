@@ -878,23 +878,23 @@ async function sendReport(report_code) {
 
 
 
-       /** report 18 > Hair Sampling*/
-       const sql18 = `CALL sp_rpt_overall_summaries(${code_rpt18},${JSON.stringify(start)},${JSON.stringify(end)})`;
-       await query(conn, sql18)
-         .then(response => {
-           if (response[0].length > 0) {
-             let rpt_rows = '';
-             for (let i = 0; i < response[0].length; i++) {
-               rpt_rows += `
+      /** report 18 > Hair Sampling*/
+      const sql18 = `CALL sp_rpt_overall_summaries(${code_rpt18},${JSON.stringify(start)},${JSON.stringify(end)})`;
+      await query(conn, sql18)
+        .then(response => {
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
            <tr>
              <td>${!response[0][i].Country ? "N/A" : response[0][i].Country}</td>
              <td>${!response[0][i].Farms ? 0 : response[0][i].Farms.toLocaleString()}</td>
              <td>${!response[0][i].Animals ? 0 : response[0][i].Animals.toLocaleString()}</td>
              <td>${!response[0][i].Records ? 0 : response[0][i].Records.toLocaleString()}</td>
            </tr>`;
-             }
- 
-             report_18 = `     
+            }
+
+            report_18 = `     
                <div>
                  <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
                  <caption>A summary of Hair Sampling</caption>         
@@ -914,10 +914,10 @@ async function sendReport(report_code) {
                <br/>  
                <br/>           
              `;
-           }
-         })
-         .catch(e => { console.log(console.log(e.message)) });
-   
+          }
+        })
+        .catch(e => { console.log(console.log(e.message)) });
+
 
       let reports = report_0 + report_1 + report_2 + report_3 + report_4 + report_5 + report_6 + report_7 + report_8 + report_9 + report_10 + report_11 + report_12 + report_13 + report_14 + report_15 + report_16 + report_18 + report_99;
 
@@ -1008,6 +1008,11 @@ async function sendPraPerformanceReport(report_code) {
     let code_rpt1 = 10; // tanzania
     let code_rpt2 = 11; // kenya
     let code_rpt3 = 12; // Ethiopia
+    let code_rpt4 = 13; // Nigeria
+    let code_rpt5 = 14; // Zambia
+    let code_rpt6 = 15; // uganda
+    let code_rpt7 = 16; // Nepal
+
 
     /** Report Content */
     let report_1 = '';
@@ -1189,22 +1194,254 @@ async function sendPraPerformanceReport(report_code) {
         })
         .catch(e => { console.log(console.log(e.message)) });
 
-        // if no activity reported. Dont send a blank report . At least send something -> this is depracted
-        if (report_1 === "" || report_2 === "" || report_2 === "") {
-          report_1 = `
+
+      /** report 4 >  PRA Performance Nigeria */
+      const sql13 = `CALL sp_rpt_pra_performance(${code_rpt4},${JSON.stringify(start)},${JSON.stringify(end)})`;
+      await query(conn, sql13)
+        .then(response => {
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
+          <tr>
+            <td>${!response[0][i].PRA ? "N/A" : response[0][i].PRA}</td>
+            <td>${!response[0][i].Animal_Registration ? 0 : response[0][i].Animal_Registration.toLocaleString()}</td>
+            <td>${!response[0][i].Farmer_Registration ? 0 : response[0][i].Farmer_Registration.toLocaleString()}</td>
+            <td>${!response[0][i].Calving ? 0 : response[0][i].Calving.toLocaleString()}</td>
+            <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>           
+            <td>${!response[0][i].Hair_Sampling ? 0 : response[0][i].Hair_Sampling.toLocaleString()}</td>
+            <td>${!response[0][i].Hoof_Health ? 0 : response[0][i].Hoof_Health.toLocaleString()}</td>
+            <td>${!response[0][i].Injury ? 0 : response[0][i].Injury.toLocaleString()}</td>
+            <td>${!response[0][i].Insemination ? 0 : response[0][i].Insemination.toLocaleString()}</td>      
+            <td>${!response[0][i].Milking ? 0 : response[0][i].Milking.toLocaleString()}</td>      
+            <td>${!response[0][i].Parasite_Infection ? 0 : response[0][i].Parasite_Infection.toLocaleString()}</td>      
+            <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td>               
+          </tr>`;
+            }
+            report_2 = `     
+              <div>
+                <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
+                <caption>Nigeria PRA Performance Report</caption>         
+                <thead>
+                <tr>
+                  <th>PRA</th>
+                  <th>ANIMAL-REGISTRATION</th>
+                  <th>FARM-REGISTRATION</th>
+                  <th>CALVING</th>
+                  <th>EXITS</th>
+                  <th>HAIR-SAMPLING</th>
+                  <th>HOOF-HEALTH</th>
+                  <th>INJURY</th>
+                  <th>INSEMINATION</th>
+                  <th>MILKING</th>
+                  <th>PARASITE-INFECTION</th>
+                  <th>WEIGHT</th>                 
+                </tr>
+                </thead>
+                <tbody>
+                ${rpt_rows}
+                </tbody>
+                </table>  
+              </div> 
+              <br/>  
+              <br/>           
+            `;
+          }
+
+        })
+        .catch(e => { console.log(console.log(e.message)) });
+
+      /** report 5 >  PRA Performance Zambia */
+      const sql14 = `CALL sp_rpt_pra_performance(${code_rpt5},${JSON.stringify(start)},${JSON.stringify(end)})`;
+      await query(conn, sql14)
+        .then(response => {
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
+              <tr>
+                <td>${!response[0][i].PRA ? "N/A" : response[0][i].PRA}</td>
+                <td>${!response[0][i].Animal_Registration ? 0 : response[0][i].Animal_Registration.toLocaleString()}</td>
+                <td>${!response[0][i].Farmer_Registration ? 0 : response[0][i].Farmer_Registration.toLocaleString()}</td>
+                <td>${!response[0][i].Calving ? 0 : response[0][i].Calving.toLocaleString()}</td>
+                <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>           
+                <td>${!response[0][i].Hair_Sampling ? 0 : response[0][i].Hair_Sampling.toLocaleString()}</td>
+                <td>${!response[0][i].Hoof_Health ? 0 : response[0][i].Hoof_Health.toLocaleString()}</td>
+                <td>${!response[0][i].Injury ? 0 : response[0][i].Injury.toLocaleString()}</td>
+                <td>${!response[0][i].Insemination ? 0 : response[0][i].Insemination.toLocaleString()}</td>      
+                <td>${!response[0][i].Milking ? 0 : response[0][i].Milking.toLocaleString()}</td>      
+                <td>${!response[0][i].Parasite_Infection ? 0 : response[0][i].Parasite_Infection.toLocaleString()}</td>      
+                <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td>               
+              </tr>`;
+            }
+            report_2 = `     
+                  <div>
+                    <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
+                    <caption>Zambia PRA Performance Report</caption>         
+                    <thead>
+                    <tr>
+                      <th>PRA</th>
+                      <th>ANIMAL-REGISTRATION</th>
+                      <th>FARM-REGISTRATION</th>
+                      <th>CALVING</th>
+                      <th>EXITS</th>
+                      <th>HAIR-SAMPLING</th>
+                      <th>HOOF-HEALTH</th>
+                      <th>INJURY</th>
+                      <th>INSEMINATION</th>
+                      <th>MILKING</th>
+                      <th>PARASITE-INFECTION</th>
+                      <th>WEIGHT</th>                 
+                    </tr>
+                    </thead>
+                    <tbody>
+                    ${rpt_rows}
+                    </tbody>
+                    </table>  
+                  </div> 
+                  <br/>  
+                  <br/>           
+                `;
+          }
+
+        })
+        .catch(e => { console.log(console.log(e.message)) });
+
+
+      /** report 6 >  PRA Performance Uganda */
+      const sql15 = `CALL sp_rpt_pra_performance(${code_rpt6},${JSON.stringify(start)},${JSON.stringify(end)})`;
+      await query(conn, sql15)
+        .then(response => {
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
+              <tr>
+                <td>${!response[0][i].PRA ? "N/A" : response[0][i].PRA}</td>
+                <td>${!response[0][i].Animal_Registration ? 0 : response[0][i].Animal_Registration.toLocaleString()}</td>
+                <td>${!response[0][i].Farmer_Registration ? 0 : response[0][i].Farmer_Registration.toLocaleString()}</td>
+                <td>${!response[0][i].Calving ? 0 : response[0][i].Calving.toLocaleString()}</td>
+                <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>           
+                <td>${!response[0][i].Hair_Sampling ? 0 : response[0][i].Hair_Sampling.toLocaleString()}</td>
+                <td>${!response[0][i].Hoof_Health ? 0 : response[0][i].Hoof_Health.toLocaleString()}</td>
+                <td>${!response[0][i].Injury ? 0 : response[0][i].Injury.toLocaleString()}</td>
+                <td>${!response[0][i].Insemination ? 0 : response[0][i].Insemination.toLocaleString()}</td>      
+                <td>${!response[0][i].Milking ? 0 : response[0][i].Milking.toLocaleString()}</td>      
+                <td>${!response[0][i].Parasite_Infection ? 0 : response[0][i].Parasite_Infection.toLocaleString()}</td>      
+                <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td>               
+              </tr>`;
+            }
+            report_2 = `     
+                  <div>
+                    <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
+                    <caption>Uganda PRA Performance Report</caption>         
+                    <thead>
+                    <tr>
+                      <th>PRA</th>
+                      <th>ANIMAL-REGISTRATION</th>
+                      <th>FARM-REGISTRATION</th>
+                      <th>CALVING</th>
+                      <th>EXITS</th>
+                      <th>HAIR-SAMPLING</th>
+                      <th>HOOF-HEALTH</th>
+                      <th>INJURY</th>
+                      <th>INSEMINATION</th>
+                      <th>MILKING</th>
+                      <th>PARASITE-INFECTION</th>
+                      <th>WEIGHT</th>                 
+                    </tr>
+                    </thead>
+                    <tbody>
+                    ${rpt_rows}
+                    </tbody>
+                    </table>  
+                  </div> 
+                  <br/>  
+                  <br/>           
+                `;
+          }
+
+        })
+        .catch(e => { console.log(console.log(e.message)) });
+
+
+
+      /** report 6 >  PRA Performance Uganda */
+      const sql16 = `CALL sp_rpt_pra_performance(${code_rpt7},${JSON.stringify(start)},${JSON.stringify(end)})`;
+      await query(conn, sql16)
+        .then(response => {
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `
+              <tr>
+                <td>${!response[0][i].PRA ? "N/A" : response[0][i].PRA}</td>
+                <td>${!response[0][i].Animal_Registration ? 0 : response[0][i].Animal_Registration.toLocaleString()}</td>
+                <td>${!response[0][i].Farmer_Registration ? 0 : response[0][i].Farmer_Registration.toLocaleString()}</td>
+                <td>${!response[0][i].Calving ? 0 : response[0][i].Calving.toLocaleString()}</td>
+                <td>${!response[0][i].Exits ? 0 : response[0][i].Exits.toLocaleString()}</td>           
+                <td>${!response[0][i].Hair_Sampling ? 0 : response[0][i].Hair_Sampling.toLocaleString()}</td>
+                <td>${!response[0][i].Hoof_Health ? 0 : response[0][i].Hoof_Health.toLocaleString()}</td>
+                <td>${!response[0][i].Injury ? 0 : response[0][i].Injury.toLocaleString()}</td>
+                <td>${!response[0][i].Insemination ? 0 : response[0][i].Insemination.toLocaleString()}</td>      
+                <td>${!response[0][i].Milking ? 0 : response[0][i].Milking.toLocaleString()}</td>      
+                <td>${!response[0][i].Parasite_Infection ? 0 : response[0][i].Parasite_Infection.toLocaleString()}</td>      
+                <td>${!response[0][i].Weight ? 0 : response[0][i].Weight.toLocaleString()}</td>               
+              </tr>`;
+            }
+            report_2 = `     
+                  <div>
+                    <table  border='1' cellpadding="7" style='border-collapse:collapse;'>
+                    <caption>Nepal PRA Performance Report</caption>         
+                    <thead>
+                    <tr>
+                      <th>PRA</th>
+                      <th>ANIMAL-REGISTRATION</th>
+                      <th>FARM-REGISTRATION</th>
+                      <th>CALVING</th>
+                      <th>EXITS</th>
+                      <th>HAIR-SAMPLING</th>
+                      <th>HOOF-HEALTH</th>
+                      <th>INJURY</th>
+                      <th>INSEMINATION</th>
+                      <th>MILKING</th>
+                      <th>PARASITE-INFECTION</th>
+                      <th>WEIGHT</th>                 
+                    </tr>
+                    </thead>
+                    <tbody>
+                    ${rpt_rows}
+                    </tbody>
+                    </table>  
+                  </div> 
+                  <br/>  
+                  <br/>           
+                `;
+          }
+
+        })
+        .catch(e => { console.log(console.log(e.message)) });
+
+
+
+
+      // if no activity reported. Dont send a blank report . At least send something -> this is depracted
+      if (report_1 === "" || report_2 === "" || report_2 === "") {
+        report_1 = `
               <div>
                There is no activity during the period under review to report.<br/>                       
               </div>
               <br/>  
               <br/>
-          `; 
-        } else {
-          let reports = report_0 + report_1 + report_2 + report_3 + report_99;
-          mailer.sendMail(email_recipients, subject, '', reports); // send report only when their is activity.
+          `;
+      } else {
+        let reports = report_0 + report_1 + report_2 + report_3 + report_99;
+        mailer.sendMail(email_recipients, subject, '', reports); // send report only when their is activity.
 
-        }
-      
-      conn.end();    }
+      }
+
+      conn.end();
+    }
     console.log('success');
   } catch (error) {
     console.log(error.message);
@@ -1241,13 +1478,13 @@ async function sendCountyPraPerformanceReport(report_code) {
     let subtitle = '';
 
     if (report_code === 10) {
-     /** weekly */
+      /** weekly */
 
-     start = moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD');
-     end = moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD');
-     subject = 'ADGG Weekly County DFA Performance Report';
-     title = 'WEEKLY COUNTY DFA PERFORMANCE  REPORT';
-     subtitle = `<b>WEEK ${moment(start).week()}</b>: ${start} to ${end} `;
+      start = moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD');
+      end = moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD');
+      subject = 'ADGG Weekly County DFA Performance Report';
+      title = 'WEEKLY COUNTY DFA PERFORMANCE  REPORT';
+      subtitle = `<b>WEEK ${moment(start).week()}</b>: ${start} to ${end} `;
 
     } else { // REPORT CODE 11
       /** monthly */
@@ -1269,14 +1506,14 @@ async function sendCountyPraPerformanceReport(report_code) {
     <br/>
     `;
 
-    let report_99 = "<div> <i>****** End of Report ******</i></div> "    
+    let report_99 = "<div> <i>****** End of Report ******</i></div> "
 
     /** Report Content */
     let report_1 = '';
-   
+
     /** check if there are any recipients to the email */
     if (email_recipients.length > 0) {
-      /** Report Content */   
+      /** Report Content */
 
       const sql1 = `CALL sp_rpt_pra_performance_for_county(11,${JSON.stringify(start)},${JSON.stringify(end)})`;
       await query(conn, sql1)
@@ -1335,11 +1572,11 @@ async function sendCountyPraPerformanceReport(report_code) {
         })
         .catch(e => { console.log(console.log(e.message)) });
 
-      if (report_1 !== ''){
+      if (report_1 !== '') {
         let reports = report_0 + report_1 + report_99;
         mailer.sendMail(email_recipients, subject, '', reports);
       }
-      
+
       conn.end();
     }
     console.log('success');
@@ -1606,11 +1843,11 @@ async function sendDataQualityReport(report_code) {
 
       //console.log(report_3);
 
-      if (report_1 !=="" || report_3 !== "" ){
+      if (report_1 !== "" || report_3 !== "") {
         let reports = title_1 + title_2 + report_1 + title_3 + report_3 + title_4;
         mailer.sendMail(email_recipients, subject, '', reports);
       }
-      
+
       conn.end();
     }
     console.log('success');
@@ -1624,7 +1861,7 @@ async function sendDataQualityReport(report_code) {
 async function sendComparativeDataQualityReport(report_code) {
 
   try {
-    
+
     const conn = await connection(dbConfig).catch(e => { return e; });
 
     /** Get recipients */
@@ -1805,12 +2042,12 @@ async function sendComparativeDataQualityReport(report_code) {
           }
         })
         .catch(e => { console.log(console.log(e.message)) });
-      
 
-      if(report_1 !=='' || report_2 !==''){
+
+      if (report_1 !== '' || report_2 !== '') {
         let reports = title_1 + title_2 + report_description + report_1 + title_3 + report_2 + title_4;
         mailer.sendMail(email_recipients, subject, '', reports);
-      }  
+      }
       conn.end();
     }
     console.log('success');
@@ -1820,10 +2057,10 @@ async function sendComparativeDataQualityReport(report_code) {
   }
 }
 
-async function sendGraduationReport(report_code,report_option,report_date) {
+async function sendGraduationReport(report_code, report_option, report_date) {
 
-  try {  
-    
+  try {
+
     const conn = await connection(dbConfig).catch(e => { return e; });
     /** Get recipients */
     let email_recipients = '';
@@ -1833,23 +2070,23 @@ async function sendGraduationReport(report_code,report_option,report_date) {
         email_recipients += `${response[0][i].recipient};`
       }
     })
-      .catch(e => { console.log(console.log(e.message)) }); 
-    
-      let subject = '';      
-      let title = '';
-      let subtitle = '';  
-      
-    if (report_option === 1 ||report_option === 2){ // daily
-      subject = 'Daily Animal Graduation Report';      
+      .catch(e => { console.log(console.log(e.message)) });
+
+    let subject = '';
+    let title = '';
+    let subtitle = '';
+
+    if (report_option === 1 || report_option === 2) { // daily
+      subject = 'Daily Animal Graduation Report';
       title = 'Daily Animal Graduation Report';
-      subtitle = `<b>Reporting Date</b> : ${report_date.replace(/['"]+/g, '')}`; 
-    }  else if(report_option === 3){ //weekly    
+      subtitle = `<b>Reporting Date</b> : ${report_date.replace(/['"]+/g, '')}`;
+    } else if (report_option === 3) { //weekly    
       start = moment(report_date.replace(/['"]+/g, '')).startOf('isoWeek').format('YYYY-MM-DD');
       end = moment(report_date.replace(/['"]+/g, '')).endOf('isoWeek').format('YYYY-MM-DD');
       subject = 'Weekly Animal Graduation Report';
       title = 'Weekly Animal Graduation Report';
       subtitle = `<b>Reporting Period</b>: ${start} to ${end} `;
-    } else if (report_option === 4){ // monthly
+    } else if (report_option === 4) { // monthly
       subject = 'Monthly Animal Graduation Report';
       title = 'Monthly Animal Graduation Report';
       subtitle = `<b>Reporting Period</b> : ${moment(report_date.replace(/['"]+/g, '')).format('MMMM YYYY')}</b> `;
@@ -1871,7 +2108,7 @@ async function sendGraduationReport(report_code,report_option,report_date) {
     /** Report Content */
     let report_1 = '';
 
-    
+
     /** check if there are any recipients to the email */
     if (email_recipients.length > 0) {
       /** Report Content */
@@ -1893,7 +2130,7 @@ async function sendGraduationReport(report_code,report_option,report_date) {
                 <td>${!response[0][i].post_graduation_animal_type ? "" : response[0][i].post_graduation_animal_type.toLocaleString()}</td>               
               </tr>`;
             }
-            							
+
 
             report_1 = `     
         <div>
@@ -1934,10 +2171,10 @@ async function sendGraduationReport(report_code,report_option,report_date) {
         `;
       } else { // only send report when there are candidates for graduation
         let reports = report_0 + report_1 + report_99;
-        mailer.sendMail(email_recipients, subject, '', reports);  
+        mailer.sendMail(email_recipients, subject, '', reports);
       }
-         
-      conn.end();      
+
+      conn.end();
     }
     console.log('success');
   } catch (error) {
