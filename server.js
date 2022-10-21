@@ -108,6 +108,8 @@ cron.schedule('30 7 * * 1-5', () => {reporter.sendTagIdUnificationReport(7);},{s
 cron.schedule('45 7 * * 1-5', () => {reporter.sendGraduationReport(12,1,moment().format('YYYY-MM-DD'));},{scheduled: true,timezone: "Africa/Nairobi"});//at 7:45 am.
 cron.schedule('0 0 * * 1-5', () => {routines.RunBackgroundProcesses();},{scheduled: true,timezone: "Africa/Nairobi"});//at 3:00 am.
 
+
+
 // Schedule weekly tasks to run every Monday 
 cron.schedule('30 6 * * 1', () => {reporter.sendReport(2);},{scheduled: true,timezone: "Africa/Nairobi"});// at 6:30 am.
 cron.schedule('35 6 * * 1', () => {reporter.sendPraPerformanceReport(5);},{scheduled: true,timezone: "Africa/Nairobi"});// at 6:35 am.
@@ -121,6 +123,8 @@ cron.schedule('45 7 1 * *', () => {reporter.sendDataQualityReport(8);},{schedule
 cron.schedule('0 8 1 * *', () => {reporter.sendComparativeDataQualityReport(9);},{scheduled: true,timezone: "Africa/Nairobi"}); //at 8:00 am.
 cron.schedule('35 8 1 * *', () => {reporter.sendCountyPraPerformanceReport(11);},{scheduled: true,timezone: "Africa/Nairobi"}); //at 8:35 am.
 cron.schedule('0 9 1 * *', () => {reporter.sendGraduationReport(13,4,moment().subtract(1, 'months').format('YYYY-MM-DD'));},{scheduled: true,timezone: "Africa/Nairobi"});//at 9:00 am.
+cron.schedule('30 9 1 * *', () => {reporter.sendGraduationSummaryReport(14);},{scheduled: true,timezone: "Africa/Nairobi"});//at 9:30 am.
+
 
 const PORT = process.env.PORT; // set port, listen for requests
 const IP = '127.0.0.1'

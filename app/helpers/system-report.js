@@ -2183,6 +2183,110 @@ async function sendGraduationReport(report_code, report_option, report_date) {
 }
 
 
+async function sendGraduationSummaryReport(report_code) {
+
+  try {
+
+    const conn = await connection(dbConfig).catch(e => { return e; });
+    /** Get recipients */
+    let email_recipients = '';
+    const sql_0 = `CALL sp_system_reports_recipients(${report_code})`;
+    await query(conn, sql_0).then(response => {
+      for (let i = 0; i < response[0].length; i++) {
+        email_recipients += `${response[0][i].recipient};`
+      }
+    })
+      .catch(e => { console.log(console.log(e.message)) });
+
+    start = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
+    end = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
+    let subject = 'Graduation Summary Report';
+    let title = 'Graduation Summary Report';
+    let subtitle = `<b>${moment(start).format('MMMM YYYY')}</b> : ${start} to ${end}`;
+      
+    let report_0 = `
+    <div>
+      <h3>${title}</h3>      
+      ${subtitle}
+      <br/><br/>
+      <i>****** This is a system generated report ******</i> 
+      <br/>
+    </div>
+    <br/>
+    `;
+
+    let report_99 = "<div> <i>****** End of Report ******</i></div> "
+
+    /** Report Content */
+    let report_1 = '';
+
+
+    /** check if there are any recipients to the email */
+    if (email_recipients.length > 0) {
+      /** Report Content */
+      const sql1 = `CALL sp_rpt_graduation_summary(${JSON.stringify(start)},${JSON.stringify(end)})`;      
+      await query(conn, sql1)
+        .then(response => {
+          if (response[0].length > 0) {
+            let rpt_rows = '';
+            for (let i = 0; i < response[0].length; i++) {
+              rpt_rows += `            
+              <tr>
+                <td>${!response[0][i].Country ? "" : response[0][i].Country.toLocaleString()}</td>
+                <td>${!response[0][i]['Female calf → Cow']? "" : response[0][i]['Female calf → Cow'].toLocaleString()}</td>              
+                <td>${!response[0][i]['Female calf → Heifer'] ? "" : response[0][i]['Female calf → Heifer'].toLocaleString()}</td>
+                <td>${!response[0][i]['Male calf → Bull'] ? "" : response[0][i]['Male calf → Bull'].toLocaleString()}</td>                           
+              </tr>`;
+            }
+
+
+            report_1 = `     
+        <div>
+                   
+          <br/><br/>
+          <table  border='1' cellpadding='7' style='border-collapse:collapse;' >                      
+          <thead>         
+          <tr>
+            <th>Country</th>
+            <th>Female calf → Cow</th>           
+            <th>Female calf → Heifer</th>
+            <th>Male calf → Bull</th>                    
+          </tr>
+          </thead>
+          <tbody>
+          ${rpt_rows}
+          </tbody>
+          </table>  
+        </div>  
+        <br/>  
+        <br/>          
+      `;
+          }
+        })
+        .catch(e => { console.log(console.log(e.message)) });
+
+      if (report_1 === "") { // deprecated
+        report_1 = `
+            <div>
+             There were no candidates for graduation.<br/>                       
+            </div>
+            <br/>  
+            <br/>
+        `;
+      } else { // only send report when there are candidates for graduation
+        let reports = report_0 + report_1 + report_99;
+        mailer.sendMail(email_recipients, subject, '', reports);
+      }
+
+      conn.end();
+    }
+    console.log('success');
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
 module.exports.sendReport = sendReport;
 module.exports.sendPraPerformanceReport = sendPraPerformanceReport;
 module.exports.sendCountyPraPerformanceReport = sendCountyPraPerformanceReport;
@@ -2190,6 +2294,9 @@ module.exports.sendTagIdUnificationReport = sendTagIdUnificationReport;
 module.exports.sendDataQualityReport = sendDataQualityReport;
 module.exports.sendComparativeDataQualityReport = sendComparativeDataQualityReport;
 module.exports.sendGraduationReport = sendGraduationReport;
+module.exports.sendGraduationSummaryReport = sendGraduationSummaryReport;
+
+
 
 
 
