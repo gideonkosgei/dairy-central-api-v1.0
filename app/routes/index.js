@@ -16,6 +16,10 @@ router.get("/api/v1.0/", (req, res) => {
   router.get('/api/v1.0/unauthorized',  (req, res)=> {
     res.status(200).json({message:'GET Forbidden'});
   });
+
+  router.post('/api/v1.0/odk',  (req, res)=> {
+    res.status(200).json({message:'odk called'});
+  });
     
   module.exports = router
 
